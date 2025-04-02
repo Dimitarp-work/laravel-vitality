@@ -14,4 +14,8 @@ class Controller extends BaseController
     function settings(): View{
         return view('settings');
     }
+
+    function leaderboard(): View{
+        return view('leaderboard');
+    }
 }
