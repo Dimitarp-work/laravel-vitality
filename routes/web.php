@@ -19,3 +19,4 @@ Route::get('/', function () {
 });
 
 Route::get('/settings',  [Controller::class, 'settings'])->name('settings');
+Route::get('leaderboard',  [Controller::class, 'leaderboard'])->name('leaderboard');
