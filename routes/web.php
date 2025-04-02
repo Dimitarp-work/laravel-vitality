@@ -26,4 +26,4 @@ Route::get('/articles', [ArticleController::class, 'index'])->name('articles.ind
 Route::get('/articles/{article}', [ArticleController::class, 'show'])->name('articles.show');
 Route::get('/diary', function () {
     return view('diary');
-});
+})->name('diary');
