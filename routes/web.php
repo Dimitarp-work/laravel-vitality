@@ -27,3 +27,4 @@ Route::get('/articles/{article}', [ArticleController::class, 'show'])->name('art
 Route::get('/diary', function () {
     return view('diary');
 })->name('diary');
+Route::get('/challenges',  [Controller::class, 'challenges'])->name('challenges');
