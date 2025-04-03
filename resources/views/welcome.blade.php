@@ -21,6 +21,7 @@
                     <li><a href="{{ route('diary') }}">Diary</a></li>
                     <li><a href="{{ route('leaderboard') }}">Leaderboard</a></li>
                     <li><a href="{{ route('settings') }}">Settings</a></li>
+                    <li><a href="{{ route('challenges') }}">Challenges</a></li>
                 </ul>
         </div>
     </body>

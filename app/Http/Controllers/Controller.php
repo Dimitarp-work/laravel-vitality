@@ -18,4 +18,8 @@ class Controller extends BaseController
     function leaderboard(): View{
         return view('leaderboard');
     }
+
+    function challenges(): View{
+        return view('challenges');
+    }
 }
