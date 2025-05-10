@@ -17,3 +17,9 @@ COPY . .
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php && \
     mv composer.phar /usr/local/bin/composer
+
+#Install tailwind and dependencies
+RUN npm install -g tailwindcss @tailwindcss/vite && \
+    npm install && \
+    npm run build
+
