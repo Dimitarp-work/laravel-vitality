@@ -5,43 +5,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Vitality Platform')</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('hidden');
+            document.getElementById('sidebar-backdrop').classList.toggle('hidden');
+        }
+    </script>
 </head>
-<body class="bg-gray-50 min-h-screen flex">
+<body class="bg-gray-50 min-h-screen md:flex">
+    <!-- Mobile sidebar toggle -->
+    <button class="md:hidden fixed top-4 left-4 z-30 bg-pink-400 text-white rounded-full p-2 shadow-lg" aria-label="Open sidebar" onclick="toggleSidebar()">
+        <span class="material-icons">menu</span>
+    </button>
+    <!-- Sidebar backdrop for mobile -->
+    <div id="sidebar-backdrop" class="fixed inset-0 bg-black bg-opacity-30 z-20 hidden md:hidden" onclick="toggleSidebar()"></div>
     <!-- Sidebar -->
-    <aside class="w-72 bg-gradient-to-b from-pink-200 to-pink-100 p-6 flex flex-col justify-between min-h-screen shadow-lg">
-        <div>
-            <!-- User Info -->
-            <div class="flex items-center gap-4 mb-8">
+    <aside id="sidebar" class="w-72 bg-gradient-to-b from-pink-200 to-pink-100 p-0 flex flex-col min-h-screen shadow-xl border-r border-pink-100 fixed md:relative md:flex z-30 transition-transform duration-200 md:translate-x-0 hidden md:flex h-screen top-0 left-0">
+        <!-- User Card -->
+        <div class="p-6 pb-4 border-b border-pink-100">
+            <div class="flex items-center gap-4 mb-3">
                 <div class="w-14 h-14 rounded-full bg-pink-300 flex items-center justify-center text-2xl font-bold text-white">JD</div>
                 <div>
                     <div class="font-semibold text-lg text-pink-900">John Doe</div>
                     <div class="text-xs text-pink-700">Wellness Seeker</div>
-                    <div class="flex items-center gap-2 mt-1">
-                        <span class="text-xs bg-pink-300 text-white rounded px-2 py-0.5">Level 5</span>
-                        <span class="text-xs text-pink-700">450 / 500 XP</span>
-                    </div>
                 </div>
             </div>
-            <!-- Navigation -->
-            <nav class="flex flex-col gap-2">
-                <a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg bg-white/80 text-pink-900 font-medium hover:bg-pink-100 transition"><span class="material-icons">home</span> Home</a>
-                <a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg text-pink-900 hover:bg-pink-100 transition"><span class="material-icons">book</span> Diary</a>
-                <a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg text-pink-900 hover:bg-pink-100 transition"><span class="material-icons">check_circle</span> Daily Check-ins</a>
-                <a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg text-pink-900 hover:bg-pink-100 transition"><span class="material-icons">article</span> Articles</a>
-                <a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg text-pink-900 hover:bg-pink-100 transition"><span class="material-icons">flag</span> My Goals</a>
-                <div class="mt-4 text-xs text-pink-700 font-semibold uppercase tracking-wider">Challenges</div>
-                <a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg text-pink-900 hover:bg-pink-100 transition"><span class="material-icons">emoji_events</span> Challenges</a>
-                <a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg text-pink-900 hover:bg-pink-100 transition"><span class="material-icons">flag</span> My Goals</a>
-                <div class="mt-4 text-xs text-pink-700 font-semibold uppercase tracking-wider">Customization</div>
-                <a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg text-pink-900 hover:bg-pink-100 transition"><span class="material-icons">store</span> Store</a>
-                <a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg text-pink-900 hover:bg-pink-100 transition"><span class="material-icons">palette</span> Appearance</a>
-                <a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg text-pink-900 hover:bg-pink-100 transition"><span class="material-icons">settings</span> Settings</a>
-            </nav>
+            <div class="flex items-center gap-2 mb-2">
+                <span class="text-xs bg-pink-300 text-white rounded px-2 py-0.5">Level 5</span>
+                <span class="text-xs text-pink-700">450 / 500 XP</span>
+            </div>
+            <div class="w-full h-2 bg-pink-100 rounded-full overflow-hidden mb-2">
+                <div class="h-full bg-pink-400 rounded-full" style="width: 90%"></div>
+            </div>
+            <div class="text-xs text-pink-700 font-semibold flex items-center gap-1"><span class="material-icons text-pink-400 text-base">monetization_on</span> 450 Credits</div>
         </div>
-        <div class="text-xs text-pink-700 mt-8">Syntess Vital<br> Your daily wellness companion</div>
+        <!-- Navigation -->
+        <nav class="flex-1 flex flex-col justify-between p-4">
+            <div>
+                <div class="text-xs text-pink-700 font-bold uppercase tracking-wider mb-2 mt-2">Main</div>
+                <ul class="space-y-1">
+                    <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium text-pink-900 bg-white/90 hover:bg-pink-100 transition"><span class="material-icons">home</span> Home</a></li>
+                    <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg text-pink-900 hover:bg-pink-100 transition"><span class="material-icons">book</span> Diary</a></li>
+                    <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg text-pink-900 hover:bg-pink-100 transition"><span class="material-icons">check_circle</span> Daily Check-ins</a></li>
+                    <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg text-pink-900 hover:bg-pink-100 transition"><span class="material-icons">article</span> Articles</a></li>
+                    <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg text-pink-900 hover:bg-pink-100 transition"><span class="material-icons">flag</span> My Goals</a></li>
+                </ul>
+                <div class="text-xs text-pink-700 font-bold uppercase tracking-wider mb-2 mt-6">Challenges</div>
+                <ul class="space-y-1">
+                    <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg text-pink-900 hover:bg-pink-100 transition"><span class="material-icons">emoji_events</span> Challenges</a></li>
+                    <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg text-pink-900 hover:bg-pink-100 transition"><span class="material-icons">leaderboard</span> Leaderboard</a></li>
+                </ul>
+                <div class="text-xs text-pink-700 font-bold uppercase tracking-wider mb-2 mt-6">Customization</div>
+                <ul class="space-y-1">
+                    <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg text-pink-900 hover:bg-pink-100 transition"><span class="material-icons">store</span> Store</a></li>
+                    <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg text-pink-900 hover:bg-pink-100 transition"><span class="material-icons">palette</span> Appearance</a></li>
+                    <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg text-pink-900 hover:bg-pink-100 transition"><span class="material-icons">settings</span> Settings</a></li>
+                </ul>
+            </div>
+        </nav>
+        <div class="text-xs text-pink-700 p-4">Syntess Vital<br>Your daily wellness companion</div>
     </aside>
     <!-- Main Content -->
-    <main class="flex-1 p-8 overflow-y-auto">
+    <main class="flex-1 bg-gray-50 min-h-screen p-4 md:p-8 md:ml-72">
         @yield('content')
     </main>
 </body>
