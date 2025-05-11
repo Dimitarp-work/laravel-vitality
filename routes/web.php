@@ -17,7 +17,7 @@ use App\Http\Controllers\ArticleController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('home');
 });
 
 Route::get('/settings',  [Controller::class, 'settings'])->name('settings');
