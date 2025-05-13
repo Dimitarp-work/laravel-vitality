@@ -13,7 +13,7 @@
         }
     </script>
 </head>
-<body class="bg-gray-50 min-h-screen md:flex">
+<body class="bg-gray-50 min-h-screen">
     <!-- Mobile sidebar toggle -->
     <button class="md:hidden fixed top-4 left-4 z-30 bg-pink-400 text-white rounded-full p-2 shadow-lg" aria-label="Open sidebar" onclick="toggleSidebar()">
         <span class="material-icons">menu</span>
@@ -21,7 +21,7 @@
     <!-- Sidebar backdrop for mobile -->
     <div id="sidebar-backdrop" class="fixed inset-0 bg-black bg-opacity-30 z-20 hidden md:hidden" onclick="toggleSidebar()"></div>
     <!-- Sidebar -->
-    <aside id="sidebar" class="w-72 bg-gradient-to-b from-pink-200 to-pink-100 p-0 flex flex-col min-h-screen shadow-xl border-r border-pink-100 fixed md:relative md:flex z-30 transition-transform duration-200 md:translate-x-0 hidden md:flex h-screen top-0 left-0">
+    <aside id="sidebar" class="w-72 bg-gradient-to-b from-pink-200 to-pink-100 p-0 flex flex-col min-h-screen shadow-xl border-r border-pink-100 fixed md:fixed z-30 transition-transform duration-200 md:translate-x-0 hidden md:flex h-screen top-0 left-0">
         <!-- User Card -->
         <div class="p-6 pb-4 border-b border-pink-100">
             <div class="flex items-center gap-4 mb-3">
@@ -67,7 +67,7 @@
         <div class="text-xs text-pink-700 p-4">Syntess Vital<br>Your daily wellness companion</div>
     </aside>
     <!-- Main Content -->
-    <main class="flex-1 bg-gray-50 min-h-screen p-4 md:p-8 md:ml-72">
+    <main class="flex-1 bg-gray-50 min-h-screen p-4 md:p-8 md:ml-72 max-w-7xl mx-auto">
         @yield('content')
     </main>
 </body>
