@@ -22,4 +22,8 @@ class Controller extends BaseController
     function challenges(): View{
         return view('challenges');
     }
+
+    function goals(): View{
+        return view('goals');
+    }
 }
