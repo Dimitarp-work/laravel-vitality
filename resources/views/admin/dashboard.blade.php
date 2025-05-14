@@ -1,4 +1,4 @@
-@extends('layouts.vitality')
+@extends('layouts.admin')
 
 @section('title', 'Admin Dashboard')
 
@@ -14,10 +14,6 @@
             <p class="text-theme-700 text-base">Welcome back! Here's what's happening today.</p>
         </div>
         <div class="flex gap-3">
-            <button class="bg-theme-400 hover:bg-theme-500 text-white rounded-lg px-6 py-2 font-semibold flex items-center gap-2 transition">
-                <span class="material-icons text-base">add_circle</span>
-                Add Article
-            </button>
             <button class="bg-white hover:bg-gray-50 text-theme-700 border border-theme-200 rounded-lg px-6 py-2 font-semibold flex items-center gap-2 transition">
                 <span class="material-icons text-base">download</span>
                 Export
@@ -263,4 +259,4 @@
         </div>
     </div>
 </div>
-@endsection 
+@endsection
