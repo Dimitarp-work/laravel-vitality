@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\Admin\DashboardController;
 
 
 /*
@@ -28,3 +29,8 @@ Route::get('/diary', function () {
     return view('diary');
 })->name('diary');
 Route::get('/challenges',  [Controller::class, 'challenges'])->name('challenges');
+
+// Admin Routes
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+});

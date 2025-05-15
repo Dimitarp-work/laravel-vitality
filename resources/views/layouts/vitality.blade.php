@@ -64,7 +64,7 @@
                 </ul>
             </div>
         </nav>
-        <div class="text-xs text-pink-700 p-4">Syntess Vital<br>Your daily wellness companion</div>
+        <div class="text-xs text-pink-700 p-4 flex justify-center text-center">Syntess Vital<br>Your daily wellness companion</div>
     </aside>
     <!-- Main Content -->
     <main class="flex-1 bg-gray-50 min-h-screen p-4 md:p-8 md:ml-72 max-w-7xl mx-auto">
