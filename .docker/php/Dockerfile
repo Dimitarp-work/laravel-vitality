@@ -1,34 +1,22 @@
 FROM php:8.2-fpm
 
-# Install system dependencies, composer, etc. (add your own as needed)
+# Install dependencies
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
-    zip \
-    unzip \
-    git \
-    curl
+    zip unzip \
+    curl \
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
-# Install Composer
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+WORKDIR /var/www
 
-# Copy Laravel app files
+# Copy Laravel files into container
 COPY . .
 
-# Copy built assets from node-build stage
-COPY --from=node-build /app/public/build /public/build
-COPY --from=node-build /app/node_modules /node_modules
-
-# Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader
-
-# Set permissions (adjust as needed)
-RUN chown -R www-data:www-data /var/www
-
-# Expose port and start
-EXPOSE 9000
-CMD ["php-fpm"]
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php && \
+    mv composer.phar /usr/local/bin/composer
 
 ENV NODE_VERSION=22.0.0
 RUN apt install -y curl
@@ -41,5 +29,8 @@ ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
 RUN node --version
 RUN npm --version
 
+# Install Node dependencies (including Tailwind)
 RUN npm install
+
+# Run build process (e.g., compile assets with Vite/Mix)
 RUN npm run build
