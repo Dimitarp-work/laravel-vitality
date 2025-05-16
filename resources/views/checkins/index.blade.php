@@ -50,51 +50,45 @@
                     <span class="ml-2 text-xs bg-pink-100 text-pink-700 rounded-full px-3 py-0.5">5 tasks</span>
                 </div>
                 <div class="space-y-4">
-                    <div class="group flex items-center justify-between p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all">
+                    <label class="group flex items-center justify-between p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all cursor-pointer">
                         <div class="flex items-center gap-3">
                             <span class="text-xl">💧</span>
                             <span class="text-pink-900">Drink enough water today?</span>
                         </div>
-                        <button class="p-2 hover:bg-white rounded-full transition-all group-hover:scale-110">
-                            <span class="material-icons text-pink-400">radio_button_unchecked</span>
-                        </button>
-                    </div>
-                    <div class="group flex items-center justify-between p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all">
+                        <input type="checkbox" class="w-6 h-6 rounded-full accent-pink-400">
+                    </label>
+
+                    <label class="group flex items-center justify-between p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all cursor-pointer">
                         <div class="flex items-center gap-3">
                             <span class="text-xl">🧘‍♀️</span>
                             <span class="text-pink-900">Take a moment to stretch?</span>
                         </div>
-                        <button class="p-2 hover:bg-white rounded-full transition-all group-hover:scale-110">
-                            <span class="material-icons text-pink-400">radio_button_unchecked</span>
-                        </button>
-                    </div>
-                    <div class="group flex items-center justify-between p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all">
+                        <input type="checkbox" class="w-6 h-6 rounded-full accent-pink-400">
+                    </label>
+
+                    <label class="group flex items-center justify-between p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all cursor-pointer">
                         <div class="flex items-center gap-3">
                             <span class="text-xl">🍽️</span>
                             <span class="text-pink-900">Eat regular meals today?</span>
                         </div>
-                        <button class="p-2 hover:bg-white rounded-full transition-all group-hover:scale-110">
-                            <span class="material-icons text-pink-400">radio_button_unchecked</span>
-                        </button>
-                    </div>
-                    <div class="group flex items-center justify-between p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all">
+                        <input type="checkbox" class="w-6 h-6 rounded-full accent-pink-400">
+                    </label>
+
+                    <label class="group flex items-center justify-between p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all cursor-pointer">
                         <div class="flex items-center gap-3">
                             <span class="text-xl">😴</span>
                             <span class="text-pink-900">Get enough sleep last night?</span>
                         </div>
-                        <button class="p-2 hover:bg-white rounded-full transition-all group-hover:scale-110">
-                            <span class="material-icons text-pink-400">radio_button_unchecked</span>
-                        </button>
-                    </div>
-                    <div class="group flex items-center justify-between p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all">
+                        <input type="checkbox" class="w-6 h-6 rounded-full accent-pink-400">
+                    </label>
+
+                    <label class="group flex items-center justify-between p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all cursor-pointer">
                         <div class="flex items-center gap-3">
                             <span class="text-xl">💊</span>
                             <span class="text-pink-900">Take medications/vitamins?</span>
                         </div>
-                        <button class="p-2 hover:bg-white rounded-full transition-all group-hover:scale-110">
-                            <span class="material-icons text-pink-400">radio_button_unchecked</span>
-                        </button>
-                    </div>
+                        <input type="checkbox" class="w-6 h-6 rounded-full accent-pink-400">
+                    </label>
                 </div>
             </div>
 
@@ -106,51 +100,45 @@
                     <span class="ml-2 text-xs bg-pink-100 text-pink-700 rounded-full px-3 py-0.5">5 tasks</span>
                 </div>
                 <div class="space-y-4">
-                    <div class="group flex items-center justify-between p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all">
+                    <label class="group flex items-center justify-between p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all cursor-pointer">
                         <div class="flex items-center gap-3">
                             <span class="text-xl">📱</span>
                             <span class="text-pink-900">Take time off screens today?</span>
                         </div>
-                        <button class="p-2 hover:bg-white rounded-full transition-all group-hover:scale-110">
-                            <span class="material-icons text-pink-400">radio_button_unchecked</span>
-                        </button>
-                    </div>
-                    <div class="group flex items-center justify-between p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all">
+                        <input type="checkbox" class="w-6 h-6 rounded-full accent-pink-400">
+                    </label>
+
+                    <label class="group flex items-center justify-between p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all cursor-pointer">
                         <div class="flex items-center gap-3">
                             <span class="text-xl">🫁</span>
                             <span class="text-pink-900">Practice deep breathing?</span>
                         </div>
-                        <button class="p-2 hover:bg-white rounded-full transition-all group-hover:scale-110">
-                            <span class="material-icons text-pink-400">radio_button_unchecked</span>
-                        </button>
-                    </div>
-                    <div class="group flex items-center justify-between p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all">
+                        <input type="checkbox" class="w-6 h-6 rounded-full accent-pink-400">
+                    </label>
+
+                    <label class="group flex items-center justify-between p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all cursor-pointer">
                         <div class="flex items-center gap-3">
                             <span class="text-xl">🌿</span>
                             <span class="text-pink-900">Spend time in nature today?</span>
                         </div>
-                        <button class="p-2 hover:bg-white rounded-full transition-all group-hover:scale-110">
-                            <span class="material-icons text-pink-400">radio_button_unchecked</span>
-                        </button>
-                    </div>
-                    <div class="group flex items-center justify-between p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all">
+                        <input type="checkbox" class="w-6 h-6 rounded-full accent-pink-400">
+                    </label>
+
+                    <label class="group flex items-center justify-between p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all cursor-pointer">
                         <div class="flex items-center gap-3">
                             <span class="text-xl">🤔</span>
                             <span class="text-pink-900">Take a moment for self-reflection?</span>
                         </div>
-                        <button class="p-2 hover:bg-white rounded-full transition-all group-hover:scale-110">
-                            <span class="material-icons text-pink-400">radio_button_unchecked</span>
-                        </button>
-                    </div>
-                    <div class="group flex items-center justify-between p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all">
+                        <input type="checkbox" class="w-6 h-6 rounded-full accent-pink-400">
+                    </label>
+
+                    <label class="group flex items-center justify-between p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all cursor-pointer">
                         <div class="flex items-center gap-3">
                             <span class="text-xl">🙏</span>
                             <span class="text-pink-900">Practice gratitude today?</span>
                         </div>
-                        <button class="p-2 hover:bg-white rounded-full transition-all group-hover:scale-110">
-                            <span class="material-icons text-pink-400">radio_button_unchecked</span>
-                        </button>
-                    </div>
+                        <input type="checkbox" class="w-6 h-6 rounded-full accent-pink-400">
+                    </label>
                 </div>
             </div>
         </div>
