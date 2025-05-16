@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DailyCheckInController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ArticleController;
@@ -19,7 +20,7 @@ use App\Http\Controllers\Admin\DashboardController;
 
 Route::get('/', function () {
     return view('home');
-});
+})->name('home');
 
 Route::get('/settings',  [Controller::class, 'settings'])->name('settings');
 Route::get('leaderboard',  [Controller::class, 'leaderboard'])->name('leaderboard');
@@ -29,6 +30,12 @@ Route::get('/diary', function () {
     return view('diary');
 })->name('diary');
 Route::get('/challenges',  [Controller::class, 'challenges'])->name('challenges');
+//Route::get('/checkins', [DailyCheckInController::class,'checkins'])->name('checkins');
+
+// Check-in routes
+Route::get('/checkins/week', [DailyCheckInController::class, 'week'])->name('checkins.week');
+Route::get('/checkins/reminders', [DailyCheckInController::class, 'reminders'])->name('checkins.reminders');
+Route::resource('/checkins', DailyCheckInController::class);
 
 // Admin Routes
 Route::prefix('admin')->name('admin.')->group(function () {
