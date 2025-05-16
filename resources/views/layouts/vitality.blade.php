@@ -45,9 +45,9 @@
             <div>
                 <div class="text-xs text-pink-700 font-bold uppercase tracking-wider mb-2 mt-2">Main</div>
                 <ul class="space-y-1">
-                    <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium text-pink-900 bg-white/90 hover:bg-pink-100 transition"><span class="material-icons">home</span> Home</a></li>
+                    <li><a href="{{ route('home')  }}" class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium text-pink-900 bg-white/90 hover:bg-pink-100 transition"><span class="material-icons">home</span> Home</a></li>
                     <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg text-pink-900 hover:bg-pink-100 transition"><span class="material-icons">book</span> Diary</a></li>
-                    <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg text-pink-900 hover:bg-pink-100 transition"><span class="material-icons">check_circle</span> Daily Check-ins</a></li>
+                    <li><a href="{{ route('checkins.index') }}" class="flex items-center gap-3 px-4 py-2 rounded-lg text-pink-900 hover:bg-pink-100 transition"><span class="material-icons">check_circle</span> Daily Check-ins</a></li>
                     <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg text-pink-900 hover:bg-pink-100 transition"><span class="material-icons">article</span> Articles</a></li>
                     <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg text-pink-900 hover:bg-pink-100 transition"><span class="material-icons">flag</span> My Goals</a></li>
                 </ul>
@@ -71,4 +71,4 @@
         @yield('content')
     </main>
 </body>
-</html> 
+</html>
