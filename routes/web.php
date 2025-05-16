@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DailyCheckInController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ProfileController;
@@ -24,6 +25,7 @@ Route::get('/login', function () {
 
 Route::get('/home', function () {
     return view('home');
+
 })->middleware(['auth', 'verified'])->name('home');
 
 Route::middleware('auth')->group(function () {
@@ -40,6 +42,12 @@ Route::get('/diary', function () {
     return view('diary');
 })->name('diary');
 Route::get('/challenges',  [Controller::class, 'challenges'])->name('challenges');
+//Route::get('/checkins', [DailyCheckInController::class,'checkins'])->name('checkins');
+
+// Check-in routes
+Route::get('/checkins/week', [DailyCheckInController::class, 'week'])->name('checkins.week');
+Route::get('/checkins/reminders', [DailyCheckInController::class, 'reminders'])->name('checkins.reminders');
+Route::resource('/checkins', DailyCheckInController::class);
 
 // Admin Routes
 Route::prefix('admin')->name('admin.')->group(function () {

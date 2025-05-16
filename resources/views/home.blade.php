@@ -114,4 +114,4 @@
         <div class="text-xs md:text-sm text-pink-700">You've had some lovely moments this week. Each day is a new opportunity.</div>
     </div>
 </div>
-@endsection 
+@endsection
