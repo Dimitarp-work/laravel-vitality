@@ -12,6 +12,21 @@
             document.getElementById('sidebar-backdrop').classList.toggle('hidden');
         }
     </script>
+    <script>
+        function toggleLogOut() {
+            const menu = document.getElementById('logout-dropdown');
+            menu.classList.toggle('hidden');
+        }
+
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('logout-dropdown');
+            const button = event.target.closest('button');
+            if (!menu.contains(event.target) && !button) {
+                menu.classList.add('hidden');
+            }
+        });
+    </script>
+
 </head>
 <body class="bg-gray-50 min-h-screen">
     <!-- Mobile sidebar toggle -->
@@ -25,7 +40,33 @@
         <!-- User Card -->
         <div class="p-6 pb-4 border-b border-pink-100">
             <div class="flex items-center gap-4 mb-3">
-                <div class="w-14 h-14 rounded-full bg-pink-300 flex items-center justify-center text-2xl font-bold text-white">JD</div>
+                <div class="relative inline-block text-left">
+                    <!-- Avatar Button -->
+                    <button onclick="toggleLogOut()" class="w-14 h-14 rounded-full bg-pink-300 flex items-center justify-center text-2xl font-bold text-white focus:outline-none">
+                        JD
+                    </button>
+
+                    <!-- Dropdown -->
+                    <div id="logout-dropdown" class="hidden absolute left-16 top-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+                        <div class="px-4 py-3">
+                            <p class="text-sm font-medium text-pink-900">John Doe</p>
+                            <p class="text-sm text-pink-600">john.doe@example.com</p>
+                        </div>
+                        <div class="py-1">
+                            <a href="#" class="flex items-center gap-2 px-4 py-2 text-sm text-pink-700 hover:bg-pink-50">
+                                <span class="material-icons text-base">person</span> Profile
+                            </a>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="w-full flex items-center gap-2 px-4 py-2 text-sm text-pink-700 hover:bg-pink-50">
+                                    <span class="material-icons text-base">logout</span> Log out
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+
                 <div>
                     <div class="font-semibold text-lg text-pink-900">John Doe</div>
                     <div class="text-xs text-pink-700">Wellness Seeker</div>
@@ -71,4 +112,4 @@
         @yield('content')
     </main>
 </body>
-</html> 
+</html>

@@ -11,6 +11,9 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
 
+    function home(): View{
+        return view('home');
+    }
     function settings(): View{
         return view('settings');
     }
