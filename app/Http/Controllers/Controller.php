@@ -11,6 +11,9 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
 
+    function home(): View{
+        return view('home');
+    }
     function settings(): View{
         return view('settings');
     }
@@ -21,9 +24,5 @@ class Controller extends BaseController
 
     function challenges(): View{
         return view('challenges');
-    }
-
-    function home(): View{
-        return view('home');
     }
 }
