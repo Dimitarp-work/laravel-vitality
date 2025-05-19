@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\DailyCheckIn;
 use App\Models\Stampcard;
 use App\Models\User;
 use app\Providers\RouteServiceProvider;
@@ -45,6 +46,10 @@ class RegisteredUserController extends Controller
         $stampcard = Stampcard::create([
             'user_id'=> $user->id,
             'LLDate' => now()
+        ]);
+
+        DailyCheckIn::factory(4)->create([
+            'stampcard_id' => $stampcard->user_id,
         ]);
 
         Auth::login($user);

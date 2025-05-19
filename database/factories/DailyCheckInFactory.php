@@ -17,7 +17,10 @@ class DailyCheckInFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'title' => $this->faker->unique()->text(20),
+            'description' => $this->faker->text(40),
+            'isComplete' => false,
+            'stampcard_id' => 1
         ];
     }
 }
