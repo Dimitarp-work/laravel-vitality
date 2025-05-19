@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\DailyCheckIn;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DailyCheckInController extends Controller
 {
@@ -12,7 +13,9 @@ class DailyCheckInController extends Controller
      */
     public function index()
     {
-       return view('checkins.index');
+       return view('checkins.index',[
+        'checkins' => DailyCheckIn::all()
+       ]);
     }
 
     /**

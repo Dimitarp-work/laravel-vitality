@@ -50,45 +50,15 @@
                     <span class="ml-2 text-xs bg-pink-100 text-pink-700 rounded-full px-3 py-0.5">5 tasks</span>
                 </div>
                 <div class="space-y-4">
-                    <label class="group flex items-center justify-between p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all cursor-pointer">
-                        <div class="flex items-center gap-3">
-                            <span class="text-xl">💧</span>
-                            <span class="text-pink-900">Drink enough water today?</span>
-                        </div>
-                        <input type="checkbox" class="w-6 h-6 rounded-full accent-pink-400">
-                    </label>
-
-                    <label class="group flex items-center justify-between p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all cursor-pointer">
-                        <div class="flex items-center gap-3">
-                            <span class="text-xl">🧘‍♀️</span>
-                            <span class="text-pink-900">Take a moment to stretch?</span>
-                        </div>
-                        <input type="checkbox" class="w-6 h-6 rounded-full accent-pink-400">
-                    </label>
-
-                    <label class="group flex items-center justify-between p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all cursor-pointer">
-                        <div class="flex items-center gap-3">
-                            <span class="text-xl">🍽️</span>
-                            <span class="text-pink-900">Eat regular meals today?</span>
-                        </div>
-                        <input type="checkbox" class="w-6 h-6 rounded-full accent-pink-400">
-                    </label>
-
-                    <label class="group flex items-center justify-between p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all cursor-pointer">
-                        <div class="flex items-center gap-3">
-                            <span class="text-xl">😴</span>
-                            <span class="text-pink-900">Get enough sleep last night?</span>
-                        </div>
-                        <input type="checkbox" class="w-6 h-6 rounded-full accent-pink-400">
-                    </label>
-
-                    <label class="group flex items-center justify-between p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all cursor-pointer">
-                        <div class="flex items-center gap-3">
-                            <span class="text-xl">💊</span>
-                            <span class="text-pink-900">Take medications/vitamins?</span>
-                        </div>
-                        <input type="checkbox" class="w-6 h-6 rounded-full accent-pink-400">
-                    </label>
+                    @foreach($checkins as $checkin)
+                        <label class="group flex items-center justify-between p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all cursor-pointer">
+                            <div class="flex items-center gap-3">
+                                <span class="text-xl">💧</span>
+                                <span class="text-pink-900">{{$checkin->title  }}</span>
+                            </div>
+                            <input type="checkbox" class="w-6 h-6 rounded-full accent-pink-400">
+                        </label>
+                    @endforeach
                 </div>
             </div>
 
@@ -100,45 +70,15 @@
                     <span class="ml-2 text-xs bg-pink-100 text-pink-700 rounded-full px-3 py-0.5">5 tasks</span>
                 </div>
                 <div class="space-y-4">
-                    <label class="group flex items-center justify-between p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all cursor-pointer">
-                        <div class="flex items-center gap-3">
-                            <span class="text-xl">📱</span>
-                            <span class="text-pink-900">Take time off screens today?</span>
-                        </div>
-                        <input type="checkbox" class="w-6 h-6 rounded-full accent-pink-400">
-                    </label>
-
-                    <label class="group flex items-center justify-between p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all cursor-pointer">
-                        <div class="flex items-center gap-3">
-                            <span class="text-xl">🫁</span>
-                            <span class="text-pink-900">Practice deep breathing?</span>
-                        </div>
-                        <input type="checkbox" class="w-6 h-6 rounded-full accent-pink-400">
-                    </label>
-
-                    <label class="group flex items-center justify-between p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all cursor-pointer">
-                        <div class="flex items-center gap-3">
-                            <span class="text-xl">🌿</span>
-                            <span class="text-pink-900">Spend time in nature today?</span>
-                        </div>
-                        <input type="checkbox" class="w-6 h-6 rounded-full accent-pink-400">
-                    </label>
-
-                    <label class="group flex items-center justify-between p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all cursor-pointer">
-                        <div class="flex items-center gap-3">
-                            <span class="text-xl">🤔</span>
-                            <span class="text-pink-900">Take a moment for self-reflection?</span>
-                        </div>
-                        <input type="checkbox" class="w-6 h-6 rounded-full accent-pink-400">
-                    </label>
-
-                    <label class="group flex items-center justify-between p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all cursor-pointer">
-                        <div class="flex items-center gap-3">
-                            <span class="text-xl">🙏</span>
-                            <span class="text-pink-900">Practice gratitude today?</span>
-                        </div>
-                        <input type="checkbox" class="w-6 h-6 rounded-full accent-pink-400">
-                    </label>
+                    @foreach($checkins as $checkin)
+                        <label class="group flex items-center justify-between p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all cursor-pointer">
+                            <div class="flex items-center gap-3">
+                                <span class="text-xl">💧</span>
+                                <span class="text-pink-900">{{$checkin->title  }}</span>
+                            </div>
+                            <input type="checkbox" class="w-6 h-6 rounded-full accent-pink-400">
+                        </label>
+                    @endforeach
                 </div>
             </div>
         </div>
