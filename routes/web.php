@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\ChallengesController;
+use App\Http\Controllers\ChallengeController;
 use App\Http\Controllers\DailyCheckInController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\Controller;
@@ -43,9 +43,17 @@ Route::get('/articles/{article}', [ArticleController::class, 'show'])->name('art
 Route::get('/diary', function () {
     return view('diary');
 })->name('diary');
-Route::get('/challenges',  [ChallengesController::class, 'index'])->name('challenges.index');
-Route::get('/challenges/create', [ChallengesController::class, 'create'])->name('challenges.create');
-Route::post('/challenges', [ChallengesController::class, 'store'])->name('challenges.store');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/challenges', [ChallengeController::class, 'index'])->name('challenges.index');
+    Route::get('/challenges/create', [ChallengeController::class, 'create'])->name('challenges.create');
+    Route::post('/challenges', [ChallengeController::class, 'store'])->name('challenges.store');
+    Route::get('/challenges/{challenge}/edit', [ChallengeController::class, 'edit'])->name('challenges.edit');
+    Route::put('/challenges/{challenge}', [ChallengeController::class, 'update'])->name('challenges.update');
+    Route::get('/challenges/{challenge}/confirm-delete', [ChallengeController::class, 'confirmDelete'])->name('challenges.confirmDelete');
+    Route::delete('/challenges/{challenge}', [ChallengeController::class, 'destroy'])->name('challenges.destroy');
+});
+
 
 //Route::get('/checkins', [DailyCheckInController::class,'checkins'])->name('checkins');
 

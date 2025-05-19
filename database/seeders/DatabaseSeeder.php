@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
         Article::factory()->count(5)->create();
         $this->call([
             ChallengeSeeder::class,
+            UserSeeder::class,
         ]);
     }
 }

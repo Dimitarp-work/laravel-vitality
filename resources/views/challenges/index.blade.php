@@ -8,6 +8,7 @@
             {{ session('success') }}
         </div>
     @endif
+
     <div class="max-w-6xl mx-auto space-y-10">
         <div class="flex justify-between items-center">
             <div>
@@ -44,7 +45,24 @@
                 <h2 class="text-lg font-semibold text-pink-900 mb-4">Active Challenges</h2>
                 <div class="space-y-4">
                     @foreach($activeChallenges as $challenge)
-                        @include('challenges.partials.card', ['challenge' => $challenge])
+                        <div class="relative">
+                            @include('challenges.partials.card', ['challenge' => $challenge])
+
+                            @can('update', $challenge)
+                                <div class="absolute top-2 right-4 flex gap-3">
+                                    <a href="{{ route('challenges.edit', $challenge) }}"
+                                       class="text-xs text-pink-500 hover:underline font-medium">Edit</a>
+                                    <form action="{{ route('challenges.destroy', $challenge) }}"
+                                          method="POST"
+                                          onsubmit="return confirm('Are you sure you want to delete this challenge?')"
+                                          class="inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-xs text-red-500 hover:underline font-medium">Delete</button>
+                                    </form>
+                                </div>
+                            @endcan
+                        </div>
                     @endforeach
                 </div>
             </div>
@@ -56,7 +74,18 @@
                 <h2 class="text-lg font-semibold text-pink-900 mt-6 mb-4">Available Challenges</h2>
                 <div class="space-y-4">
                     @foreach($availableChallenges as $challenge)
-                        @include('challenges.partials.card', ['challenge' => $challenge])
+                        <div class="relative">
+                            @include('challenges.partials.card', ['challenge' => $challenge])
+
+                            @can('update', $challenge)
+                                <div class="absolute top-2 right-4 flex gap-3">
+                                    <a href="{{ route('challenges.edit', $challenge) }}"
+                                       class="text-xs text-pink-500 hover:underline font-medium">Edit</a>
+                                    <a href="{{ route('challenges.confirmDelete', $challenge) }}"
+                                       class="text-xs text-red-500 hover:underline font-medium">Delete</a>
+                                </div>
+                            @endcan
+                        </div>
                     @endforeach
                 </div>
             </div>
@@ -68,12 +97,30 @@
                 <h2 class="text-lg font-semibold text-pink-900 mt-6 mb-4">Completed Challenges</h2>
                 <div class="space-y-4">
                     @foreach($completedChallenges as $challenge)
-                        @include('challenges.partials.card', ['challenge' => $challenge])
+                        <div class="relative">
+                            @include('challenges.partials.card', ['challenge' => $challenge])
+
+                            @can('update', $challenge)
+                                <div class="absolute top-2 right-4 flex gap-3">
+                                    <a href="{{ route('challenges.edit', $challenge) }}"
+                                       class="text-xs text-pink-500 hover:underline font-medium">Edit</a>
+                                    <form action="{{ route('challenges.destroy', $challenge) }}"
+                                          method="POST"
+                                          onsubmit="return confirm('Are you sure you want to delete this challenge?')"
+                                          class="inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-xs text-red-500 hover:underline font-medium">Delete</button>
+                                    </form>
+                                </div>
+                            @endcan
+                        </div>
                     @endforeach
                 </div>
             </div>
         @endif
 
+        {{-- No Results --}}
         @if(count($activeChallenges) + count($availableChallenges) + count($completedChallenges) === 0)
             <div class="bg-white p-6 rounded-lg shadow text-center">
                 <p class="text-pink-700 text-lg font-semibold mb-2">No Challenges Found</p>
@@ -87,13 +134,11 @@
             const toggleBtn = document.getElementById("filterToggleBtn");
             const dropdown = document.getElementById("filterDropdown");
 
-            // Toggle visibility
             toggleBtn.addEventListener("click", function (e) {
-                e.stopPropagation(); // Prevent bubbling to document
+                e.stopPropagation();
                 dropdown.classList.toggle("hidden");
             });
 
-            // Close dropdown when clicking outside
             document.addEventListener("click", function (event) {
                 const isClickInside = document.getElementById("filterDropdownWrapper").contains(event.target);
                 if (!isClickInside) {
@@ -102,5 +147,4 @@
             });
         });
     </script>
-
 @endsection

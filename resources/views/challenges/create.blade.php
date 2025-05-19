@@ -48,8 +48,8 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-semibold text-pink-800 mb-1">Duration <span class="text-red-500">*</span></label>
-                    <input type="text" name="duration" value="{{ old('duration') }}" required pattern=".*\d+.*" maxlength="255" placeholder="e.g. 10 days, 2 weeks" class="w-full px-4 py-2 border border-pink-200 rounded text-sm" title="Please include at least one number">
+                    <label class="block text-sm font-semibold text-pink-800 mb-1">Duration in days <span class="text-red-500">*</span></label>
+                    <input type="number" name="duration_days" value="{{ old('duration_days') }}" required min="0" placeholder="e.g. 150" class="w-full px-4 py-2 border border-pink-200 rounded text-sm">
                 </div>
             </div>
 

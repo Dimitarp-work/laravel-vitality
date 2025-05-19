@@ -17,7 +17,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('category')->nullable();
             $table->enum('difficulty', ['Beginner', 'Intermediate', 'Advanced']);
-            $table->string('duration'); // E.g., "14 days"
+            $table->unsignedInteger('duration_days');
             $table->unsignedInteger('participants')->default(0);
             $table->string('badge_id')->nullable(); // This could be a foreign key if you later make a badges table
             $table->unsignedInteger('xp_reward')->default(0);
@@ -25,6 +25,10 @@ return new class extends Migration
             $table->unsignedInteger('progress')->nullable();
             $table->unsignedInteger('days_completed')->nullable();
             $table->unsignedInteger('total_days')->nullable();
+
+            //Optional author
+            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
+
             $table->timestamps();
         });
     }

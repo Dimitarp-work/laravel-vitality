@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Challenge;
 use Illuminate\Http\Request;
 
-class ChallengesController extends Controller
+class ChallengeController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -47,10 +47,10 @@ class ChallengesController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
+            'description' => 'nullable|string|max:1000',
             'category' => 'nullable|string|max:255',
             'difficulty' => 'required|in:Beginner,Intermediate,Advanced',
-            'duration' => 'required|string|max:255',
+            'duration_days' => 'required|integer|min:1',
             'xp_reward' => 'required|integer|min:0',
             'badge_id' => 'nullable|string|max:255',
         ]);
@@ -60,11 +60,13 @@ class ChallengesController extends Controller
         $validated['progress'] = null;
         $validated['days_completed'] = null;
         $validated['total_days'] = null;
+        $validated['user_id'] = auth()->id(); // Associate with logged-in user
 
         Challenge::create($validated);
 
         return redirect()->route('challenges.index')->with('success', 'Challenge created successfully!');
     }
+
 
     /**
      * Display the specified resource.
@@ -77,24 +79,54 @@ class ChallengesController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Article $article)
+    public function edit(Challenge $challenge)
     {
-        //
+        $this->authorize('update', $challenge);
+
+        return view('challenges.edit', compact('challenge'));
     }
+
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Article $article)
+    public function update(Request $request, Challenge $challenge)
     {
-        //
+        $this->authorize('update', $challenge);
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string|max:1000',
+            'category' => 'nullable|string|max:255',
+            'difficulty' => 'required|in:Beginner,Intermediate,Advanced',
+            'duration_days' => 'required|integer|min:1',
+            'xp_reward' => 'required|integer|min:0',
+            'badge_id' => 'nullable|string|max:255',
+        ]);
+
+        $challenge->update($validated);
+
+        return redirect()->route('challenges.index')->with('success', 'Challenge updated successfully.');
     }
+
+
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Article $article)
+    public function destroy(Challenge $challenge)
     {
-        //
+        $this->authorize('delete', $challenge);
+
+        $challenge->delete();
+
+        return redirect()->route('challenges.index')->with('success', 'Challenge deleted.');
     }
+
+    public function confirmDelete(Challenge $challenge)
+    {
+        $this->authorize('delete', $challenge);
+        return view('challenges.confirm-delete', compact('challenge'));
+    }
+
 }
