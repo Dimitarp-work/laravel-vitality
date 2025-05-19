@@ -20,5 +20,8 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
         Article::factory()->count(5)->create();
+        $this->call([
+            ChallengeSeeder::class,
+        ]);
     }
 }

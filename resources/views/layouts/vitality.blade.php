@@ -81,30 +81,87 @@
             </div>
             <div class="text-xs text-pink-700 font-semibold flex items-center gap-1"><span class="material-icons text-pink-400 text-base">monetization_on</span> 450 Credits</div>
         </div>
+
         <!-- Navigation -->
         <nav class="flex-1 flex flex-col justify-between p-4">
             <div>
                 <div class="text-xs text-pink-700 font-bold uppercase tracking-wider mb-2 mt-2">Main</div>
                 <ul class="space-y-1">
-                    <li><a href="{{ route('home')  }}" class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium text-pink-900 bg-white/90 hover:bg-pink-100 transition"><span class="material-icons">home</span> Home</a></li>
-                    <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg text-pink-900 hover:bg-pink-100 transition"><span class="material-icons">book</span> Diary</a></li>
-                    <li><a href="{{ route('checkins.index') }}" class="flex items-center gap-3 px-4 py-2 rounded-lg text-pink-900 hover:bg-pink-100 transition"><span class="material-icons">check_circle</span> Daily Check-ins</a></li>
-                    <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg text-pink-900 hover:bg-pink-100 transition"><span class="material-icons">article</span> Articles</a></li>
-                    <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg text-pink-900 hover:bg-pink-100 transition"><span class="material-icons">flag</span> My Goals</a></li>
+                    <li>
+                        <a href="{{ route('home') }}"
+                           class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
+                          {{ request()->routeIs('home') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
+                            <span class="material-icons">home</span> Home
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#"
+                           class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition text-pink-900 hover:bg-pink-100">
+                            <span class="material-icons">book</span> Diary
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('checkins.index') }}"
+                           class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
+                          {{ request()->routeIs('checkins.index') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
+                            <span class="material-icons">check_circle</span> Daily Check-ins
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#"
+                           class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition text-pink-900 hover:bg-pink-100">
+                            <span class="material-icons">article</span> Articles
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#"
+                           class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition text-pink-900 hover:bg-pink-100">
+                            <span class="material-icons">flag</span> My Goals
+                        </a>
+                    </li>
                 </ul>
+
                 <div class="text-xs text-pink-700 font-bold uppercase tracking-wider mb-2 mt-6">Challenges</div>
                 <ul class="space-y-1">
-                    <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg text-pink-900 hover:bg-pink-100 transition"><span class="material-icons">emoji_events</span> Challenges</a></li>
-                    <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg text-pink-900 hover:bg-pink-100 transition"><span class="material-icons">leaderboard</span> Leaderboard</a></li>
+                    <li>
+                        <a href="{{ route('challenges.index') }}"
+                           class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
+                          {{ request()->routeIs('challenges.*') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
+                            <span class="material-icons">emoji_events</span> Challenges
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#"
+                           class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition text-pink-900 hover:bg-pink-100">
+                            <span class="material-icons">leaderboard</span> Leaderboard
+                        </a>
+                    </li>
                 </ul>
+
                 <div class="text-xs text-pink-700 font-bold uppercase tracking-wider mb-2 mt-6">Customization</div>
                 <ul class="space-y-1">
-                    <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg text-pink-900 hover:bg-pink-100 transition"><span class="material-icons">store</span> Store</a></li>
-                    <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg text-pink-900 hover:bg-pink-100 transition"><span class="material-icons">palette</span> Appearance</a></li>
-                    <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg text-pink-900 hover:bg-pink-100 transition"><span class="material-icons">settings</span> Settings</a></li>
+                    <li>
+                        <a href="#"
+                           class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition text-pink-900 hover:bg-pink-100">
+                            <span class="material-icons">store</span> Store
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#"
+                           class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition text-pink-900 hover:bg-pink-100">
+                            <span class="material-icons">palette</span> Appearance
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#"
+                           class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition text-pink-900 hover:bg-pink-100">
+                            <span class="material-icons">settings</span> Settings
+                        </a>
+                    </li>
                 </ul>
             </div>
         </nav>
+
         <div class="text-xs text-pink-700 p-4 flex justify-center text-center">Syntess Vital<br>Your daily wellness companion</div>
     </aside>
     <!-- Main Content -->

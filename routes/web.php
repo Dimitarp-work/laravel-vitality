@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ChallengesController;
 use App\Http\Controllers\DailyCheckInController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\Controller;
@@ -42,7 +43,10 @@ Route::get('/articles/{article}', [ArticleController::class, 'show'])->name('art
 Route::get('/diary', function () {
     return view('diary');
 })->name('diary');
-Route::get('/challenges',  [Controller::class, 'challenges'])->name('challenges');
+Route::get('/challenges',  [ChallengesController::class, 'index'])->name('challenges.index');
+Route::get('/challenges/create', [ChallengesController::class, 'create'])->name('challenges.create');
+Route::post('/challenges', [ChallengesController::class, 'store'])->name('challenges.store');
+
 //Route::get('/checkins', [DailyCheckInController::class,'checkins'])->name('checkins');
 
 // Check-in routes
