@@ -58,5 +58,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
 // Mood routes
 Route::middleware(['auth'])->post('/mood', [MoodController::class, 'store'])->name('mood.store');
+Route::middleware(['auth'])->get('/mood/week', [MoodController::class, 'week'])->name('mood.week');
 
 require __DIR__.'/auth.php';

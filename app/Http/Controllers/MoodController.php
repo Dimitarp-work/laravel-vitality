@@ -88,4 +88,35 @@ class MoodController extends Controller
             'message' => $messageWithName,
         ]);
     }
+
+    public function week()
+    {
+        $user = Auth::user();
+        // Get start (Monday) and end (Sunday) of the current week
+        $startOfWeek = now()->startOfWeek();
+        $endOfWeek = now()->endOfWeek();
+        $today = now()->toDateString();
+
+        // Fetch moods for this user in the current week
+        $moods = Mood::where('user_id', $user->id)
+            ->whereBetween('date', [$startOfWeek->toDateString(), $endOfWeek->toDateString()])
+            ->get()
+            ->keyBy('date');
+
+        // Build array for each day of the week
+        $days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        $result = [];
+        for ($i = 0; $i < 7; $i++) {
+            $date = $startOfWeek->copy()->addDays($i)->toDateString();
+            $result[$days[$i]] = $moods[$date]->mood ?? null;
+        }
+
+        // Get today's supportive message if it exists
+        $todayMessage = $moods[$today]->message ?? null;
+
+        return response()->json([
+            'week' => $result,
+            'today_message' => $todayMessage,
+        ]);
+    }
 }
