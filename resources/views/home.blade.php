@@ -29,7 +29,7 @@
             <!-- How are you feeling? -->
             <div class="bg-white rounded-2xl shadow p-6 flex flex-col items-center min-h-[220px]" id="mood-widget">
                 <div class="font-bold text-pink-900 mb-2 text-lg flex items-center gap-2">
-                    <span class="material-icons text-pink-400">mood</span>How are you feeling?
+                    <span class="material-icons text-pink-400">mood</span>How are you feeling Today?
                 </div>
                 <!-- Emoji Mood Selector -->
                 <form id="mood-form" class="flex flex-col items-center w-full">

@@ -62,6 +62,13 @@ class MoodController extends Controller
         // Pick a random fallback message for the selected mood
         $message = collect($this->fallbackMessages[$mood])->random();
 
+        // Get the user's first name (first word of their name)
+        $firstName = explode(' ', trim($user->name))[0] ?? '';
+        // Insert the first name before the original punctuation (if any)
+        $punct = preg_match('/[.!?]$/', $message, $matches) ? $matches[0] : '';
+        $baseMessage = $punct ? mb_substr($message, 0, -1) : $message;
+        $messageWithName = $baseMessage . ', ' . $firstName . $punct;
+
         // Update or create the mood for today (so user can only have one mood per day)
         $moodEntry = Mood::updateOrCreate(
             [
@@ -70,7 +77,7 @@ class MoodController extends Controller
             ],
             [
                 'mood' => $mood,
-                'message' => $message,
+                'message' => $messageWithName,
             ]
         );
 
@@ -78,7 +85,7 @@ class MoodController extends Controller
         return response()->json([
             'success' => true,
             'mood' => $mood,
-            'message' => $message,
+            'message' => $messageWithName,
         ]);
     }
 }
