@@ -7,9 +7,9 @@
     <!-- User summary card -->
     <div class="w-full bg-gradient-to-r from-pink-200 to-pink-100 rounded-2xl shadow p-6 flex flex-col md:flex-row items-center gap-6">
         <div class="flex items-center gap-4 flex-1">
-            <div class="w-16 h-16 rounded-full bg-pink-300 flex items-center justify-center text-3xl font-bold text-white">JD</div>
+            <div class="w-16 h-16 rounded-full bg-pink-300 flex items-center justify-center text-3xl font-bold text-white">{{ strtoupper(substr(explode(' ', Auth::user()->name)[0] ?? '', 0, 1) . substr(explode(' ', Auth::user()->name)[1] ?? '', 0, 1)) }}</div>
             <div>
-                <div class="font-semibold text-xl text-pink-900">John Doe <span class="ml-2 text-xs bg-pink-200 text-pink-700 rounded px-2 py-0.5">Wellness Seeker</span></div>
+                <div class="font-semibold text-xl text-pink-900">{{ Auth::user()->name }}<span class="ml-2 text-xs bg-pink-200 text-pink-700 rounded px-2 py-0.5">Wellness Seeker</span></div>
                 <div class="flex items-center gap-2 mt-1">
                     <span class="text-xs bg-pink-300 text-white rounded px-2 py-0.5">Level 5</span>
                     <span class="text-xs text-pink-700">450 / 500 XP</span>
@@ -27,13 +27,54 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div class="flex flex-col gap-8">
             <!-- How are you feeling? -->
-            <div class="bg-white rounded-2xl shadow p-6 flex flex-col items-center">
-                <div class="font-bold text-pink-900 mb-2 text-lg flex items-center gap-2"><span class="material-icons text-pink-400">mood</span>How are you feeling?</div>
-                <div class="flex gap-3 text-3xl mb-2">
-                    <span>😊</span><span>😌</span><span>😐</span><span>😣</span><span>😢</span>
+            <div class="bg-white rounded-2xl shadow p-6 flex flex-col items-center min-h-[220px]" id="mood-widget">
+                <div class="font-bold text-pink-900 mb-2 text-lg flex items-center gap-2">
+                    <span class="material-icons text-pink-400">mood</span>How are you feeling?
                 </div>
-                <div class="flex gap-3 text-xs text-gray-500">
-                    <span>Happy</span><span>Calm</span><span>Neutral</span><span>Stressed</span><span>Sad</span>
+                <!-- Emoji Mood Selector -->
+                <form id="mood-form" class="flex flex-col items-center w-full">
+                    <div class="flex gap-8 text-3xl mb-2 justify-center">
+                        <div class="flex flex-col items-center">
+                            <label>
+                                <input type="radio" name="mood" value="sad" class="sr-only" />
+                                <span class="cursor-pointer transition hover:scale-125 w-10 h-10 flex items-center justify-center rounded-full" title="Sad">😢</span>
+                            </label>
+                            <span data-mood="sad" class="mt-1 text-xs text-gray-500">Sad</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <label>
+                                <input type="radio" name="mood" value="stressed" class="sr-only" />
+                                <span class="cursor-pointer transition hover:scale-125 w-10 h-10 flex items-center justify-center rounded-full" title="Stressed">😣</span>
+                            </label>
+                            <span data-mood="stressed" class="mt-1 text-xs text-gray-500">Stressed</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <label>
+                                <input type="radio" name="mood" value="neutral" class="sr-only" />
+                                <span class="cursor-pointer transition hover:scale-125 w-10 h-10 flex items-center justify-center rounded-full" title="Neutral">😐</span>
+                            </label>
+                            <span data-mood="neutral" class="mt-1 text-xs text-gray-500">Neutral</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <label>
+                                <input type="radio" name="mood" value="calm" class="sr-only" />
+                                <span class="cursor-pointer transition hover:scale-125 w-10 h-10 flex items-center justify-center rounded-full" title="Calm">😌</span>
+                            </label>
+                            <span data-mood="calm" class="mt-1 text-xs text-gray-500">Calm</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <label>
+                                <input type="radio" name="mood" value="happy" class="sr-only" />
+                                <span class="cursor-pointer transition hover:scale-125 w-10 h-10 flex items-center justify-center rounded-full" title="Happy">😊</span>
+                            </label>
+                            <span data-mood="happy" class="mt-1 text-xs text-gray-500">Happy</span>
+                        </div>
+                    </div>
+                </form>
+                <!-- Supportive Message Display -->
+                <div id="mood-message-container" class="mt-4 flex items-center justify-center min-h-[40px]">
+                    <span class="material-icons text-pink-400 mr-2 text-2xl" id="mood-message-icon">auto_awesome</span>
+                    <span id="mood-message" class="text-center text-pink-700 text-base"></span>
                 </div>
             </div>
             <!-- Wellness Inspiration -->
@@ -114,4 +155,59 @@
         <div class="text-xs md:text-sm text-pink-700">You've had some lovely moments this week. Each day is a new opportunity.</div>
     </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('mood-form');
+    const messageDiv = document.getElementById('mood-message');
+    const widget = document.getElementById('mood-widget');
+    const moodLabels = document.querySelectorAll('#mood-form [data-mood]');
+    // Tailwind classes for selected mood
+    const selectedClasses = [
+        'ring-4', 'ring-pink-300', 'bg-pink-100', 'rounded-full', 'shadow-md', 'scale-110', 'transition-all', 'duration-200'
+    ];
+    const selectedLabelClasses = ['text-pink-600', 'font-bold'];
+    // Listen for mood selection
+    form.addEventListener('change', function(e) {
+        if (e.target.name === 'mood') {
+            // Send AJAX POST request to /mood
+            fetch("{{ route('mood.store') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({ mood: e.target.value })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    messageDiv.textContent = data.message;
+                    // Remove highlight from all emojis
+                    form.querySelectorAll('label span').forEach(span => {
+                        selectedClasses.forEach(cls => span.classList.remove(cls));
+                    });
+                    // Add highlight to selected emoji
+                    selectedClasses.forEach(cls => e.target.nextElementSibling.classList.add(cls));
+                    // Remove highlight from all mood labels
+                    moodLabels.forEach(label => {
+                        selectedLabelClasses.forEach(cls => label.classList.remove(cls));
+                    });
+                    // Add highlight to the selected mood label
+                    const selectedMood = e.target.value;
+                    const selectedLabel = form.querySelector(`[data-mood='${selectedMood}']`);
+                    if (selectedLabel) {
+                        selectedLabelClasses.forEach(cls => selectedLabel.classList.add(cls));
+                    }
+                } else {
+                    messageDiv.textContent = 'Something went wrong. Please try again.';
+                }
+            })
+            .catch(() => {
+                messageDiv.textContent = 'Could not connect to the server.';
+            });
+        }
+    });
+});
+</script>
 @endsection

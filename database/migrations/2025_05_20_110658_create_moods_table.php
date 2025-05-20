@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('moods', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('mood');
+            $table->string('message');
+            $table->date('date');
             $table->timestamps();
         });
     }

@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Mood extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['user_id', 'mood', 'message', 'date'];
 }
