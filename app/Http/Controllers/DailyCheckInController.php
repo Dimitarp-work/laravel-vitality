@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DailyCheckIn;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class DailyCheckInController extends Controller
 {
@@ -14,10 +15,30 @@ class DailyCheckInController extends Controller
     public function index()
     {
         $userId = Auth::id();
-        return view('checkins.index', [
-            'checkins' => DailyCheckIn::where('stampcard_id', $userId)
+        $today = Carbon::today();
+
+        // Get today's check-ins
+        $checkins = DailyCheckIn::where('stampcard_id', $userId)
+            ->whereDate('created_at', $today)
+            ->select('id', 'title', 'isComplete')
+            ->get();
+
+        // If no check-ins exist for today, create new ones using factory
+        if ($checkins->isEmpty()) {
+            // Create 4 check-ins using the factory
+        DailyCheckIn::factory(4)->create([
+            'stampcard_id' => $userId,
+        ]);
+
+            // Fetch the newly created check-ins
+            $checkins = DailyCheckIn::where('stampcard_id', $userId)
+                ->whereDate('created_at', $today)
                 ->select('id', 'title', 'isComplete')
-                ->get()
+                ->get();
+        }
+
+        return view('checkins.index', [
+            'checkins' => $checkins
         ]);
     }
 
