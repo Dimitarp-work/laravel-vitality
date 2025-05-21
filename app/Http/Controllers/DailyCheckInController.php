@@ -29,16 +29,13 @@ class DailyCheckInController extends Controller
         DailyCheckIn::factory(4)->create([
             'stampcard_id' => $userId,
         ]);
-
-            // Fetch the newly created check-ins
-            $checkins = DailyCheckIn::where('stampcard_id', $userId)
-                ->whereDate('created_at', $today)
-                ->select('id', 'title', 'isComplete')
-                ->get();
         }
 
         return view('checkins.index', [
-            'checkins' => $checkins
+            'checkins' => DailyCheckIn::where('stampcard_id', $userId)
+                ->whereDate('created_at', $today)
+                ->select('id', 'title', 'isComplete')
+                ->get()
         ]);
     }
 
@@ -71,7 +68,29 @@ class DailyCheckInController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $request->validate([
+                'title' => 'required|string|max:255'
+            ]);
+
+            $checkin = DailyCheckIn::create([
+                'title' => $request->title,
+                'description' => 'Custom check-in',
+                'isComplete' => false,
+                'stampcard_id' => Auth::id()
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Check-in created successfully',
+                'checkin' => $checkin
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to create check-in: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -111,7 +130,6 @@ class DailyCheckInController extends Controller
      */
     public function complete(DailyCheckIn $dailyCheckIn)
     {
-        // Add authorization check
         $userId = Auth::id();
         if ($dailyCheckIn->stampcard_id !== $userId) {
             return response()->json([

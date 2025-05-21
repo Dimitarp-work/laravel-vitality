@@ -110,93 +110,23 @@
                 <span class="material-icons text-pink-400">add_circle</span>
                 Create Custom Check-in
             </div>
-            <div class="flex gap-3">
+            <form id="custom-checkin-form" class="flex gap-3">
                 <input type="text"
+                    id="custom-checkin-title"
+                    name="title"
                     placeholder="Type your custom check-in here..."
                     class="flex-1 px-4 py-2.5 rounded-lg border border-pink-200 focus:ring-2 focus:ring-pink-300 text-sm"
+                    required
                 >
-                <button class="bg-pink-400 hover:bg-pink-500 text-white rounded-lg px-5 py-1.5 font-semibold w-24 transition text-sm self-start">
+                <button type="submit" class="bg-pink-400 hover:bg-pink-500 text-white rounded-lg px-5 py-1.5 font-semibold w-24 transition text-sm self-start">
                     Add
                 </button>
-            </div>
+            </form>
         </div>
     </div>
 </div>
 @endsection
 
 @push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const completeButtons = document.querySelectorAll('.complete-btn');
-    const progressBar = document.getElementById('progress-bar');
-    const progressText = document.getElementById('progress-text');
-    const token = document.querySelector('meta[name="csrf-token"]')?.content;
-
-    let completedCount = parseInt(progressText.dataset.completed);
-    let totalCount = parseInt(progressText.dataset.total);
-
-    if (!token) {
-        console.error('CSRF token not found');
-    }
-
-    function setButtonComplete(button) {
-        button.classList.remove('bg-pink-500', 'hover:bg-pink-600');
-        button.classList.add('bg-green-500', 'hover:bg-green-600');
-        button.textContent = 'Completed';
-        button.disabled = true;
-        button.dataset.completed = 'true';
-        completedCount++;
-        updateProgress();
-    }
-
-    function updateProgress() {
-        if (progressBar && progressText) {
-            const percentage = Math.round((completedCount / totalCount) * 100);
-            progressBar.style.width = `${percentage}%`;
-            progressText.textContent = `${completedCount}/${totalCount}`;
-        }
-    }
-
-    // Add click handlers
-    completeButtons.forEach(button => {
-        button.addEventListener('click', async function(e) {
-            e.preventDefault();
-
-            // Prevent double-clicking
-            if (this.disabled) return;
-
-            const checkInId = this.dataset.id;
-
-            try {
-                // Disable button during request
-                this.disabled = true;
-
-                const response = await fetch(`/checkins/${checkInId}/complete`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': token,
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'same-origin'
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    setButtonComplete(this);
-                } else {
-                    // Re-enable button if request failed
-                    this.disabled = false;
-                }
-            } catch (error) {
-                console.error('Error completing check-in:', error);
-                // Re-enable button if request failed
-                this.disabled = false;
-            }
-        });
-    });
-});
-</script>
+    @vite(['resources/js/checkins.js'])
 @endpush
-

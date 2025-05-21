@@ -12,7 +12,9 @@ class DailyCheckIn extends Model
 
     protected $fillable = [
         'title',
-        'isComplete'
+        'description',
+        'isComplete',
+        'stampcard_id'
     ];
 
     protected $casts = [

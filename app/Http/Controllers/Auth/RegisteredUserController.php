@@ -43,11 +43,13 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+        // Creates a new stampcard for the newly registered user
         $stampcard = Stampcard::create([
             'user_id'=> $user->id,
             'LLDate' => now()
         ]);
 
+        // Adds checkins to the newly created stampcard
         DailyCheckIn::factory(4)->create([
             'stampcard_id' => $stampcard->user_id,
         ]);
