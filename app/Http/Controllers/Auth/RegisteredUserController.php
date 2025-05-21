@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\DailyCheckIn;
+use App\Models\Stampcard;
 use App\Models\User;
-use App\Providers\RouteServiceProvider;
+use app\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -12,7 +14,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
-
 class RegisteredUserController extends Controller
 {
     /**
@@ -42,7 +43,16 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        event(new Registered($user));
+        // Creates a new stampcard for the newly registered user
+        $stampcard = Stampcard::create([
+            'user_id'=> $user->id,
+            'LLDate' => now()
+        ]);
+
+        // Adds checkins to the newly created stampcard
+        DailyCheckIn::factory(4)->create([
+            'stampcard_id' => $stampcard->user_id,
+        ]);
 
         Auth::login($user);
 

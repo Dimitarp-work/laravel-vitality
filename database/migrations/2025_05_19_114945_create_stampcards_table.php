@@ -11,8 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('daily_check_ins', function (Blueprint $table) {
-            $table->id();
+        Schema::create('stampcards', function (Blueprint $table) {
+            $table->id('user_id');
+            $table->date('LLDate')->nullable();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -22,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('daily_check_ins');
+        Schema::dropIfExists('stampcards');
     }
 };

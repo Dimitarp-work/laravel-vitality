@@ -48,6 +48,7 @@ Route::get('/challenges',  [Controller::class, 'challenges'])->name('challenges'
 // Check-in routes
 Route::get('/checkins/week', [DailyCheckInController::class, 'week'])->name('checkins.week');
 Route::get('/checkins/reminders', [DailyCheckInController::class, 'reminders'])->name('checkins.reminders');
+Route::post('/checkins/{dailyCheckIn}/complete', [DailyCheckInController::class, 'complete'])->name('checkins.complete');
 Route::resource('/checkins', DailyCheckInController::class);
 
 // Admin Routes

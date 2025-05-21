@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Vitality Platform')</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -111,5 +112,6 @@
     <main class="flex-1 bg-gray-50 min-h-screen p-4 md:p-8 md:ml-72 max-w-7xl mx-auto">
         @yield('content')
     </main>
+    @stack('scripts')
 </body>
 </html>
