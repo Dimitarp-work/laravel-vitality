@@ -13,9 +13,12 @@ class DailyCheckInController extends Controller
      */
     public function index()
     {
-       return view('checkins.index',[
-        'checkins' => DailyCheckIn::all()
-       ]);
+        $userId = Auth::id();
+        return view('checkins.index', [
+            'checkins' => DailyCheckIn::where('stampcard_id', $userId)
+                ->select('id', 'title', 'isComplete')
+                ->get()
+        ]);
     }
 
     /**
@@ -80,5 +83,27 @@ class DailyCheckInController extends Controller
     public function destroy(DailyCheckIn $dailyCheckIn)
     {
         //
+    }
+
+    /**
+     * Mark a check-in as complete.
+     */
+    public function complete(DailyCheckIn $dailyCheckIn)
+    {
+        // Add authorization check
+        $userId = Auth::id();
+        if ($dailyCheckIn->stampcard_id !== $userId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized'
+            ], 403);
+        }
+
+        $dailyCheckIn->update(['isComplete' => true]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Check-in completed successfully'
+        ]);
     }
 }

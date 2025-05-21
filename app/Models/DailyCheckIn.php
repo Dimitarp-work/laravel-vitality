@@ -10,7 +10,14 @@ class DailyCheckIn extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'description', 'isComplete','stampcard_id'];
+    protected $fillable = [
+        'title',
+        'isComplete'
+    ];
+
+    protected $casts = [
+        'isComplete' => 'boolean'
+    ];
 
     public function stampcard(): BelongsTo{
         return $this->belongsTo(Stampcard::class, 'stampcard_id');

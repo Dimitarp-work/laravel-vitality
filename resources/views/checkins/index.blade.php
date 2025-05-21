@@ -18,9 +18,22 @@
                 <div class="flex items-center gap-3 bg-white/50 px-5 py-2.5 rounded-xl">
                     <span class="text-pink-700 font-medium">Daily Progress</span>
                     <div class="w-36 h-2 bg-pink-100 rounded-full overflow-hidden">
-                        <div class="h-full bg-gradient-to-r from-pink-500 to-pink-400 rounded-full" style="width: 0%"></div>
+                        @php
+                            $completedCount = $checkins->where('isComplete', true)->count();
+                            $totalCount = $checkins->count();
+                            $percentage = $totalCount > 0 ? ($completedCount / $totalCount) * 100 : 0;
+                        @endphp
+                        <div id="progress-bar"
+                             class="h-full bg-gradient-to-r from-pink-500 to-pink-400 rounded-full transition-all duration-300"
+                             style="width: {{ $percentage }}%"
+                             data-initial-percentage="{{ $percentage }}"
+                        ></div>
                     </div>
-                    <span class="text-pink-900 font-medium">0/10</span>
+                    <span id="progress-text"
+                          class="text-pink-900 font-medium"
+                          data-completed="{{ $completedCount }}"
+                          data-total="{{ $totalCount }}"
+                    >{{ $completedCount }}/{{ $totalCount }}</span>
                 </div>
             </div>
         </div>
@@ -56,14 +69,22 @@
                                 <span class="text-xl">💧</span>
                                 <span class="text-pink-900">{{$checkin->title  }}</span>
                             </div>
-                            <input type="checkbox" class="w-6 h-6 rounded-full accent-pink-400">
+                                                        <button
+                                type="button"
+                                data-id="{{ $checkin->id }}"
+                                data-completed="{{ $checkin->isComplete }}"
+                                class="complete-btn text-white font-semibold px-4 py-2 rounded transition {{ $checkin->isComplete ? 'bg-green-500 hover:bg-green-600' : 'bg-pink-500 hover:bg-pink-600' }}"
+                                {{ $checkin->isComplete ? 'disabled' : '' }}
+                            >
+                                {{ $checkin->isComplete ? 'Completed' : 'Not Done' }}
+                            </button>
                         </label>
                     @endforeach
                 </div>
             </div>
 
             <!-- Mindfulness Check -->
-            <div class="bg-white rounded-2xl shadow p-6">
+            <!-- <div class="bg-white rounded-2xl shadow p-6">
                 <div class="font-bold text-pink-900 mb-4 text-lg flex items-center gap-2">
                     <span class="material-icons text-pink-400">self_improvement</span>
                     Mindfulness Check
@@ -81,7 +102,7 @@
                     @endforeach
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <!-- Add Custom Check-in -->
         <div class="bg-pink-50 rounded-2xl shadow p-6">
@@ -102,4 +123,80 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const completeButtons = document.querySelectorAll('.complete-btn');
+    const progressBar = document.getElementById('progress-bar');
+    const progressText = document.getElementById('progress-text');
+    const token = document.querySelector('meta[name="csrf-token"]')?.content;
+
+    let completedCount = parseInt(progressText.dataset.completed);
+    let totalCount = parseInt(progressText.dataset.total);
+
+    if (!token) {
+        console.error('CSRF token not found');
+    }
+
+    function setButtonComplete(button) {
+        button.classList.remove('bg-pink-500', 'hover:bg-pink-600');
+        button.classList.add('bg-green-500', 'hover:bg-green-600');
+        button.textContent = 'Completed';
+        button.disabled = true;
+        button.dataset.completed = 'true';
+        completedCount++;
+        updateProgress();
+    }
+
+    function updateProgress() {
+        if (progressBar && progressText) {
+            const percentage = Math.round((completedCount / totalCount) * 100);
+            progressBar.style.width = `${percentage}%`;
+            progressText.textContent = `${completedCount}/${totalCount}`;
+        }
+    }
+
+    // Add click handlers
+    completeButtons.forEach(button => {
+        button.addEventListener('click', async function(e) {
+            e.preventDefault();
+
+            // Prevent double-clicking
+            if (this.disabled) return;
+
+            const checkInId = this.dataset.id;
+
+            try {
+                // Disable button during request
+                this.disabled = true;
+
+                const response = await fetch(`/checkins/${checkInId}/complete`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': token,
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'same-origin'
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    setButtonComplete(this);
+                } else {
+                    // Re-enable button if request failed
+                    this.disabled = false;
+                }
+            } catch (error) {
+                console.error('Error completing check-in:', error);
+                // Re-enable button if request failed
+                this.disabled = false;
+            }
+        });
+    });
+});
+</script>
+@endpush
 

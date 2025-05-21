@@ -13,13 +13,17 @@ class Stampcard extends Model
 
     protected $primary_key = "user_id";
 
-    protected $fillable = ['user_id'];
+    protected $fillable = [
+        'user_id',
+    ];
 
-    public function dailyCheckins() : HasMany{
+    public function dailyCheckIns(): HasMany
+    {
         return $this->hasMany(DailyCheckIn::class);
     }
 
-    public function user() : BelongsTo {
-        return $this->belongsTo(User::class, 'user_id');
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }
