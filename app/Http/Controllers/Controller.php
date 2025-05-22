@@ -133,6 +133,9 @@ class Controller extends BaseController
             'xp' => 'required|integer|min:10|max:1000'
         ]);
 
+        // In a real application, you would save to database here
+        // For now, we'll just redirect back to the goals page
+
         return redirect()->route('goals')->with('success', 'Goal added successfully!');
     }
 }

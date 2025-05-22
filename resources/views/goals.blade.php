@@ -24,7 +24,7 @@
         @endif
 
         <!-- New Goal Form (Hidden by default) -->
-        <div id="goalForm" class="hidden mb-8 bg-white rounded-xl shadow-md overflow-hidden">
+        <div id="goalForm" class="hidden mb-10 bg-white rounded-xl shadow-md overflow-hidden">
             <div class="p-6">
                 <form action="{{ route('goals.store') }}" method="POST">
                     @csrf
