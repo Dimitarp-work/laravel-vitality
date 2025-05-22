@@ -203,38 +203,41 @@ class ChallengeController extends Controller
 
     public function logProgress(Request $request, Challenge $challenge)
     {
-        $user = auth()->user();
+        $user = auth()->user(); // get the currently logged-in user
 
-        // check if user joined the challenge
+        // try to get the pivot row between the user and this challenge
         $pivot = $user->joinedChallenges()
-            ->where('challenge_id', $challenge->id)
-            ->first()
-            ?->pivot;
+            ->where('challenge_id', $challenge->id) // filter only for this challenge
+            ->first() // get the first result (should only be one anyway)
+            ?->pivot; // get the pivot data (extra fields like days_completed)
 
         if (!$pivot) {
+            // user hasn't joined this challenge (this is just a protective measure, shouldnt happen)
             return back()->withErrors('You must join the challenge first.');
         }
 
-        // prevent logging more than once per day
+        // stop the user from logging more than once per calendar day
         if ($pivot->updated_at->isToday()) {
             return back()->withErrors('You already logged your progress today.');
         }
 
-        // prevent going over the duration
+        // stop the user if they've already completed the challenge
         if ($pivot->days_completed >= $challenge->duration_days) {
             return back()->withErrors('Challenge already completed.');
         }
 
-        // increment day
+        // if all checks pass, increase the number of days completed by 1
         $pivot->days_completed++;
 
-        // mark as completed if goal is reached
+        // if this was the final day, mark the challenge as completed for this user
         if ($pivot->days_completed >= $challenge->duration_days) {
             $pivot->completed = true;
         }
 
+        // save the updated pivot data (days_completed and possibly completed)
         $pivot->save();
 
+        // send success message back to the user
         return back()->with('success', 'Progress logged successfully!');
     }
-}
+
