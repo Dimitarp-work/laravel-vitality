@@ -46,11 +46,12 @@ Route::get('/challenges',  [Controller::class, 'challenges'])->name('challenges'
 //Route::get('/checkins', [DailyCheckInController::class,'checkins'])->name('checkins');
 
 // Check-in routes
-Route::get('/checkins/week', [DailyCheckInController::class, 'week'])->name('checkins.week');
-Route::get('/checkins/reminders', [DailyCheckInController::class, 'reminders'])->name('checkins.reminders');
-Route::post('/checkins/{dailyCheckIn}/complete', [DailyCheckInController::class, 'complete'])->name('checkins.complete');
-Route::resource('/checkins', DailyCheckInController::class);
-
+Route::middleware('auth')->group(function () {
+    Route::get('/checkins/reminders', [DailyCheckInController::class, 'reminders'])->name('checkins.reminders');
+    Route::post('/checkins/{dailyCheckIn}/complete', [DailyCheckInController::class, 'complete'])->name('checkins.complete');
+    Route::get('/checkins/week', [DailyCheckInController::class, 'week'])->name('checkins.week');
+    Route::resource('/checkins', DailyCheckInController::class);
+});
 // Admin Routes
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
