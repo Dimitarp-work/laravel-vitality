@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\DailyCheckIn;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class DailyCheckInController extends Controller
 {
@@ -12,7 +14,29 @@ class DailyCheckInController extends Controller
      */
     public function index()
     {
-       return view('checkins.index');
+        $userId = Auth::id();
+        $today = Carbon::today();
+
+        // Get today's check-ins
+        $checkins = DailyCheckIn::where('stampcard_id', $userId)
+            ->whereDate('created_at', $today)
+            ->select('id', 'title', 'isComplete')
+            ->get();
+
+        // If no check-ins exist for today, create new ones using factory
+        if ($checkins->isEmpty()) {
+            // Create 4 check-ins using the factory
+        DailyCheckIn::factory(4)->create([
+            'stampcard_id' => $userId,
+        ]);
+        }
+
+        return view('checkins.index', [
+            'checkins' => DailyCheckIn::where('stampcard_id', $userId)
+                ->whereDate('created_at', $today)
+                ->select('id', 'title', 'isComplete')
+                ->get()
+        ]);
     }
 
     /**
@@ -44,7 +68,29 @@ class DailyCheckInController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $request->validate([
+                'title' => 'required|string|max:255'
+            ]);
+
+            $checkin = DailyCheckIn::create([
+                'title' => $request->title,
+                'description' => 'Custom check-in',
+                'isComplete' => false,
+                'stampcard_id' => Auth::id()
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Check-in created successfully',
+                'checkin' => $checkin
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to create check-in: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -77,5 +123,26 @@ class DailyCheckInController extends Controller
     public function destroy(DailyCheckIn $dailyCheckIn)
     {
         //
+    }
+
+    /**
+     * Mark a check-in as complete.
+     */
+    public function complete(DailyCheckIn $dailyCheckIn)
+    {
+        $userId = Auth::id();
+        if ($dailyCheckIn->stampcard_id !== $userId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized'
+            ], 403);
+        }
+
+        $dailyCheckIn->update(['isComplete' => true]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Check-in completed successfully'
+        ]);
     }
 }

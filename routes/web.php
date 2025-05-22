@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\MoodController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,7 +38,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/settings',  [Controller::class, 'settings'])->name('settings');
-Route::get('leaderboard',  [Controller::class, 'leaderboard'])->name('leaderboard');
+Route::get('/leaderboard', [Controller::class, 'leaderboard']) ->name('leaderboard');
 Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
 Route::get('/articles/{article}', [ArticleController::class, 'show'])->name('articles.show');
 Route::get('/diary', function () {
@@ -62,11 +63,16 @@ Route::middleware(['auth'])->group(function () {
 // Check-in routes
 Route::get('/checkins/week', [DailyCheckInController::class, 'week'])->name('checkins.week');
 Route::get('/checkins/reminders', [DailyCheckInController::class, 'reminders'])->name('checkins.reminders');
+Route::post('/checkins/{dailyCheckIn}/complete', [DailyCheckInController::class, 'complete'])->name('checkins.complete');
 Route::resource('/checkins', DailyCheckInController::class);
 
 // Admin Routes
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
+
+// Mood routes
+Route::middleware(['auth'])->post('/mood', [MoodController::class, 'store'])->name('mood.store');
+Route::middleware(['auth'])->get('/mood/week', [MoodController::class, 'week'])->name('mood.week');
 
 require __DIR__.'/auth.php';

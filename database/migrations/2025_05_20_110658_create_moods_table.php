@@ -11,8 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('daily_check_ins', function (Blueprint $table) {
+        Schema::create('moods', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('mood');
+            $table->string('message');
+            $table->date('date');
             $table->timestamps();
         });
     }
@@ -22,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('daily_check_ins');
+        Schema::dropIfExists('moods');
     }
 };
