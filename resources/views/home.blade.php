@@ -35,7 +35,7 @@
                 <!-- How are you feeling? -->
                 <div class="bg-white rounded-2xl shadow p-6 flex flex-col items-center min-h-[220px]" id="mood-widget">
                     <div class="font-bold text-pink-900 mb-2 text-lg flex items-center gap-2">
-                        <span class="material-icons text-pink-400">mood</span>How are you feeling Today?
+                        <span class="material-icons text-pink-400">mood</span>How are you feeling today?
                     </div>
                     <!-- Emoji Mood Selector -->
                     <form id="mood-form" class="flex flex-col items-center w-full">
@@ -226,10 +226,49 @@
                     none: '<span class="text-gray-400">?</span>'
                 };
                 const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-                // Helper: get today as day string
+                // Get today as day string
                 function getTodayDay() {
                     const jsDay = new Date().getDay();
                     return days[(jsDay + 6) % 7];
+                }
+                // Render a single day mood cell
+                function renderDayMood(day, mood, isToday) {
+                    const moodEmoji = moodEmojis[mood] || moodEmojis['none'];
+                    const highlight = isToday && mood !== 'none' ? 'ring-4 ring-pink-300 bg-pink-100 shadow-md scale-110 transition-all duration-200' : '';
+                    const highlightNone = isToday && mood === 'none' ? 'ring-2 ring-pink-200 bg-white scale-110 transition-all duration-200' : '';
+                    const dayLabel = `<span class="text-xs mt-1 ${isToday ? 'font-bold text-pink-700' : ''}">${day}</span>`;
+                    return `
+                        <div class="flex flex-col items-center min-w-[40px]">
+                            <span class="text-3xl w-10 h-10 flex items-center justify-center rounded-full mt-2 ${highlight} ${highlightNone}">
+                                ${moodEmoji}
+                            </span>
+                            ${dayLabel}
+                        </div>
+                    `;
+                }
+                // Set mood selector state
+                function setMoodSelectorState(mood) {
+                    // Set the radio button as checked
+                    const radio = form.querySelector(`input[name='mood'][value='${mood}']`);
+                    if (!radio) return;
+                    radio.checked = true;
+                    // Highlight the emoji
+                    form.querySelectorAll('label span').forEach(span => {
+                        selectedClasses.forEach(cls => span.classList.remove(cls));
+                    });
+                    selectedClasses.forEach(cls => radio.nextElementSibling.classList.add(cls));
+                    // Highlight the label
+                    moodLabels.forEach(label => {
+                        selectedLabelClasses.forEach(cls => label.classList.remove(cls));
+                    });
+                    const selectedLabel = form.querySelector(`[data-mood='${mood}']`);
+                    if (selectedLabel) {
+                        selectedLabelClasses.forEach(cls => selectedLabel.classList.add(cls));
+                    }
+                }
+                // Set supportive message
+                function setSupportiveMessage(message) {
+                    messageDiv.textContent = message || '';
                 }
                 // Render week moods
                 function renderWeekMoods(data) {
@@ -241,94 +280,50 @@
                     days.forEach(day => {
                         const mood = moods[day] || 'none';
                         const isToday = day === today;
-                        weekMoodsDiv.innerHTML += `
-                    <div class="flex flex-col items-center min-w-[40px]">
-                        <span class="text-3xl w-10 h-10 flex items-center justify-center rounded-full mt-2 ${isToday && mood !== 'none' ? 'ring-4 ring-pink-300 bg-pink-100 shadow-md scale-110 transition-all duration-200' : ''} ${isToday && mood === 'none' ? 'ring-2 ring-pink-200 bg-white scale-110 transition-all duration-200' : ''}">
-                            ${moodEmojis[mood] || moodEmojis['none']}
-                        </span>
-                        <span class="text-xs mt-1 ${isToday ? 'font-bold text-pink-700' : ''}">${day}</span>
-                    </div>
-                `;
+                        weekMoodsDiv.innerHTML += renderDayMood(day, mood, isToday);
                     });
-                    // --- Set the selected mood in the mood selector if today has a mood ---
-                    if (todaysMood) {
-                        // Set the radio button as checked
-                        const radio = form.querySelector(`input[name='mood'][value='${todaysMood}']`);
-                        if (radio) {
-                            radio.checked = true;
-                            // Highlight the emoji
-                            form.querySelectorAll('label span').forEach(span => {
-                                selectedClasses.forEach(cls => span.classList.remove(cls));
-                            });
-                            selectedClasses.forEach(cls => radio.nextElementSibling.classList.add(cls));
-                            // Highlight the label
-                            moodLabels.forEach(label => {
-                                selectedLabelClasses.forEach(cls => label.classList.remove(cls));
-                            });
-                            const selectedLabel = form.querySelector(`[data-mood='${todaysMood}']`);
-                            if (selectedLabel) {
-                                selectedLabelClasses.forEach(cls => selectedLabel.classList.add(cls));
-                            }
-                        }
-                    }
-                    // --- Set the supportive message for today if it exists ---
-                    if (todayMessage) {
-                        messageDiv.textContent = todayMessage;
-                    } else {
-                        messageDiv.textContent = '';
-                    }
+                    // Set the selected mood in the mood selector if today has a mood
+                    if (todaysMood) setMoodSelectorState(todaysMood);
+                    // Set the supportive message for today if it exists
+                    setSupportiveMessage(todayMessage);
+                }
+                function parseResponse(response) {
+                    return response.json();
                 }
                 // Fetch and render week moods
                 function fetchWeekMoods() {
                     fetch("{{ route('mood.week') }}")
-                        .then(res => res.json())
+                        .then(parseResponse)
                         .then(renderWeekMoods);
                 }
                 // Initial load
                 fetchWeekMoods();
                 // Listen for mood selection
-                form.addEventListener('change', function (e) {
-                    if (e.target.name === 'mood') {
-                        // Send AJAX POST request to /mood
-                        fetch("{{ route('mood.store') }}", {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                'Accept': 'application/json',
-                            },
-                            body: JSON.stringify({ mood: e.target.value })
+                form.addEventListener('change', function(e) {
+                    if (e.target.name !== 'mood') return;
+                    // Send AJAX POST request to /mood
+                    fetch("{{ route('mood.store') }}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json',
+                        },
+                        body: JSON.stringify({ mood: e.target.value })
+                    })
+                        .then(parseResponse)
+                        .then(data => {
+                            if (!data.success) {
+                                setSupportiveMessage('Something went wrong. Please try again.');
+                                return;
+                            }
+                            setSupportiveMessage(data.message);
+                            setMoodSelectorState(e.target.value);
+                            fetchWeekMoods();
                         })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.success) {
-                                    messageDiv.textContent = data.message;
-                                    // Remove highlight from all emojis
-                                    form.querySelectorAll('label span').forEach(span => {
-                                        selectedClasses.forEach(cls => span.classList.remove(cls));
-                                    });
-                                    // Add highlight to selected emoji
-                                    selectedClasses.forEach(cls => e.target.nextElementSibling.classList.add(cls));
-                                    // Remove highlight from all mood labels
-                                    moodLabels.forEach(label => {
-                                        selectedLabelClasses.forEach(cls => label.classList.remove(cls));
-                                    });
-                                    // Add highlight to the selected mood label
-                                    const selectedMood = e.target.value;
-                                    const selectedLabel = form.querySelector(`[data-mood='${selectedMood}']`);
-                                    if (selectedLabel) {
-                                        selectedLabelClasses.forEach(cls => selectedLabel.classList.add(cls));
-                                    }
-                                    // Update week moods after mood selection
-                                    fetchWeekMoods();
-                                } else {
-                                    messageDiv.textContent = 'Something went wrong. Please try again.';
-                                }
-                            })
-                            .catch(() => {
-                                messageDiv.textContent = 'Could not connect to the server.';
-                            });
-                    }
+                        .catch(() => {
+                            setSupportiveMessage('Could not connect to the server.');
+                        });
                 });
             });
         </script>
