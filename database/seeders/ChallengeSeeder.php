@@ -1,7 +1,6 @@
 <?php
 
-namespace Database\Seeders;
-
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -9,20 +8,17 @@ class ChallengeSeeder extends Seeder
 {
     public function run(): void
     {
-        DB::table('challenges')->insert([
+        $challenges = [
             [
                 'title' => '7-Day Mindfulness',
                 'description' => 'Practice mindfulness for 7 consecutive days',
                 'category' => 'Mindfulness',
                 'difficulty' => 'Beginner',
                 'duration_days' => 7,
-                'participants' => 128,
                 'badge_id' => 'mindfulness-master',
                 'xp_reward' => 100,
-                'status' => 'available',
-                'progress' => null,
-                'days_completed' => null,
-                'total_days' => null,
+                'start_date' => now()->addDays(3),
+                'creator_id' => 1,
             ],
             [
                 'title' => 'Hydration Hero',
@@ -30,13 +26,10 @@ class ChallengeSeeder extends Seeder
                 'category' => 'Hydration',
                 'difficulty' => 'Intermediate',
                 'duration_days' => 14,
-                'participants' => 85,
                 'badge_id' => 'hydration-champion',
                 'xp_reward' => 150,
-                'status' => 'active',
-                'progress' => 30,
-                'days_completed' => 4,
-                'total_days' => 14,
+                'start_date' => now()->subDays(2),
+                'creator_id' => 2,
             ],
             [
                 'title' => 'Digital Detox',
@@ -44,13 +37,10 @@ class ChallengeSeeder extends Seeder
                 'category' => 'Digital Wellness',
                 'difficulty' => 'Advanced',
                 'duration_days' => 21,
-                'participants' => 42,
                 'badge_id' => 'digital-balance',
                 'xp_reward' => 200,
-                'status' => 'completed',
-                'progress' => null,
-                'days_completed' => null,
-                'total_days' => null,
+                'start_date' => now()->subDays(30),
+                'creator_id' => 3,
             ],
             [
                 'title' => 'Gratitude Journey',
@@ -58,13 +48,10 @@ class ChallengeSeeder extends Seeder
                 'category' => 'Mindfulness',
                 'difficulty' => 'Beginner',
                 'duration_days' => 10,
-                'participants' => 156,
                 'badge_id' => 'gratitude-guide',
                 'xp_reward' => 125,
-                'status' => 'available',
-                'progress' => null,
-                'days_completed' => null,
-                'total_days' => null,
+                'start_date' => now()->addDays(1),
+                'creator_id' => 1,
             ],
             [
                 'title' => 'Movement Matters',
@@ -72,14 +59,21 @@ class ChallengeSeeder extends Seeder
                 'category' => 'Movement',
                 'difficulty' => 'Intermediate',
                 'duration_days' => 14,
-                'participants' => 98,
                 'badge_id' => 'movement-maven',
                 'xp_reward' => 175,
-                'status' => 'available',
-                'progress' => null,
-                'days_completed' => null,
-                'total_days' => null,
+                'start_date' => now()->addDays(2),
+                'creator_id' => 2,
             ],
-        ]);
+        ];
+
+        foreach ($challenges as &$challenge) {
+            $start = Carbon::parse($challenge['start_date']);
+
+            $challenge['status'] = now()->gt($start->copy()->addDays($challenge['duration_days']))
+                ? 'completed'
+                : (now()->gte($start) ? 'active' : 'available');
+        }
+
+        DB::table('challenges')->insert($challenges);
     }
 }

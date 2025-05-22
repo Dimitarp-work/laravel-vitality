@@ -65,13 +65,17 @@
                 <input type="text" name="badge_id" value="{{ old('badge_id') }}" maxlength="255" placeholder="e.g. hydration-hero" class="w-full px-4 py-2 border border-pink-200 rounded text-sm">
             </div>
 
-            {{-- Placeholder for friends --}}
+            {{-- Start Date --}}
             <div>
-                <label class="block text-sm font-semibold text-pink-800 mb-1">Select Friends to Join</label>
-                <div class="w-full px-4 py-2 border border-dashed border-pink-300 text-pink-400 text-sm rounded text-center">
-                    [Select friends → will implement later]
-                </div>
+                <label class="block text-sm font-semibold text-pink-800 mb-1">Start Date <span class="text-red-500">*</span></label>
+                <input type="date"
+                       name="start_date"
+                       value="{{ old('start_date', now()->addDay()->format('Y-m-d')) }}"
+                       required
+                       class="w-full px-4 py-2 border border-pink-200 rounded text-sm">
             </div>
+
+
 
             {{-- Submit --}}
             <div class="flex justify-end">

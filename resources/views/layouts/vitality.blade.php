@@ -73,7 +73,7 @@
 
 
                 <div>
-                    <div class="font-semibold text-lg text-pink-900">{{ Auth::user()->name }} {{ Auth::user()->surname }}</div>
+                    <div class="font-semibold text-lg text-pink-900">{{ Auth::user()->name }} </div>
                     <div class="text-xs text-pink-700">Wellness Seeker</div>
                 </div>
             </div>

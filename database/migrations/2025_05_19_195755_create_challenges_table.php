@@ -13,25 +13,32 @@ return new class extends Migration
     {
         Schema::create('challenges', function (Blueprint $table) {
             $table->id();
+
+            // basic info
             $table->string('title');
             $table->text('description')->nullable();
             $table->string('category')->nullable();
-            $table->enum('difficulty', ['Beginner', 'Intermediate', 'Advanced']);
-            $table->unsignedInteger('duration_days');
-            $table->unsignedInteger('participants')->default(0);
-            $table->string('badge_id')->nullable(); // This could be a foreign key if you later make a badges table
-            $table->unsignedInteger('xp_reward')->default(0);
-            $table->enum('status', ['available', 'active', 'completed'])->default('available');
-            $table->unsignedInteger('progress')->nullable();
-            $table->unsignedInteger('days_completed')->nullable();
-            $table->unsignedInteger('total_days')->nullable();
 
-            //Optional author
-            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
+            // difficulty + duration
+            $table->enum('difficulty', ['Beginner', 'Intermediate', 'Advanced']);
+            $table->unsignedInteger('duration_days'); // total length of challenge
+
+            // XP + badge (XP badge_id will be foreign key when we will have the tables)
+            $table->unsignedInteger('xp_reward')->default(0);
+            $table->string('badge_id')->nullable();
+
+            // challenge state
+            $table->enum('status', ['available', 'active', 'completed'])->default('available');
+            $table->date('start_date')->nullable(); // when the challenge starts
+
+            // foreign key for the creator (renaming to creator_id for clarity)
+            $table->foreignId('creator_id')->nullable()->constrained('users')->nullOnDelete();
+
 
             $table->timestamps();
         });
     }
+
 
 
     /**

@@ -6,6 +6,7 @@ use App\Models\Challenge;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
+/**This policy is added to policies in AuthServiceProvider*/
 class ChallengePolicy
 {
     /**
@@ -21,7 +22,8 @@ class ChallengePolicy
      */
     public function view(User $user, Challenge $challenge): bool
     {
-        //
+        // allow viewing if the user is a participant or the creator
+        return $challenge->participants->contains($user) || $challenge->creator_id === $user->id;
     }
 
     /**
@@ -29,7 +31,7 @@ class ChallengePolicy
      */
     public function create(User $user): bool
     {
-        //
+        return true; // any logged-in user can create challenges
     }
 
     /**
@@ -37,12 +39,12 @@ class ChallengePolicy
      */
     public function update(User $user, Challenge $challenge): bool
     {
-        return $challenge->user_id === $user->id;
+        return $challenge->creator_id === $user->id;
     }
 
     public function delete(User $user, Challenge $challenge): bool
     {
-        return $challenge->user_id === $user->id;
+        return $challenge->creator_id === $user->id;
     }
 
 
