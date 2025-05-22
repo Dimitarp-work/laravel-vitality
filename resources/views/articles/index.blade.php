@@ -40,7 +40,7 @@
         {{-- Articles + Trending Layout --}}
         <div class="flex flex-col lg:flex-row gap-8">
             {{-- Articles Section --}}
-            <div class="w-full lg:w-3/4">
+            <div class="w-full lg:w-2/3">
                 <div class="inline-grid grid-cols-2 auto-cols-max gap-3">
                     @foreach($articles as $article)
                         <div class="col-span-1 bg-white rounded-2xl shadow-lg p-6 w-full max-w-[300px]">
@@ -95,7 +95,7 @@
 
             {{-- Trending Sidebar --}}
             @if($trendingArticles->count() || $allTrendingArticles->count())
-                <div class="w-full lg:w-3/7 space-y-6">
+                <div class="w-full lg:w-1/3 space-y-6">
                     {{-- Trending This Week --}}
                     @if($trendingArticles->count())
                         <div class="bg-gray-100 border border-pink-200 rounded-lg p-4 shadow">
