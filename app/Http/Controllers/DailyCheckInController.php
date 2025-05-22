@@ -29,13 +29,14 @@ class DailyCheckInController extends Controller
         DailyCheckIn::factory(4)->create([
             'stampcard_id' => $userId,
         ]);
+        $checkins = DailyCheckIn::where('stampcard_id', $userId)
+                ->whereDate('created_at', $today)
+                ->select('id', 'title', 'isComplete')
+                ->get();
         }
 
         return view('checkins.index', [
-            'checkins' => DailyCheckIn::where('stampcard_id', $userId)
-                ->whereDate('created_at', $today)
-                ->select('id', 'title', 'isComplete')
-                ->get()
+            'checkins' => $checkins
         ]);
     }
 
