@@ -19,8 +19,9 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
-        Article::factory()->count(5)->create();
         $this->call([
+            TagSeeder::class,
+            ArticleSeeder::class,
             UserSeeder::class,
             ChallengeSeeder::class,
         ]);

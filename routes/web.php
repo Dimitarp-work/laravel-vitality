@@ -39,8 +39,7 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/settings',  [Controller::class, 'settings'])->name('settings');
 Route::get('/leaderboard', [Controller::class, 'leaderboard']) ->name('leaderboard');
-Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
-Route::get('/articles/{article}', [ArticleController::class, 'show'])->name('articles.show');
+Route::resource('/articles', ArticleController::class);
 Route::get('/diary', function () {
     return view('diary');
 })->name('diary');
