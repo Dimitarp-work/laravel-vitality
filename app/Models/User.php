@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -38,6 +37,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'xp',
+        'credits',
+        'level',
     ];
 
     /**
@@ -60,7 +62,15 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function stampcard(): HasOne{
-        return $this->hasOne(Stampcard::class, 'user_id','id');
+    public function stampcard(): HasOne
+    {
+        return $this->hasOne(Stampcard::class, 'user_id', 'id');
     }
+
+    public function xpLogs()
+    {
+        return $this->hasMany(XPLog::class);
+    }
+
+
 }

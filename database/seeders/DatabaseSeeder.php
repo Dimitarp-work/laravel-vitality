@@ -24,5 +24,14 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             ChallengeSeeder::class,
         ]);
+
+        \App\Models\User::factory()->create([
+    'name' => 'Admin User',
+    'email' => 'admin@example.com',
+    'password' => bcrypt('password'),
+    'xp' => 100,
+    'credits' => 500,
+    'level' => 5,
+]);
     }
 }
