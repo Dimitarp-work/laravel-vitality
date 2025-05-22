@@ -8,81 +8,46 @@ use App\Models\User;
 use App\Models\XPLog;
 use App\Services\XPService;
 
-class UserTest extends TestCase
-{
-    use RefreshDatabase;
-
-    public function test_add_xp_increases_xp_and_logs()
-    {
-        $user = User::factory()->create(['xp' => 0]);
-        $user->addXP(100, 'Test Reason');
-
-        $this->assertEquals(100, $user->fresh()->xp);
-        $this->assertDatabaseHas('xp_logs', [
-            'user_id' => $user->id,
-            'xp_change' => 100,
-            'credit_change' => 0,
-            'reason' => 'Test Reason'
-        ]);
-    }
-
-    public function test_add_credits_increases_credits_and_logs()
-    {
-        $user = User::factory()->create(['credits' => 0]);
-        $user->addCredits(200, 'Test Credits');
-
-        $this->assertEquals(200, $user->fresh()->credits);
-        $this->assertDatabaseHas('xp_logs', [
-            'user_id' => $user->id,
-            'xp_change' => 0,
-            'credit_change' => 200,
-            'reason' => 'Test Credits'
-        ]);
-    }
-}
-
 class XPServiceTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_service_add_xp()
+    public function test_reward_adds_xp_and_credits_and_logs()
     {
-        $user = User::factory()->create(['xp' => 0]);
+        $user = User::factory()->create(['xp' => 0, 'credits' => 0]);
         $service = new XPService();
-        $service->addXP($user, 75, 'XP via Service');
 
-        $this->assertEquals(75, $user->fresh()->xp);
+        $service->reward($user, 100, 250, 'Weekly Bonus');
+
+        $user->refresh();
+
+        $this->assertEquals(100, $user->xp);
+        $this->assertEquals(250, $user->credits);
+
         $this->assertDatabaseHas('xp_logs', [
-            'xp_change' => 75,
-            'credit_change' => 0,
-            'reason' => 'XP via Service'
+            'user_id' => $user->id,
+            'xp_change' => 100,
+            'credit_change' => 250,
+            'reason' => 'Weekly Bonus',
         ]);
     }
 
-    public function test_service_add_credits()
+    public function test_deduct_credits_decreases_balance_and_logs()
     {
-        $user = User::factory()->create(['credits' => 0]);
+        $user = User::factory()->create(['credits' => 500]);
         $service = new XPService();
-        $service->addCredits($user, 120, 'Credits via Service');
 
-        $this->assertEquals(120, $user->fresh()->credits);
+        $service->deductCredits($user, 150, 'Purchased Badge');
+
+        $user->refresh();
+
+        $this->assertEquals(350, $user->credits);
+
         $this->assertDatabaseHas('xp_logs', [
+            'user_id' => $user->id,
             'xp_change' => 0,
-            'credit_change' => 120,
-            'reason' => 'Credits via Service'
-        ]);
-    }
-
-    public function test_service_deduct_credits()
-    {
-        $user = User::factory()->create(['credits' => 300]);
-        $service = new XPService();
-        $service->deductCredits($user, 100, 'Used Credits');
-
-        $this->assertEquals(200, $user->fresh()->credits);
-        $this->assertDatabaseHas('xp_logs', [
-            'credit_change' => -100,
-            'reason' => 'Used Credits'
+            'credit_change' => -150,
+            'reason' => 'Purchased Badge',
         ]);
     }
 }

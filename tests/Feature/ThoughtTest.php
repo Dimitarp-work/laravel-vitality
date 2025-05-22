@@ -19,7 +19,7 @@ class ThoughtTest extends TestCase
             'thought' => 'This is a test thought.'
         ]);
 
-        $response->assertRedirect(); // Or assertStatus(302) if you don't have redirect target
+        $response->assertRedirect(); 
 
         $user->refresh();
 
