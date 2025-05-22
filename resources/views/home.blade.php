@@ -124,16 +124,20 @@
             </div>
             <div class="flex flex-col gap-8">
                 <!-- A thought to capture? -->
-                <div class="bg-white rounded-2xl shadow p-6 flex flex-col">
-                    <div class="font-bold text-pink-900 mb-2 text-lg flex items-center gap-2"><span
-                            class="material-icons text-pink-400">edit</span>A thought to capture?</div>
-                    <textarea
-                        class="border border-pink-200 rounded-lg p-2 mb-3 resize-none focus:ring-2 focus:ring-pink-300 text-sm"
-                        rows="2" placeholder="Write anything that comes to mind..."></textarea>
-                    <button
-                        class="bg-pink-400 hover:bg-pink-500 text-white rounded-lg px-5 py-1.5 font-semibold w-24 ml-auto transition text-sm"
-                        aria-label="Save thought">Save</button>
-                </div>
+            <form method="POST" action="{{ route('thought.store') }}">
+    @csrf
+    <div class="bg-white rounded-2xl shadow p-6 flex flex-col">
+        <div class="font-bold text-pink-900 mb-2 text-lg flex items-center gap-2">
+            <span class="material-icons text-pink-400">edit</span>
+            A thought to capture?
+        </div>
+
+        <textarea name="thought" required class="border border-pink-200 rounded-lg p-2 mb-3 resize-none focus:ring-2 focus:ring-pink-300 text-sm" rows="2" placeholder="Write anything that comes to mind..."></textarea>
+        <button type="submit" class="bg-pink-400 hover:bg-pink-500 text-white rounded-lg px-5 py-1.5 font-semibold w-24 ml-auto transition text-sm" aria-label="Save thought">
+            Save
+        </button>
+    </div>
+</form>
                 <!-- Gentle Reminders -->
                 <div class="bg-white rounded-2xl shadow p-6 flex flex-col">
                     <div class="font-bold text-pink-900 mb-2 text-lg flex items-center gap-2"><span
@@ -191,9 +195,8 @@
                     </div>
                     <button class="text-pink-500 text-xs font-semibold ml-auto hover:underline"
                         aria-label="View all badges">View All Badges</button>
-                </div>
-            </div>
-        </div>
+        <div class="flex flex-col gap-8">
+
         <!-- Your Week in Feelings -->
         <div class="bg-gradient-to-r from-pink-200 to-pink-100 rounded-2xl shadow p-8 w-full mt-2">
             <div class="font-bold text-pink-900 mb-3 text-lg flex items-center gap-2"><span
