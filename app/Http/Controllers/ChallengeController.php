@@ -123,7 +123,6 @@ class ChallengeController extends Controller
     }
 
 
-
     /**
      * Display the specified resource.
      */
@@ -167,7 +166,6 @@ class ChallengeController extends Controller
 
         return redirect()->route('challenges.index')->with('success', 'Challenge updated successfully.');
     }
-
 
 
     /**
@@ -241,3 +239,4 @@ class ChallengeController extends Controller
         return back()->with('success', 'Progress logged successfully!');
     }
 
+}
