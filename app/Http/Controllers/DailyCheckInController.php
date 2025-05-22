@@ -71,7 +71,7 @@ class DailyCheckInController extends Controller
     {
         try {
             $request->validate([
-                'title' => 'required|string|max:255'
+                'title' => 'required|string|max:30'
             ]);
 
             $checkin = DailyCheckIn::create([

@@ -64,9 +64,8 @@
                 </div>
                 <div class="space-y-4">
                     @foreach($checkins as $checkin)
-                        <label class="group flex items-center justify-between p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all cursor-pointer">
+                        <label class="group flex items-center justify-between p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all">
                             <div class="flex items-center gap-3">
-                                <span class="text-xl">💧</span>
                                 <span class="text-pink-900">{{$checkin->title  }}</span>
                             </div>
                                                         <button
