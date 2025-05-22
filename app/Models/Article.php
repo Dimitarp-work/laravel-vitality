@@ -9,5 +9,10 @@ class Article extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'content'];
+    protected $fillable = ['title', 'content', 'image', 'views'];
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
+    }
 }

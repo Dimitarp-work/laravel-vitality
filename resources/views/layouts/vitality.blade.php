@@ -115,8 +115,9 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#"
-                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition text-pink-900 hover:bg-pink-100">
+                        <a href="{{ route('articles.index') }}"
+                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
+                            {{ request()->routeIs('articles.index') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
                             <span class="material-icons">article</span> Articles
                         </a>
                     </li>
