@@ -3,32 +3,45 @@
 @section('title', 'Home')
 
 @section('content')
-    <div class="w-full max-w-6xl mx-auto flex flex-col gap-8">
-        <!-- User summary card -->
-        <div
-            class="w-full bg-gradient-to-r from-pink-200 to-pink-100 rounded-2xl shadow p-6 flex flex-col md:flex-row items-center gap-6">
-            <div class="flex items-center gap-4 flex-1">
-                <div
-                    class="w-16 h-16 rounded-full bg-pink-300 flex items-center justify-center text-3xl font-bold text-white">
-                    {{ strtoupper(substr(explode(' ', Auth::user()->name)[0] ?? '', 0, 1) . substr(explode(' ', Auth::user()->name)[1] ?? '', 0, 1)) }}
-                </div>
-                <div>
-                    <div class="font-semibold text-xl text-pink-900">{{ Auth::user()->name }}<span
-                            class="ml-2 text-xs bg-pink-200 text-pink-700 rounded px-2 py-0.5">Wellness Seeker</span></div>
-                    <div class="flex items-center gap-2 mt-1">
-                        <span class="text-xs bg-pink-300 text-white rounded px-2 py-0.5">Level 5</span>
-                        <span class="text-xs text-pink-700">450 / 500 XP</span>
-                    </div>
-                    <div class="w-40 h-2 bg-pink-100 rounded-full overflow-hidden mt-2">
-                        <div class="h-full bg-pink-400 rounded-full" style="width: 90%"></div>
-                    </div>
-                </div>
+
+@php
+    $user = Auth::user();
+    $xp = $user->xp ?? 0;
+    $credits = $user->credits ?? 0;
+    $xpToNextLevel = 500;
+    $level = floor($xp / $xpToNextLevel) + 1;
+    $xpProgress = $xp % $xpToNextLevel;
+    $progressPercent = min(100, ($xpProgress / $xpToNextLevel) * 100);
+@endphp
+
+<div class="w-full max-w-6xl mx-auto flex flex-col gap-8">
+    <!-- User summary card -->
+    <div class="w-full bg-gradient-to-r from-pink-200 to-pink-100 rounded-2xl shadow p-6 flex flex-col md:flex-row items-center gap-6">
+        <div class="flex items-center gap-4 flex-1">
+            <div class="w-16 h-16 rounded-full bg-pink-300 flex items-center justify-center text-3xl font-bold text-white">
+                {{ strtoupper(substr(explode(' ', $user->name)[0] ?? '', 0, 1) . substr(explode(' ', $user->name)[1] ?? '', 0, 1)) }}
             </div>
-            <div class="flex flex-col items-end">
-                <span class="text-xs text-pink-700 font-semibold flex items-center gap-1"><span
-                        class="material-icons text-pink-400 text-base">monetization_on</span> 450 Credits</span>
+            <div>
+                <div class="font-semibold text-xl text-pink-900">
+                    {{ $user->name }}
+                    <span class="ml-2 text-xs bg-pink-200 text-pink-700 rounded px-2 py-0.5">Wellness Seeker</span>
+                </div>
+                <div class="flex items-center gap-2 mt-1">
+                    <span class="text-xs bg-pink-300 text-white rounded px-2 py-0.5" id="user-level">Level {{ $level }}</span>
+                    <span class="text-xs text-pink-700" id="user-xp-text">{{ $xpProgress }} / {{ $xpToNextLevel }} XP</span>
+                </div>
+                <div class="w-40 h-2 bg-pink-100 rounded-full overflow-hidden mt-2">
+                    <div id="xp-bar" class="h-full bg-pink-400 rounded-full transition-all duration-300 ease-in-out" style="width: {{ $progressPercent }}%"></div>
+                </div>
             </div>
         </div>
+        <div class="flex flex-col items-end">
+            <span class="text-xs text-pink-700 font-semibold flex items-center gap-1">
+                <span class="material-icons text-pink-400 text-base">monetization_on</span>
+                <span id="user-credits">{{ $credits }} Credits</span>
+            </span>
+        </div>
+    </div>
         <!-- Main grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div class="flex flex-col gap-8">
@@ -330,4 +343,48 @@
                 });
             });
         </script>
+        <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('thought-form');
+
+        form?.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+
+            fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json',
+                },
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    submitBtn.disabled = false;
+                    form.reset();
+
+                    if (data.xp !== undefined) {
+                        document.getElementById('user-xp-text').textContent = `${data.xp_progress} / ${data.xp_to_next} XP`;
+                        document.getElementById('user-level').textContent = `Level ${data.level}`;
+                        document.getElementById('xp-bar').style.width = `${data.progress_percent}%`;
+                    }
+
+                    if (data.credits !== undefined) {
+                        document.getElementById('user-credits').textContent = `${data.credits} Credits`;
+                    }
+
+                    alert(data.message || 'Thought saved!');
+                })
+                .catch(() => {
+                    submitBtn.disabled = false;
+                    alert('Something went wrong.');
+                });
+        });
+    });
+</script>
+
 @endsection

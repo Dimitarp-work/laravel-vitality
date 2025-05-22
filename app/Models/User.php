@@ -72,27 +72,5 @@ class User extends Authenticatable
         return $this->hasMany(XPLog::class);
     }
 
-    public function addXP($amount, $reason = null)
-    {
-        $this->increment('xp', $amount);
-        $this->save();
 
-        $this->xpLogs()->create([
-            'xp_change' => $amount,
-            'credit_change' => 0,
-            'reason' => $reason,
-        ]);
-    }
-
-    public function addCredits($amount, $reason = null)
-    {
-        $this->increment('credits', $amount);
-        $this->save();
-
-        $this->xpLogs()->create([
-            'xp_change' => 0,
-            'credit_change' => $amount,
-            'reason' => $reason,
-        ]);
-    }
 }
