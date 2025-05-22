@@ -49,11 +49,6 @@ class RegisteredUserController extends Controller
             'LLDate' => now()
         ]);
 
-        // Adds checkins to the newly created stampcard
-        DailyCheckIn::factory(4)->create([
-            'stampcard_id' => $stampcard->user_id,
-        ]);
-
         Auth::login($user);
 
         return redirect(RouteServiceProvider::HOME);

@@ -64,46 +64,25 @@
                 </div>
                 <div class="space-y-4">
                     @foreach($checkins as $checkin)
-                        <label class="group flex items-center justify-between p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all cursor-pointer">
-                            <div class="flex items-center gap-3">
-                                <span class="text-xl">💧</span>
-                                <span class="text-pink-900">{{$checkin->title  }}</span>
+                        <div class="group grid grid-cols-[1fr,120px] gap-4 p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all">
+                            <div class="min-w-0">
+                                <span class="text-pink-900 break-all">{{$checkin->title}}</span>
                             </div>
-                                                        <button
-                                type="button"
-                                data-id="{{ $checkin->id }}"
-                                data-completed="{{ $checkin->isComplete }}"
-                                class="complete-btn text-white font-semibold px-4 py-2 rounded transition {{ $checkin->isComplete ? 'bg-green-500 hover:bg-green-600' : 'bg-pink-500 hover:bg-pink-600' }}"
-                                {{ $checkin->isComplete ? 'disabled' : '' }}
-                            >
-                                {{ $checkin->isComplete ? 'Completed' : 'Not Done' }}
-                            </button>
-                        </label>
+                            <div class="flex justify-end">
+                                <button
+                                    type="button"
+                                    data-id="{{ $checkin->id }}"
+                                    data-completed="{{ $checkin->isComplete }}"
+                                    class="complete-btn whitespace-nowrap text-white font-semibold px-4 py-2 rounded transition {{ $checkin->isComplete ? 'bg-green-500 hover:bg-green-600' : 'bg-pink-500 hover:bg-pink-600' }}"
+                                    {{ $checkin->isComplete ? 'disabled' : '' }}
+                                >
+                                    {{ $checkin->isComplete ? 'Completed' : 'Not Done' }}
+                                </button>
+                            </div>
+                        </div>
                     @endforeach
                 </div>
             </div>
-
-            <!-- Mindfulness Check -->
-            <!-- <div class="bg-white rounded-2xl shadow p-6">
-                <div class="font-bold text-pink-900 mb-4 text-lg flex items-center gap-2">
-                    <span class="material-icons text-pink-400">self_improvement</span>
-                    Mindfulness Check
-                    <span class="ml-2 text-xs bg-pink-100 text-pink-700 rounded-full px-3 py-0.5">5 tasks</span>
-                </div>
-                <div class="space-y-4">
-                    @foreach($checkins as $checkin)
-                        <label class="group flex items-center justify-between p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all cursor-pointer">
-                            <div class="flex items-center gap-3">
-                                <span class="text-xl">💧</span>
-                                <span class="text-pink-900">{{$checkin->title  }}</span>
-                            </div>
-                            <input type="checkbox" class="w-6 h-6 rounded-full accent-pink-400">
-                        </label>
-                    @endforeach
-                </div>
-            </div>
-        </div> -->
-
         <!-- Add Custom Check-in -->
         <div class="bg-pink-50 rounded-2xl shadow p-6">
             <div class="font-bold text-pink-900 mb-4 text-lg flex items-center gap-2">

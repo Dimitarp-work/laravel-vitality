@@ -93,21 +93,22 @@ function createCompleteButtonHandler(button) {
 }
 
 function createNewCheckInElement(checkinData) {
-    const newCheckin = document.createElement('label');
-    newCheckin.className = 'group flex items-center justify-between p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all cursor-pointer';
+    const newCheckin = document.createElement('div');
+    newCheckin.className = 'group grid grid-cols-[1fr,120px] gap-4 p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all';
     newCheckin.innerHTML = `
-        <div class="flex items-center gap-3">
-            <span class="text-xl">💧</span>
-            <span class="text-pink-900">${checkinData.title}</span>
+        <div class="min-w-0">
+            <span class="text-pink-900 break-all">${checkinData.title}</span>
         </div>
-        <button
-            type="button"
-            data-id="${checkinData.id}"
-            data-completed="false"
-            class="complete-btn text-white font-semibold px-4 py-2 rounded transition bg-pink-500 hover:bg-pink-600"
-        >
-            Not Done
-        </button>
+        <div class="flex justify-end">
+            <button
+                type="button"
+                data-id="${checkinData.id}"
+                data-completed="false"
+                class="complete-btn whitespace-nowrap text-white font-semibold px-4 py-2 rounded transition bg-pink-500 hover:bg-pink-600"
+            >
+                Not Done
+            </button>
+        </div>
     `;
 
     const newButton = newCheckin.querySelector('.complete-btn');
