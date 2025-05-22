@@ -28,4 +28,5 @@ Route::get('/diary', function () {
     return view('diary');
 })->name('diary');
 Route::get('/challenges',  [Controller::class, 'challenges'])->name('challenges');
-Route::get('/goals', [Controller::class, 'goals'])->name('goals');
+Route::get('/goals',  [Controller::class, 'goals'])->name('goals');
+Route::post('/goals', [Controller::class, 'store'])->name('goals.store');

@@ -7,6 +7,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class Controller extends BaseController
 {
@@ -121,5 +122,17 @@ class Controller extends BaseController
                 ]
             ]
         ]);
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        $validatedData = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'emoji' => 'required|string|max:2',
+            'xp' => 'required|integer|min:10|max:1000'
+        ]);
+
+        return redirect()->route('goals')->with('success', 'Goal added successfully!');
     }
 }

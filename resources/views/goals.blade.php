@@ -7,12 +7,76 @@
         <!-- Header -->
         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
             <h1 class="text-2xl md:text-3xl font-bold text-pink-600">My Wellness Journey</h1>
-            <button class="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg self-start sm:self-auto flex items-center">
+            <button onclick="document.getElementById('goalForm').classList.toggle('hidden')"
+                    class="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg self-start sm:self-auto flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                 </svg>
                 Add New Goal
             </button>
+        </div>
+
+        <!-- Success Message -->
+        @if(session('success'))
+            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded">
+                <p>{{ session('success') }}</p>
+            </div>
+        @endif
+
+        <!-- New Goal Form (Hidden by default) -->
+        <div id="goalForm" class="hidden mb-8 bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="p-6">
+                <form action="{{ route('goals.store') }}" method="POST">
+                    @csrf
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Goal Title *</label>
+                        <input type="text" name="title" required value="{{ old('title') }}"
+                               class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 @error('title') border-red-500 @enderror">
+                        @error('title')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                        <textarea name="description" rows="3"
+                                  class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 @error('description') border-red-500 @enderror">{{ old('description') }}</textarea>
+                        @error('description')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Icon *</label>
+                            <input type="text" name="emoji" maxlength="2" placeholder="🏋️" value="{{ old('emoji') }}"
+                                   class="w-full px-4 py-2 border rounded-lg text-2xl h-[42px] text-center focus:ring-2 focus:ring-pink-500 @error('emoji') border-red-500 @enderror">
+                            @error('emoji')
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">XP Reward *</label>
+                            <input type="number" name="xp" min="10" max="1000" value="{{ old('xp', 50) }}"
+                                   class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500 @error('xp') border-red-500 @enderror">
+                            @error('xp')
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end gap-2">
+                        <button type="button" onclick="document.getElementById('goalForm').classList.add('hidden')"
+                                class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                class="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg flex items-center">
+                            Create Goal
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
 
         <!-- Tabs -->
@@ -46,8 +110,8 @@
                                                 <div class="flex justify-between items-center">
                                                     <span class="text-sm font-medium">Your journey: {{ $goal['progress'] }}%</span>
                                                     <span class="text-xs bg-pink-100 text-pink-600 px-2 py-0.5 rounded-full">
-                                            +{{ $goal['xp'] }} XP on completion
-                                        </span>
+                                                        +{{ $goal['xp'] }} XP on completion
+                                                    </span>
                                                 </div>
                                                 <div class="w-full bg-gray-100 rounded-full h-2 mt-1">
                                                     <div class="bg-pink-600 h-2 rounded-full" style="width: {{ $goal['progress'] }}%"></div>
@@ -94,12 +158,12 @@
                                         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-1">
                                             <h3 class="font-semibold text-lg">{{ $goal['title'] }}</h3>
                                             <div class="flex items-center gap-2">
-                                    <span class="text-xs bg-pink-100 text-pink-600 px-2 py-1 rounded-full">
-                                        Celebrated
-                                    </span>
+                                                <span class="text-xs bg-pink-100 text-pink-600 px-2 py-1 rounded-full">
+                                                    Celebrated
+                                                </span>
                                                 <span class="text-xs bg-green-100 text-green-600 px-2 py-1 rounded-full">
-                                        +{{ $goal['xp'] }} XP
-                                    </span>
+                                                    +{{ $goal['xp'] }} XP
+                                                </span>
                                             </div>
                                         </div>
                                         <p class="text-sm text-gray-500 mb-2">{{ $goal['description'] }}</p>
@@ -132,15 +196,15 @@
 
                                     @if($badge['earned'])
                                         <span class="text-xs text-green-600 flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                                Earned on {{ $badge['date'] }}
-                            </span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                            </svg>
+                                            Earned on {{ $badge['date'] }}
+                                        </span>
                                     @else
                                         <span class="text-xs text-gray-500">
-                                {{ $badge['progress'] }} of {{ $badge['maxProgress'] ?? 10 }} completed
-                            </span>
+                                            {{ $badge['progress'] }} of {{ $badge['maxProgress'] ?? 10 }} completed
+                                        </span>
                                     @endif
                                 </div>
                             </div>
