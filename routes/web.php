@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\GoalController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ArticleController;
@@ -28,5 +29,8 @@ Route::get('/diary', function () {
     return view('diary');
 })->name('diary');
 Route::get('/challenges',  [Controller::class, 'challenges'])->name('challenges');
-Route::get('/goals',  [Controller::class, 'goals'])->name('goals');
-Route::post('/goals', [Controller::class, 'store'])->name('goals.store');
+Route::get('/goals',  [GoalController::class, 'goals'])->name('goals');
+Route::post('/goals', [GoalController::class, 'store'])->name('goals.store');
+Route::put('/goals/{goal}', [GoalController::class, 'update'])->name('goals.update');
+Route::delete('/goals/{goal}', [GoalController::class, 'destroy'])->name('goals.destroy');;
+
