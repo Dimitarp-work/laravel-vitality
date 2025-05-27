@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Mood;
+use App\Services\GeminiService;
 
 class MoodController extends Controller
 {
@@ -58,16 +59,33 @@ class MoodController extends Controller
         $user = Auth::user();
         $today = now()->toDateString();
         $mood = $validated['mood'];
-
-        // Pick a random fallback message for the selected mood
-        $message = collect($this->fallbackMessages[$mood])->random();
-
-        // Get the user's first name (first word of their name)
         $firstName = explode(' ', trim($user->name))[0] ?? '';
-        // Insert the first name before the original punctuation (if any)
-        $punct = preg_match('/[.!?]$/', $message, $matches) ? $matches[0] : '';
-        $baseMessage = $punct ? mb_substr($message, 0, -1) : $message;
-        $messageWithName = $baseMessage . ', ' . $firstName . $punct;
+
+        // Get moods for this week (Mon-Sun)
+        $startOfWeek = now()->startOfWeek();
+        $days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        $weekMoods = [];
+        for ($i = 0; $i < 7; $i++) {
+            $date = $startOfWeek->copy()->addDays($i)->toDateString();
+            $entry = Mood::where('user_id', $user->id)->where('date', $date)->first();
+            $weekMoods[$days[$i]] = $entry->mood ?? null;
+        }
+
+        // Try Gemini first, fallback to template if it fails
+        $messageWithName = null;
+        try {
+            $gemini = new GeminiService();
+            $messageWithName = $gemini->generateSupportiveMessage($firstName, $mood, $weekMoods);
+        } catch (\Exception $e) {
+            \Log::error('Gemini API error: ' . $e->getMessage(), [
+                'exception' => $e,
+            ]);
+            // Fallback to random template
+            $message = collect($this->fallbackMessages[$mood])->random();
+            $punct = preg_match('/[.!?]$/', $message, $matches) ? $matches[0] : '';
+            $baseMessage = $punct ? mb_substr($message, 0, -1) : $message;
+            $messageWithName = $baseMessage . ', ' . $firstName . $punct;
+        }
 
         // Update or create the mood for today (so user can only have one mood per day)
         $moodEntry = Mood::updateOrCreate(
