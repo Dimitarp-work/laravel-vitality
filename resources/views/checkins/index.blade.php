@@ -98,7 +98,7 @@
             @if ($errors->has('title'))
                 <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative flex items-center gap-2">
                     <span class="material-icons text-red-500">error_outline</span>
-                    {{ $errors->first('title') }}
+                    {{ $errors->first('title') }}:
                 </div>
             @endif
             <form id="custom-checkin-form" class="flex gap-3" method="POST" action="{{ route('checkins.store') }}">
@@ -106,7 +106,7 @@
                 <input type="text"
                     id="custom-checkin-title"
                     name="title"
-                    placeholder="Type your custom check-in here..."
+                    placeholder="A short title for your check-in..."
                     class="flex-1 px-4 py-2.5 rounded-lg border border-pink-200 focus:ring-2 focus:ring-pink-300 text-sm @error('title') border-red-500 focus:ring-red-500 @enderror"
                     required
                     value="{{ old('title') }}"

@@ -4,7 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
-use Illuminate\Http\Exceptions\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -29,7 +29,7 @@ class Handler extends ExceptionHandler
         });
 
         // Handle 404 errors
-        $this->renderable(function (NotFoundHttpException $e) {
+        $this->renderable(function ( NotFoundHttpException $e) {
             if (request()->wantsJson()) {
                 return response()->json(['message' => 'Resource not found'], 404);
             }
