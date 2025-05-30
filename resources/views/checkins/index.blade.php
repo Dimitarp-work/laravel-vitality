@@ -1,5 +1,9 @@
 @extends('layouts.vitality')
 
+@php
+use App\Constants\CheckInConstants;
+@endphp
+
 @section('title', 'Daily Check-ins')
 
 @section('content')
@@ -101,19 +105,22 @@
                     {{ $errors->first('title') }}
                 </div>
             @endif
-            <form id="custom-checkin-form" class="flex gap-3" method="POST" action="{{ route('checkins.store') }}">
+            <form id="custom-checkin-form" class="flex flex-col gap-2" method="POST" action="{{ route('checkins.store') }}">
                 @csrf
-                <input type="text"
-                    id="custom-checkin-title"
-                    name="title"
-                    placeholder="Type your custom check-in here..."
-                    class="flex-1 px-4 py-2.5 rounded-lg border border-pink-200 focus:ring-2 focus:ring-pink-300 text-sm @error('title') border-red-500 focus:ring-red-500 @enderror"
-                    required
-                    value="{{ old('title') }}"
-                >
-                <button type="submit" class="bg-pink-400 hover:bg-pink-500 text-white rounded-lg px-5 py-1.5 font-semibold w-24 transition text-sm self-start">
-                    Add
-                </button>
+                <div class="flex gap-3">
+                    <input type="text"
+                        id="custom-checkin-title"
+                        name="title"
+                        placeholder="Write a short title..."
+                        class="flex-1 px-4 py-2.5 rounded-lg border border-pink-200 focus:ring-2 focus:ring-pink-300 text-sm @error('title') border-red-500 focus:ring-red-500 @enderror"
+                        required
+                        value="{{ old('title') }}"
+                    >
+                    <button type="submit" class="bg-pink-400 hover:bg-pink-500 text-white rounded-lg px-5 py-1.5 font-semibold w-24 transition text-sm self-start">
+                        Add
+                    </button>
+                </div>
+                <label for="custom-checkin-title" class="text-xs text-gray-500">Max {{ CheckInConstants::TITLE_MAX_LENGTH }} characters</label>
             </form>
         </div>
     </div>
@@ -121,5 +128,10 @@
 @endsection
 
 @push('scripts')
+    <script>
+        window.CheckInConstants = {
+            TITLE_MAX_LENGTH: {{ CheckInConstants::TITLE_MAX_LENGTH }}
+        };
+    </script>
     @vite(['resources/js/checkins.js'])
 @endpush

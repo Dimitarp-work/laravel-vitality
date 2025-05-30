@@ -170,49 +170,24 @@ function displayError(input, message) {
     // Add error class to input
     input.classList.add('border-red-500', 'focus:ring-red-500');
 
-    // Create error message element
-    const errorDiv = document.createElement('div');
-    errorDiv.className = 'error-message text-red-500 text-sm mt-1 flex items-center gap-1';
+    // Get the label element
+    const label = document.querySelector('label[for="custom-checkin-title"]');
 
-    // Add error icon
-    const icon = document.createElement('span');
-    icon.className = 'material-icons text-red-500 text-sm';
-    icon.textContent = 'error_outline';
-    errorDiv.appendChild(icon);
-
-    // Add error message
-    const messageSpan = document.createElement('span');
-    messageSpan.textContent = message;
-    errorDiv.appendChild(messageSpan);
-
-    // Get the form element
-    const form = input.closest('form');
-
-    // Create a wrapper div if it doesn't exist
-    let wrapper = form.querySelector('.input-wrapper');
-    if (!wrapper) {
-        wrapper = document.createElement('div');
-        wrapper.className = 'input-wrapper flex flex-col w-full';
-        input.parentElement.insertBefore(wrapper, input);
-        wrapper.appendChild(input);
-    }
-
-    // Insert error message after the input inside the wrapper
-    wrapper.appendChild(errorDiv);
+    // Update label with error message and styling
+    label.innerHTML = `<span class="material-icons text-red-500 text-sm">error_outline</span><span>${message}</span>`;
+    label.classList.remove('text-gray-500');
+    label.classList.add('text-red-500', 'flex', 'items-center', 'gap-1');
 }
 
 function clearErrors(input) {
     // Remove error class from input
     input.classList.remove('border-red-500', 'focus:ring-red-500');
 
-    // Remove existing error message if it exists
-    const wrapper = input.closest('.input-wrapper');
-    if (wrapper) {
-        const existingError = wrapper.querySelector('.error-message');
-        if (existingError) {
-            existingError.remove();
-        }
-    }
+    // Reset label to original state
+    const label = document.querySelector('label[for="custom-checkin-title"]');
+    label.textContent = `Max ${CheckInConstants.TITLE_MAX_LENGTH} characters`;
+    label.classList.remove('text-red-500', 'flex', 'items-center', 'gap-1');
+    label.classList.add('text-gray-500');
 }
 
 // init
