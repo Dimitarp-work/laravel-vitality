@@ -82,11 +82,11 @@ class DailyCheckInController extends Controller
             ]);
 
             if ($request->wantsJson()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Check-in created successfully',
-                    'checkin' => $checkin
-                ]);
+            return response()->json([
+                'success' => true,
+                'message' => 'Check-in created successfully',
+                'checkin' => $checkin
+            ]);
             }
 
             return redirect()->route('checkins.index')
@@ -94,8 +94,8 @@ class DailyCheckInController extends Controller
 
         } catch (\Exception $e) {
             if ($request->wantsJson()) {
-                return response()->json([
-                    'success' => false,
+            return response()->json([
+                'success' => false,
                     'message' => $e->getMessage()
                 ], $e instanceof \Illuminate\Validation\ValidationException ? 422 : 500);
             }

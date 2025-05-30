@@ -69,15 +69,15 @@
                                 <span class="text-pink-900 break-all">{{$checkin->title}}</span>
                             </div>
                             <div class="flex justify-end">
-                                <button
-                                    type="button"
-                                    data-id="{{ $checkin->id }}"
-                                    data-completed="{{ $checkin->isComplete }}"
+                                                        <button
+                                type="button"
+                                data-id="{{ $checkin->id }}"
+                                data-completed="{{ $checkin->isComplete }}"
                                     class="complete-btn whitespace-nowrap text-white font-semibold px-4 py-2 rounded transition {{ $checkin->isComplete ? 'bg-green-500 hover:bg-green-600' : 'bg-pink-500 hover:bg-pink-600' }}"
-                                    {{ $checkin->isComplete ? 'disabled' : '' }}
-                                >
-                                    {{ $checkin->isComplete ? 'Completed' : 'Not Done' }}
-                                </button>
+                                {{ $checkin->isComplete ? 'disabled' : '' }}
+                            >
+                                {{ $checkin->isComplete ? 'Completed' : 'Not Done' }}
+                            </button>
                             </div>
                         </div>
                     @endforeach
