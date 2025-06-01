@@ -20,7 +20,9 @@ use App\Http\Controllers\MoodController;
 |
 */
 Route::redirect('/', '/login');
-
+Route::get('/trigger-500', function () {
+    abort(500);
+});
 
 Route::get('/login', function () {
     return view('welcome');

@@ -32,6 +32,9 @@
                 <x-input-label for="password" :value="__('Password')" />
                 <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
                 <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                <p>
+                    Password must be at least 8 characters.
+                </p>
             </div>
 
             <!-- Confirm Password -->
