@@ -112,8 +112,9 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#"
-                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition text-pink-900 hover:bg-pink-100">
+                        <a href="{{ route('diary') }}"
+                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
+                            {{ request()->routeIs('diary') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
                             <span class="material-icons">book</span> Diary
                         </a>
                     </li>
@@ -132,8 +133,9 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#"
-                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition text-pink-900 hover:bg-pink-100">
+                        <a href="{{ route('my-goals') }}"
+                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
+                            {{ request()->routeIs('my-goals') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
                             <span class="material-icons">flag</span> My Goals
                         </a>
                     </li>
@@ -149,8 +151,9 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#"
-                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition text-pink-900 hover:bg-pink-100">
+                        <a href="{{ route('leaderboard') }}"
+                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
+                            {{ request()->routeIs('leaderboard') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
                             <span class="material-icons">leaderboard</span> Leaderboard
                         </a>
                     </li>
@@ -159,20 +162,23 @@
                 <div class="text-xs text-pink-700 font-bold uppercase tracking-wider mb-2 mt-6">Customization</div>
                 <ul class="space-y-1">
                     <li>
-                        <a href="#"
-                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition text-pink-900 hover:bg-pink-100">
+                        <a href="{{ route('store') }}"
+                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
+                            {{ request()->routeIs('store') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
                             <span class="material-icons">store</span> Store
                         </a>
                     </li>
                     <li>
-                        <a href="#"
-                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition text-pink-900 hover:bg-pink-100">
+                        <a href="{{ route('appearance') }}"
+                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
+                            {{ request()->routeIs('appearance') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
                             <span class="material-icons">palette</span> Appearance
                         </a>
                     </li>
                     <li>
-                        <a href="#"
-                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition text-pink-900 hover:bg-pink-100">
+                        <a href="{{ route('settings') }}"
+                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
+                            {{ request()->routeIs('settings') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
                             <span class="material-icons">settings</span> Settings
                         </a>
                     </li>

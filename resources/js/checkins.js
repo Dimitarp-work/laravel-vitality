@@ -109,14 +109,14 @@ function createNewCheckInElement(checkinData) {
             <span class="text-pink-900 break-all">${checkinData.title}</span>
         </div>
         <div class="flex justify-end">
-            <button
-                type="button"
-                data-id="${checkinData.id}"
-                data-completed="false"
+        <button
+            type="button"
+            data-id="${checkinData.id}"
+            data-completed="false"
                 class="complete-btn whitespace-nowrap text-white font-semibold px-4 py-2 rounded transition bg-pink-500 hover:bg-pink-600"
-            >
-                Not Done
-            </button>
+        >
+            Not Done
+        </button>
         </div>
     `;
 

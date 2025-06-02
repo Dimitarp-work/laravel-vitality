@@ -36,12 +36,31 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/settings',  [Controller::class, 'settings'])->name('settings');
-Route::get('/leaderboard', [Controller::class, 'leaderboard']) ->name('leaderboard');
-Route::resource('/articles', ArticleController::class);
+Route::get('/settings', function () {
+    return view('under-construction');
+})->name('settings');
+
+Route::get('/my-goals', function () {
+    return view('under-construction');
+})->name('my-goals');
+
+Route::get('/store', function () {
+    return view('under-construction');
+})->name('store');
+
+Route::get('/appearance', function () {
+    return view('under-construction');
+})->name('appearance');
+
+Route::get('/leaderboard', function () {
+    return view('under-construction');
+})->name('leaderboard');
+
 Route::get('/diary', function () {
-    return view('diary');
+    return view('under-construction');
 })->name('diary');
+
+Route::resource('/articles', ArticleController::class);
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/challenges', [ChallengeController::class, 'index'])->name('challenges.index');
