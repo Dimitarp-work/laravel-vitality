@@ -48,6 +48,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/challenges/create', [ChallengeController::class, 'create'])->name('challenges.create');
     Route::post('/challenges', [ChallengeController::class, 'store'])->name('challenges.store');
     Route::post('/challenges/{challenge}/join', [ChallengeController::class, 'join'])->name('challenges.join');
+    Route::get('/challenges/{challenge}/participants', [ChallengeController::class, 'participants']);
     Route::post('/challenges/{challenge}/log', [ChallengeController::class, 'logProgress'])->name('challenges.log');
     Route::get('/challenges/{challenge}/edit', [ChallengeController::class, 'edit'])->name('challenges.edit');
     Route::put('/challenges/{challenge}', [ChallengeController::class, 'update'])->name('challenges.update');

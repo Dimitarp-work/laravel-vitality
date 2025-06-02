@@ -199,6 +199,13 @@ class ChallengeController extends Controller
         return redirect()->back()->with('success', 'You joined the challenge!');
     }
 
+    public function participants(Challenge $challenge)
+    {
+        return response()->json(
+            $challenge->participants()->select('name')->get()
+        );
+    }
+
     public function logProgress(Request $request, Challenge $challenge)
     {
         $user = auth()->user(); // get the currently logged-in user
