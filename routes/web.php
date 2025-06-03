@@ -8,7 +8,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\MoodController;
-
+use App\Http\Controllers\ThoughtController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -20,7 +20,6 @@ use App\Http\Controllers\MoodController;
 |
 */
 Route::redirect('/', '/login');
-
 
 Route::get('/login', function () {
     return view('welcome');
@@ -37,12 +36,31 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/settings',  [Controller::class, 'settings'])->name('settings');
-Route::get('/leaderboard', [Controller::class, 'leaderboard']) ->name('leaderboard');
-Route::resource('/articles', ArticleController::class);
+Route::get('/settings', function () {
+    return view('under-construction');
+})->name('settings');
+
+Route::get('/my-goals', function () {
+    return view('under-construction');
+})->name('my-goals');
+
+Route::get('/store', function () {
+    return view('under-construction');
+})->name('store');
+
+Route::get('/appearance', function () {
+    return view('under-construction');
+})->name('appearance');
+
+Route::get('/leaderboard', function () {
+    return view('under-construction');
+})->name('leaderboard');
+
 Route::get('/diary', function () {
-    return view('diary');
+    return view('under-construction');
 })->name('diary');
+
+Route::resource('/articles', ArticleController::class);
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/challenges', [ChallengeController::class, 'index'])->name('challenges.index');
@@ -75,4 +93,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 Route::middleware(['auth'])->post('/mood', [MoodController::class, 'store'])->name('mood.store');
 Route::middleware(['auth'])->get('/mood/week', [MoodController::class, 'week'])->name('mood.week');
 
+Route::get('/dashboard', function () {return view('dashboard'); })->name('dashboard');
+
+Route::post('/thought', [ThoughtController::class, 'store'])->name('thought.store');
 require __DIR__.'/auth.php';

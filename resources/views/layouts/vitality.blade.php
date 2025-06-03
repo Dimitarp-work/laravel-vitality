@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 
+@php
+    $user = Auth::user();
+    $xp = $user->xp ?? 0;
+    $credits = $user->credits ?? 0;
+    $xpToNextLevel = 500;
+    $level = floor($xp / $xpToNextLevel) + 1;
+    $xpProgress = $xp % $xpToNextLevel;
+    $progressPercent = min(100, ($xpProgress / $xpToNextLevel) * 100);
+@endphp
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -78,16 +88,16 @@
                 </div>
             </div>
             <div class="flex items-center gap-2 mb-2">
-                <span class="text-xs bg-pink-300 text-white rounded px-2 py-0.5">Level 5</span>
-                <span class="text-xs text-pink-700">450 / 500 XP</span>
-            </div>
-            <div class="w-full h-2 bg-pink-100 rounded-full overflow-hidden mb-2">
-                <div class="h-full bg-pink-400 rounded-full" style="width: 90%"></div>
-            </div>
-            <div class="text-xs text-pink-700 font-semibold flex items-center gap-1">
-                <span class="material-icons text-pink-400 text-base">monetization_on</span> 450 Credits
-            </div>
-        </div>
+    <span class="text-xs bg-pink-300 text-white rounded px-2 py-0.5" id="sidebar-level">Level {{ $level }}</span>
+    <span class="text-xs text-pink-700" id="sidebar-xp">{{ $xpProgress }} / {{ $xpToNextLevel }} XP</span>
+</div>
+<div class="w-full h-2 bg-pink-100 rounded-full overflow-hidden mb-2">
+    <div id="sidebar-xp-bar" class="h-full bg-pink-400 rounded-full transition-all duration-300 ease-in-out" style="width: {{ $progressPercent }}%"></div>
+</div>
+<div class="text-xs text-pink-700 font-semibold flex items-center gap-1">
+    <span class="material-icons text-pink-400 text-base">monetization_on</span>
+    <span id="sidebar-credits">{{ $credits }} Credits</span>
+</div>
 
         <!-- Navigation -->
         <nav class="flex-1 flex flex-col justify-between p-4">
@@ -102,8 +112,9 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#"
-                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition text-pink-900 hover:bg-pink-100">
+                        <a href="{{ route('diary') }}"
+                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
+                            {{ request()->routeIs('diary') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
                             <span class="material-icons">book</span> Diary
                         </a>
                     </li>
@@ -122,8 +133,9 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#"
-                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition text-pink-900 hover:bg-pink-100">
+                        <a href="{{ route('my-goals') }}"
+                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
+                            {{ request()->routeIs('my-goals') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
                             <span class="material-icons">flag</span> My Goals
                         </a>
                     </li>
@@ -139,8 +151,9 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#"
-                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition text-pink-900 hover:bg-pink-100">
+                        <a href="{{ route('leaderboard') }}"
+                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
+                            {{ request()->routeIs('leaderboard') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
                             <span class="material-icons">leaderboard</span> Leaderboard
                         </a>
                     </li>
@@ -149,20 +162,23 @@
                 <div class="text-xs text-pink-700 font-bold uppercase tracking-wider mb-2 mt-6">Customization</div>
                 <ul class="space-y-1">
                     <li>
-                        <a href="#"
-                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition text-pink-900 hover:bg-pink-100">
+                        <a href="{{ route('store') }}"
+                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
+                            {{ request()->routeIs('store') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
                             <span class="material-icons">store</span> Store
                         </a>
                     </li>
                     <li>
-                        <a href="#"
-                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition text-pink-900 hover:bg-pink-100">
+                        <a href="{{ route('appearance') }}"
+                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
+                            {{ request()->routeIs('appearance') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
                             <span class="material-icons">palette</span> Appearance
                         </a>
                     </li>
                     <li>
-                        <a href="#"
-                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition text-pink-900 hover:bg-pink-100">
+                        <a href="{{ route('settings') }}"
+                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
+                            {{ request()->routeIs('settings') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
                             <span class="material-icons">settings</span> Settings
                         </a>
                     </li>
