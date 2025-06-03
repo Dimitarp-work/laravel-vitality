@@ -6,20 +6,32 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('goals', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('title');
+            $table->text('description')->nullable();
+            $table->string('emoji', 2)->default('🎯');
+            $table->integer('xp')->default(50);
+            $table->integer('progress')->default(0);
+            $table->integer('streak')->default(0);
+            $table->dateTime('deadline')->nullable();
+            $table->boolean('achieved')->default(false);
+            $table->dateTime('achieved_at')->nullable();
+            $table->boolean('notified_about_deadline')->default(false);
+            $table->dateTime('last_progress_date')->nullable();
+            $table->integer('duration_value')->nullable();
+            $table->enum('duration_unit', ['hours', 'days'])->nullable();
             $table->timestamps();
+
+            // Indexes
+            $table->index(['user_id', 'deadline']);
+            $table->index(['achieved', 'notified_about_deadline']);
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('goals');

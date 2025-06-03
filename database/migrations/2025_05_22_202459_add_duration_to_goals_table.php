@@ -12,8 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('goals', function (Blueprint $table) {
-            $table->integer('duration_value')->nullable()->after('xp');
-            $table->enum('duration_unit', ['hours', 'days'])->nullable()->after('duration_value');
+            if (!Schema::hasColumn('goals', 'duration_value')) {
+                $table->integer('duration_value')->nullable()->after('xp');
+            }
+
+            if (!Schema::hasColumn('goals', 'duration_unit')) {
+                $table->enum('duration_unit', ['hours', 'days'])->nullable()->after('duration_value');
+            }
         });
     }
 
@@ -23,7 +28,13 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('goals', function (Blueprint $table) {
-            $table->dropColumn(['duration_value', 'duration_unit']);
+            if (Schema::hasColumn('goals', 'duration_value')) {
+                $table->dropColumn('duration_value');
+            }
+
+            if (Schema::hasColumn('goals', 'duration_unit')) {
+                $table->dropColumn('duration_unit');
+            }
         });
     }
 };

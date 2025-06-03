@@ -14,8 +14,15 @@ class GoalController extends Controller
         $activeTab = $request->query('tab', 'current');
         $showForm = $request->query('show_form') === '1';
 
-        $currentGoals = Goal::where('achieved', false)->get();
-        $achievedGoals = Goal::where('achieved', true)->get();
+        // Get only the current user's goals
+        $currentGoals = Goal::where('user_id', auth()->id())
+            ->where('achieved', false)
+            ->get();
+
+        $achievedGoals = Goal::where('user_id', auth()->id())
+            ->where('achieved', true)
+            ->get();
+
 
         $badges = [
             [
@@ -61,6 +68,11 @@ class GoalController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        // Double-check authentication
+        if (!auth()->check()) {
+            return redirect()->route('login')->with('error', 'You must be logged in to create a goal.');
+        }
+
         $validatedData = $request->validate([
             'emoji' => 'required|string|max:2',
             'title' => 'required|string|max:255',
@@ -70,6 +82,8 @@ class GoalController extends Controller
             'duration_unit' => 'required|in:hours,days'
         ]);
 
+        // Assign the authenticated user's ID
+        $validatedData['user_id'] = auth()->id();
         $validatedData['progress'] = 0;
         $validatedData['streak'] = 0;
         $validatedData['achieved'] = false;
@@ -81,11 +95,16 @@ class GoalController extends Controller
 
     public function update(Request $request, Goal $goal): RedirectResponse
     {
+        // Authorization check
+        if ($goal->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $validated = $request->validate([
-            'emoji'       => 'required|string|max:2',
-            'title'       => 'required|string|max:255',
+            'emoji' => 'required|string|max:2',
+            'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'xp'          => 'required|integer|min:10|max:1000',
+            'xp' => 'required|integer|min:10|max:1000',
             'duration_value' => 'required|integer|min:1',
             'duration_unit' => 'required|in:hours,days'
         ]);
@@ -97,6 +116,11 @@ class GoalController extends Controller
 
     public function destroy(Goal $goal): RedirectResponse
     {
+        // Authorization check
+        if ($goal->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $goal->delete();
         return redirect()->route('goals')->with('success', 'Goal deleted successfully!');
     }

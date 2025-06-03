@@ -11,10 +11,13 @@ class Goal extends Model
         'title',
         'description',
         'xp',
+        'duration_value',
+        'duration_unit',
         'progress',
         'streak',
         'achieved',
         'achieved_at',
+        'user_id',
     ];
 
     protected $casts = [
@@ -27,5 +30,10 @@ class Goal extends Model
     public function isOverdue()
     {
         return $this->deadline && now()->gt($this->deadline) && !$this->achieved;
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }
