@@ -56,6 +56,7 @@ class GoalSeeder extends Seeder
                 'achieved' => false,
                 'user_id' => null
             ]));
+
         }
     }
 }

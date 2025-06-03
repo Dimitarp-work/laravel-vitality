@@ -73,7 +73,7 @@ class GoalController extends Controller
         $validatedData['progress'] = 0;
         $validatedData['streak'] = 0;
         $validatedData['achieved'] = false;
-
+        $validatedData['user_id'] = auth()->id();
         Goal::create($validatedData);
 
         return redirect()->route('goals')->with('success', 'Goal added successfully!');

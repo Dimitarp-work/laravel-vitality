@@ -25,7 +25,7 @@ return new class extends Migration
             $table->integer('duration_value')->nullable();
             $table->enum('duration_unit', ['hours', 'days'])->nullable();
             $table->timestamps();
-
+            $table->boolean('is_default')->default(false);
             $table->index(['user_id', 'deadline']);
             $table->index(['achieved', 'notified_about_deadline']);
         });

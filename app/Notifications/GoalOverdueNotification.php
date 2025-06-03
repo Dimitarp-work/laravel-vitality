@@ -2,21 +2,29 @@
 
 namespace App\Notifications;
 
+use App\Models\Goal;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class GoalOverdueNotification extends Notification
+class GoalOverdueNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
     /**
+     * The goal instance.
+     *
+     * @var \App\Models\Goal
+     */
+    public $goal;
+
+    /**
      * Create a new notification instance.
      */
-    public function __construct()
+    public function __construct(Goal $goal)
     {
-        //
+        $this->goal = $goal;
     }
 
     /**
@@ -32,7 +40,7 @@ class GoalOverdueNotification extends Notification
     /**
      * Get the mail representation of the notification.
      */
-    public function toMail($notifiable)
+    public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
             ->subject('Goal Deadline Passed: ' . $this->goal->title)
@@ -53,7 +61,9 @@ class GoalOverdueNotification extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            //
+            'goal_id' => $this->goal->id,
+            'title' => $this->goal->title,
+            'message' => 'Goal deadline passed: ' . $this->goal->title,
         ];
     }
 }
