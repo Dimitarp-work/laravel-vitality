@@ -62,12 +62,21 @@ async function createCustomCheckIn(title) {
         body: JSON.stringify({ title: title.trim() })
     });
 
+    const data = await response.json();
+
     if (!response.ok) {
-        const data = await response.json();
+        // Handle Laravel validation errors
+        if (response.status === 422 && data.errors) {
+            // Get all error messages for the title field
+            const titleErrors = data.errors.title;
+            if (titleErrors && titleErrors.length > 0) {
+                throw new Error(titleErrors[0]); // Use the first error message
+            }
+        }
         throw new Error(data.message || 'Failed to create check-in');
     }
 
-    return response.json();
+    return data;
 }
 
 // Event Handler Functions
@@ -100,14 +109,14 @@ function createNewCheckInElement(checkinData) {
             <span class="text-pink-900 break-all">${checkinData.title}</span>
         </div>
         <div class="flex justify-end">
-            <button
-                type="button"
-                data-id="${checkinData.id}"
-                data-completed="false"
+        <button
+            type="button"
+            data-id="${checkinData.id}"
+            data-completed="false"
                 class="complete-btn whitespace-nowrap text-white font-semibold px-4 py-2 rounded transition bg-pink-500 hover:bg-pink-600"
-            >
-                Not Done
-            </button>
+        >
+            Not Done
+        </button>
         </div>
     `;
 
@@ -123,9 +132,13 @@ async function handleCustomFormSubmit(e) {
 
     const titleInput = document.getElementById('custom-checkin-title');
     const submitButton = e.target.querySelector('button[type="submit"]');
+    const form = e.target;
+
+    // Remove any existing error messages and error states
+    clearErrors(titleInput);
 
     if (!titleInput.value.trim()) {
-        alert('Please enter a check-in title');
+        displayError(titleInput, 'Please enter a check-in title');
         return;
     }
 
@@ -147,9 +160,58 @@ async function handleCustomFormSubmit(e) {
         }
     } catch (error) {
         console.error('Error adding check-in:', error);
-        alert('Failed to add check-in. Please try again.');
+        displayError(titleInput, error.message);
     } finally {
         submitButton.disabled = false;
+    }
+}
+
+function displayError(input, message) {
+    // Add error class to input
+    input.classList.add('border-red-500', 'focus:ring-red-500');
+
+    // Create error message element
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-message text-red-500 text-sm mt-1 flex items-center gap-1';
+
+    // Add error icon
+    const icon = document.createElement('span');
+    icon.className = 'material-icons text-red-500 text-sm';
+    icon.textContent = 'error_outline';
+    errorDiv.appendChild(icon);
+
+    // Add error message
+    const messageSpan = document.createElement('span');
+    messageSpan.textContent = message;
+    errorDiv.appendChild(messageSpan);
+
+    // Get the form element
+    const form = input.closest('form');
+
+    // Create a wrapper div if it doesn't exist
+    let wrapper = form.querySelector('.input-wrapper');
+    if (!wrapper) {
+        wrapper = document.createElement('div');
+        wrapper.className = 'input-wrapper flex flex-col w-full';
+        input.parentElement.insertBefore(wrapper, input);
+        wrapper.appendChild(input);
+    }
+
+    // Insert error message after the input inside the wrapper
+    wrapper.appendChild(errorDiv);
+}
+
+function clearErrors(input) {
+    // Remove error class from input
+    input.classList.remove('border-red-500', 'focus:ring-red-500');
+
+    // Remove existing error message if it exists
+    const wrapper = input.closest('.input-wrapper');
+    if (wrapper) {
+        const existingError = wrapper.querySelector('.error-message');
+        if (existingError) {
+            existingError.remove();
+        }
     }
 }
 

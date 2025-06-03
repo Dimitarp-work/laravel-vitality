@@ -70,27 +70,39 @@ class DailyCheckInController extends Controller
     public function store(Request $request)
     {
         try {
-            $request->validate([
+            $validated = $request->validate([
                 'title' => 'required|string|max:30'
             ]);
 
             $checkin = DailyCheckIn::create([
-                'title' => $request->title,
+                'title' => $validated['title'],
                 'description' => 'Custom check-in',
                 'isComplete' => false,
                 'stampcard_id' => Auth::id()
             ]);
 
+            if ($request->wantsJson()) {
             return response()->json([
                 'success' => true,
                 'message' => 'Check-in created successfully',
                 'checkin' => $checkin
             ]);
+            }
+
+            return redirect()->route('checkins.index')
+                ->with('success', 'Check-in created successfully');
+
         } catch (\Exception $e) {
+            if ($request->wantsJson()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to create check-in: ' . $e->getMessage()
-            ], 500);
+                    'message' => $e->getMessage()
+                ], $e instanceof \Illuminate\Validation\ValidationException ? 422 : 500);
+            }
+
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['title' => $e->getMessage()]);
         }
     }
 
