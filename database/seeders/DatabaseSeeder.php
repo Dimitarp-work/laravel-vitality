@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Article;
 
 class DatabaseSeeder extends Seeder
 {
@@ -19,6 +18,21 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
-        Article::factory()->count(5)->create();
+        $this->call([
+            TagSeeder::class,
+            ArticleSeeder::class,
+            UserSeeder::class,
+            ChallengeSeeder::class,
+            DailyCheckInSeeder::class,
+        ]);
+
+        \App\Models\User::factory()->create([
+    'name' => 'Admin User',
+    'email' => 'admin@example.com',
+    'password' => bcrypt('password'),
+    'xp' => 100,
+    'credits' => 500,
+    'level' => 5,
+]);
     }
 }

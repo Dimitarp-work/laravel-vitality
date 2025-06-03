@@ -29,6 +29,8 @@ ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
 RUN node --version
 RUN npm --version
 
+# Install Node dependencies (including Tailwind)
 RUN npm install
-COPY . .
+
+# Run build process (e.g., compile assets with Vite/Mix)
 RUN npm run build
