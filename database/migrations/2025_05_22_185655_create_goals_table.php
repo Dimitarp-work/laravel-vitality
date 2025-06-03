@@ -13,7 +13,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('title');
             $table->text('description')->nullable();
-            $table->string('emoji', 2)->default('🎯');
+            $table->string('emoji', 4)->default('🎯');
             $table->integer('xp')->default(50);
             $table->integer('progress')->default(0);
             $table->integer('streak')->default(0);
@@ -26,7 +26,6 @@ return new class extends Migration
             $table->enum('duration_unit', ['hours', 'days'])->nullable();
             $table->timestamps();
 
-            // Indexes
             $table->index(['user_id', 'deadline']);
             $table->index(['achieved', 'notified_about_deadline']);
         });
