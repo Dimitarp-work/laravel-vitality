@@ -18,10 +18,6 @@ class Controller extends BaseController
         return view('settings');
     }
 
-    function leaderboard(): View{
-        return view('leaderboard');
-    }
-
     function challenges(): View{
         return view('challenges');
     }

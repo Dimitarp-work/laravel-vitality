@@ -4,6 +4,7 @@ use App\Http\Controllers\ChallengeController;
 use App\Http\Controllers\DailyCheckInController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\LeaderboardController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
@@ -27,7 +28,6 @@ Route::get('/login', function () {
 
 Route::get('/home', function () {
     return view('home');
-
 })->middleware(['auth', 'verified'])->name('home');
 
 Route::middleware('auth')->group(function () {
@@ -52,13 +52,13 @@ Route::get('/appearance', function () {
     return view('under-construction');
 })->name('appearance');
 
-Route::get('/leaderboard', function () {
-    return view('under-construction');
-})->name('leaderboard');
-
 Route::get('/diary', function () {
     return view('under-construction');
 })->name('diary');
+
+//Route::get('/leaderboard', function () {
+//    return view('leaderboard');
+//})->middleware(['auth'])->name('leaderboard');
 
 Route::resource('/articles', ArticleController::class);
 
@@ -72,6 +72,10 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/challenges/{challenge}', [ChallengeController::class, 'update'])->name('challenges.update');
     Route::get('/challenges/{challenge}/confirm-delete', [ChallengeController::class, 'confirmDelete'])->name('challenges.confirmDelete');
     Route::delete('/challenges/{challenge}', [ChallengeController::class, 'destroy'])->name('challenges.destroy');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/leaderboard/xp', [LeaderboardController::class, 'xp'])->name('leaderboard.xp');
 });
 
 
