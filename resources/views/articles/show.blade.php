@@ -7,8 +7,8 @@
         <div class="flex justify-between items-center mb-4">
             <h1 class="text-3xl font-bold text-pink-300">{{ $article->title }}</h1>
             <a href="{{ route('articles.index') }}"
-               class="hover:bg-red-100 bg-white text-gray-400 hover:text-pink-600 btn btn-secondary font-semibold px-6 py-2 rounded-lg shadow cursor-pointer transition inline-block">
-                Back to articles
+               class="inline-flex items-center gap-2 hover:bg-red-100 bg-white text-gray-400 hover:text-pink-600 font-semibold px-6 py-2 rounded-lg shadow cursor-pointer transition">
+                Back to articles <span class="material-icons text-base">redo</span>
             </a>
         </div>
 
