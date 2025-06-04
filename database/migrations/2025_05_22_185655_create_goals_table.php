@@ -20,7 +20,7 @@ return new class extends Migration
             $table->dateTime('deadline')->nullable();
             $table->boolean('achieved')->default(false);
             $table->dateTime('achieved_at')->nullable();
-            $table->boolean('notified_about_deadline')->default(false);
+            $table->boolean('notified_about_deadline')->default(false);  // keep this one
             $table->dateTime('last_progress_date')->nullable();
             $table->integer('duration_value')->nullable();
             $table->enum('duration_unit', ['hours', 'days'])->nullable();
@@ -28,6 +28,7 @@ return new class extends Migration
             $table->boolean('is_default')->default(false);
             $table->index(['user_id', 'deadline']);
             $table->index(['achieved', 'notified_about_deadline']);
+
         });
     }
 

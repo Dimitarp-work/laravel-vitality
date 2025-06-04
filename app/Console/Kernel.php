@@ -7,18 +7,17 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
 {
-    /**
-     * Define the application's command schedule.
-     */
+    protected $commands = [
+        \App\Console\Commands\NotifyOverdueGoals::class,
+    ];
+
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('app:check-goal-deadlines')->dailyAt('09:00');
+        // Schedule your command to run daily at 9 am
+        $schedule->command('app:notify-overdue-goals')->dailyAt('09:00');
     }
 
-    /**
-     * Register the commands for the application.
-     */
-    protected function commands(): void
+    protected function commands()
     {
         $this->load(__DIR__.'/Commands');
 
