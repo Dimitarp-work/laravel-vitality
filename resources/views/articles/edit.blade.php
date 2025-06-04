@@ -30,7 +30,8 @@
         <div class="form-group mt-4">
             <label for="image" class="text-xl text-pink-300 block mb-2">Image :</label>
             <label
-                class="hover:bg-gray-300 bg-white text-gray-400 hover:text-gray-700 font-semibold px-6 py-2 rounded-lg shadow cursor-pointer transition inline-block">
+                class="w-fit flex items-center gap-2 hover:bg-gray-300 bg-white text-gray-400 hover:text-gray-700 font-semibold px-6 py-2 rounded-lg shadow cursor-pointer transition">
+                <span class="material-icons text-base">add_a_photo</span>
                 Choose File
                 <input
                     type="file"
@@ -53,11 +54,13 @@
         </div>
         <button
             type="submit"
-            class="hover:bg-green-100 bg-white text-gray-400 hover:text-green-500 btn btn-primary mt-3 font-semibold px-6 py-2 rounded-lg shadow cursor-pointer transition inline-block">
+            class="inline-flex items-center gap-2 hover:bg-green-100 bg-white text-gray-400 hover:text-green-500 mt-3 font-semibold px-6 py-2 rounded-lg shadow cursor-pointer transition">
+            <span class="material-icons text-base">upgrade</span>
             Update
         </button>
-        <a href="{{ route('articles.index') }}"
-           class="hover:bg-pink-100 bg-white text-gray-400 hover:text-pink-600 btn btn-secondary mt-3 font-semibold px-6 py-2 rounded-lg shadow cursor-pointer transition inline-block ml-4">
+        <a href="/articles"
+           class="inline-flex items-center gap-2 hover:bg-pink-100 bg-white text-gray-400 hover:text-pink-600 mt-3 font-semibold px-6 py-2 rounded-lg shadow cursor-pointer transition">
+            <span class="material-icons text-base">close</span>
             Cancel
         </a>
     </form>
