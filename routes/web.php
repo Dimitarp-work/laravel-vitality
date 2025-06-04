@@ -11,6 +11,8 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\MoodController;
 use App\Http\Controllers\ThoughtController;
 use App\Http\Middleware\AdminMiddleware;
+use App\Models\Goal;
+use App\Notifications\GoalOverdueNotification;
 
 /*
 |--------------------------------------------------------------------------
@@ -115,4 +117,25 @@ Route::put('/goals/{goal}', [GoalController::class, 'update'])->name('goals.upda
 Route::delete('/goals/{goal}', [GoalController::class, 'destroy'])->name('goals.destroy');
 Route::post('/goals/{goal}/daily-update', [GoalController::class, 'dailyUpdate'])->name('goals.daily-update');
 
+Route::get('/test-notify-overdue', function () {
+    $overdueGoals = Goal::where('notified_about_deadline', false)
+        ->where('achieved', false)
+        ->whereNotNull('deadline')
+        ->where('deadline', '<', now())
+        ->get();
 
+    $output = '';
+
+    foreach ($overdueGoals as $goal) {
+        $user = $goal->user;
+        if ($user) {
+            $user->notify(new GoalOverdueNotification($goal));
+            $goal->notified_about_deadline = true;
+            $goal->save();
+
+            $output .= "Notified user {$user->id} for goal {$goal->id}<br>";
+        }
+    }
+
+    return $output ?: 'No overdue goals to notify.';
+});

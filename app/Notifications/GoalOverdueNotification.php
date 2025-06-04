@@ -29,7 +29,6 @@ class GoalOverdueNotification extends Notification implements ShouldQueue
         return (new MailMessage)
             ->subject('Goal Deadline Passed: ' . $this->goal->title)
             ->line('You missed the deadline for your goal: ' . $this->goal->title)
-            ->line('Recommendations:')
             ->line('- Break the goal into smaller steps')
             ->line('- Adjust your timeline if needed')
             ->line('- Seek help from colleagues if stuck')
