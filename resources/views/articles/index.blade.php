@@ -7,17 +7,20 @@
                 Wellness Inspiration
             </h1>
 
-            <a href="{{ route('articles.create') }}"
-               class="bg-pink-400 hover:bg-pink-500 text-white px-4 py-1.5 rounded-lg text-sm flex items-center gap-1">
-                <span class="material-icons text-base">add_circle</span>Create Article
-            </a>
+            @auth
+                @if(auth()->user()->is_admin)
+                    <a href="{{ route('articles.create') }}"
+                       class="bg-pink-400 hover:bg-pink-500 text-white px-4 py-1.5 rounded-lg text-sm flex items-center gap-1">
+                        <span class="material-icons text-base">add_circle</span>Create Article
+                    </a>
+                @endif
+            @endauth
         </div>
 
         @if(session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
 
-        {{-- Filter by Tag --}}
         <div class="mb-6">
             <form method="GET">
                 <label class="text-pink-300 font-semibold mb-2 block">Filter by Tag:</label>
@@ -38,9 +41,7 @@
             </form>
         </div>
 
-        {{-- Articles + Trending Layout --}}
         <div class="flex flex-col lg:flex-row gap-8">
-            {{-- Articles Section --}}
             <div class="w-full lg:w-2/3">
                 <div class="inline-grid grid-cols-2 auto-cols-max gap-3">
                     @foreach($articles as $article)
@@ -73,33 +74,33 @@
                                     </div>
                                 @endif
 
-                                <div class="flex justify-between mt-4">
-                                    <a href="{{ route('articles.edit', $article) }}"
-                                       class="flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-400 rounded-lg hover:bg-blue-200 transition font-medium hover:text-blue-900">
-                                        <span class="material-icons text-base">edit</span>
-                                        Edit
-                                    </a>
-                                    <form action="{{ route('articles.destroy', $article->id) }}" method="POST"
-                                          onsubmit="return confirm('Are you sure you want to delete this article?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit"
-                                                class="flex items-center gap-2 px-4 py-2 bg-pink-100 hover:text-pink-700 text-pink-400 rounded-lg hover:bg-pink-200 transition font-medium cursor-pointer">
-                                            <span class="material-icons text-base">delete</span>
-                                            Delete
-                                        </button>
-                                    </form>
-                                </div>
+                                @auth
+                                    @if(auth()->user()->is_admin)
+                                        <div class="flex justify-between mt-4">
+                                            <a href="{{ route('articles.edit', $article) }}"
+                                               class="flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-400 rounded-lg hover:bg-blue-200 transition font-medium hover:text-blue-900">
+                                                <span class="material-icons text-base">edit</span>Edit
+                                            </a>
+                                            <form action="{{ route('articles.destroy', $article->id) }}" method="POST"
+                                                  onsubmit="return confirm('Are you sure you want to delete this article?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                        class="flex items-center gap-2 px-4 py-2 bg-pink-100 hover:text-pink-700 text-pink-400 rounded-lg hover:bg-pink-200 transition font-medium cursor-pointer">
+                                                    <span class="material-icons text-base">delete</span>Delete
+                                                </button>
+                                            </form>
+                                        </div>
+                                    @endif
+                                @endauth
                             </div>
                         </div>
                     @endforeach
                 </div>
             </div>
 
-            {{-- Trending Sidebar --}}
             @if($trendingArticles->count() || $allTrendingArticles->count())
                 <div class="w-full lg:w-1/3 space-y-6">
-                    {{-- Trending This Week --}}
                     @if($trendingArticles->count())
                         <div class="bg-gray-100 border border-pink-200 rounded-lg p-4 shadow">
                             <h2 class="text-pink-400 text-lg font-bold mb-3">Newest & Most popular</h2>
@@ -127,7 +128,6 @@
                         </div>
                     @endif
 
-                    {{-- All-Time Trending --}}
                     @if($allTrendingArticles->count())
                         <div class="bg-gray-100 border border-yellow-300 rounded-lg p-4 shadow">
                             <h2 class="text-yellow-500 text-lg font-bold mb-3">All-Time Popular</h2>
