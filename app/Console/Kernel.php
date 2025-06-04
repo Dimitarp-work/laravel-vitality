@@ -7,20 +7,24 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
 {
-    protected $commands = [
-        \App\Console\Commands\NotifyOverdueGoals::class,
-    ];
-
-    protected function schedule(Schedule $schedule)
+    /**
+     * Define the application's command schedule.
+     */
+    protected function schedule(Schedule $schedule): void
     {
-        // Schedule your command to run daily at 9 am
-        $schedule->command('app:notify-overdue-goals')->dailyAt('09:00');
+        // Schedule the overdue goals notification to run daily at 9 AM
+        $schedule->command('goals:notify-overdue')->dailyAt('09:00');
     }
 
-    protected function commands()
+    /**
+     * Register the commands for the application.
+     */
+    protected function commands(): void
     {
+        // Automatically load all Artisan commands from the Commands directory
         $this->load(__DIR__.'/Commands');
 
+        // Load custom console routes
         require base_path('routes/console.php');
     }
 }
