@@ -101,3 +101,6 @@ Route::post('/goals', [GoalController::class, 'store'])->name('goals.store');
 Route::post('/goals/default/{goal}/start', [GoalController::class, 'startDefault'])->name('goals.start-default');
 Route::put('/goals/{goal}', [GoalController::class, 'update'])->name('goals.update');
 Route::delete('/goals/{goal}', [GoalController::class, 'destroy'])->name('goals.destroy');
+Route::post('/goals/{goal}/daily-update', [GoalController::class, 'dailyUpdate'])->name('goals.daily-update');
+
+

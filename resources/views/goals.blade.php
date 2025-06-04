@@ -213,9 +213,15 @@
                                                 <div class="text-sm">
                                                     <span class="font-medium text-pink-600">{{ $goal->streak }} day flow 🌊</span>
                                                 </div>
-                                                <button class="border border-pink-600 text-pink-600 hover:bg-pink-50 px-3 py-1 rounded-lg text-sm" {{ $goal->progress >= 100 ? 'disabled' : '' }}>
-                                                    Update
-                                                </button>
+                                                <form action="{{ route('goals.daily-update', $goal->id) }}" method="POST">
+                                                    @csrf
+                                                    <button type="submit"
+                                                            class="border border-pink-600 text-pink-600 hover:bg-pink-50 px-3 py-1 rounded-lg text-sm"
+                                                        {{ $goal->progress >= 100 || $goal->progressLogs->where('user_id', auth()->id())->where('updated_on', now()->toDateString())->count() ? 'disabled' : '' }}>
+                                                        Update
+                                                    </button>
+                                                </form>
+
                                             </div>
                                         </div>
                                     </div>
