@@ -90,7 +90,7 @@ class GoalController extends Controller
             'duration_unit' => 'required|in:hours,days',
         ]);
 
-        $validatedData['user_id'] = auth()->check() ? auth()->id() : 1;
+        $validatedData['user_id'] = auth()->id();
 
 
         $goal->update($validated);
