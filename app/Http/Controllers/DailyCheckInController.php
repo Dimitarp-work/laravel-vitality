@@ -17,6 +17,8 @@ class DailyCheckInController extends Controller
         $userId = Auth::id();
         $today = Carbon::today();
 
+        abort(500);
+
         // Get today's check-ins
         $checkins = DailyCheckIn::where('stampcard_id', $userId)
             ->whereDate('created_at', $today)
