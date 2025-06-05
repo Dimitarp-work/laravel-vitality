@@ -12,7 +12,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        // Schedule the overdue goals notification to run daily at 9 AM
+        $schedule->command('goals:notify-overdue')->dailyAt('09:00');
     }
 
     /**
@@ -20,8 +21,10 @@ class Kernel extends ConsoleKernel
      */
     protected function commands(): void
     {
+        // Automatically load all Artisan commands from the Commands directory
         $this->load(__DIR__.'/Commands');
 
+        // Load custom console routes
         require base_path('routes/console.php');
     }
 }

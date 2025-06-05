@@ -2,14 +2,17 @@
 
 use App\Http\Controllers\ChallengeController;
 use App\Http\Controllers\DailyCheckInController;
-use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\GoalController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\MoodController;
 use App\Http\Controllers\ThoughtController;
 use App\Http\Middleware\AdminMiddleware;
+use App\Models\Goal;
+use App\Notifications\GoalOverdueNotification;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,10 +46,6 @@ Route::middleware('auth')->group(function () {
 Route::get('/settings', function () {
     return view('under-construction');
 })->name('settings');
-
-Route::get('/my-goals', function () {
-    return view('under-construction');
-})->name('my-goals');
 
 Route::get('/store', function () {
     return view('under-construction');
@@ -109,3 +108,37 @@ Route::get('/dashboard', function () {return view('dashboard'); })->name('dashbo
 
 Route::post('/thought', [ThoughtController::class, 'store'])->name('thought.store');
 require __DIR__.'/auth.php';
+
+Route::get('/challenges',  [Controller::class, 'challenges'])->name('challenges');
+Route::get('/goals',  [GoalController::class, 'goals'])->name('goals');
+Route::get('/goals/create', [GoalController::class, 'create'])->name('goals.create');
+Route::post('/goals', [GoalController::class, 'store'])->name('goals.store');
+Route::get('/goals/{goal}/edit', [GoalController::class, 'edit'])->name('goals.edit');
+Route::post('/goals/default/{goal}/start', [GoalController::class, 'startDefault'])->name('goals.start-default');
+Route::put('/goals/{goal}', [GoalController::class, 'update'])->name('goals.update');
+Route::delete('/goals/{goal}', [GoalController::class, 'destroy'])->name('goals.destroy');
+Route::post('/goals/{goal}/daily-update', [GoalController::class, 'dailyUpdate'])->name('goals.daily-update');
+
+
+Route::get('/test-notify-overdue', function () {
+    $overdueGoals = Goal::where('notified_about_deadline', false)
+        ->where('achieved', false)
+        ->whereNotNull('deadline')
+        ->where('deadline', '<', now())
+        ->get();
+
+    $output = '';
+
+    foreach ($overdueGoals as $goal) {
+        $user = $goal->user;
+        if ($user) {
+            $user->notify(new GoalOverdueNotification($goal));
+            $goal->notified_about_deadline = true;
+            $goal->save();
+
+            $output .= "Notified user {$user->id} for goal {$goal->id}<br>";
+        }
+    }
+
+    return $output ?: 'No overdue goals to notify.';
+});
