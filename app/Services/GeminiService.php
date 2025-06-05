@@ -51,3 +51,4 @@ class GeminiService
         throw new \Exception('No message from Gemini');
     }
 }
+ 
