@@ -73,15 +73,15 @@ use App\Constants\CheckInConstants;
                                 <span class="text-pink-900 break-all">{{$checkin->title}}</span>
                             </div>
                             <div class="flex justify-end">
-                                <button
-                                    type="button"
-                                    data-id="{{ $checkin->id }}"
-                                    data-completed="{{ $checkin->isComplete }}"
+                                                        <button
+                                type="button"
+                                data-id="{{ $checkin->id }}"
+                                data-completed="{{ $checkin->isComplete }}"
                                     class="complete-btn whitespace-nowrap text-white font-semibold px-4 py-2 rounded transition {{ $checkin->isComplete ? 'bg-green-500 hover:bg-green-600' : 'bg-pink-500 hover:bg-pink-600' }}"
-                                    {{ $checkin->isComplete ? 'disabled' : '' }}
-                                >
-                                    {{ $checkin->isComplete ? 'Completed' : 'Not Done' }}
-                                </button>
+                                {{ $checkin->isComplete ? 'disabled' : '' }}
+                            >
+                                {{ $checkin->isComplete ? 'Completed' : 'Not Done' }}
+                            </button>
                             </div>
                         </div>
                     @endforeach
@@ -102,7 +102,7 @@ use App\Constants\CheckInConstants;
             @if ($errors->has('title'))
                 <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative flex items-center gap-2">
                     <span class="material-icons text-red-500">error_outline</span>
-                    {{ $errors->first('title') }}
+                    {{ $errors->first('title') }}:
                 </div>
             @endif
             <form id="custom-checkin-form" class="flex flex-col gap-2" method="POST" action="{{ route('checkins.store') }}">

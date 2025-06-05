@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\MoodController;
 use App\Http\Controllers\ThoughtController;
+use App\Http\Middleware\AdminMiddleware;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -20,7 +22,9 @@ use App\Http\Controllers\ThoughtController;
 |
 */
 Route::redirect('/', '/login');
-
+Route::get('/trigger-500', function () {
+    abort(500);
+});
 Route::get('/login', function () {
     return view('welcome');
 });
@@ -36,12 +40,39 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/settings',  [Controller::class, 'settings'])->name('settings');
-Route::get('/leaderboard', [Controller::class, 'leaderboard']) ->name('leaderboard');
-Route::resource('/articles', ArticleController::class);
+Route::get('/settings', function () {
+    return view('under-construction');
+})->name('settings');
+
+Route::get('/my-goals', function () {
+    return view('under-construction');
+})->name('my-goals');
+
+Route::get('/store', function () {
+    return view('under-construction');
+})->name('store');
+
+Route::get('/appearance', function () {
+    return view('under-construction');
+})->name('appearance');
+
+Route::get('/leaderboard', function () {
+    return view('under-construction');
+})->name('leaderboard');
+
 Route::get('/diary', function () {
-    return view('diary');
+    return view('under-construction');
 })->name('diary');
+
+Route::resource('articles', ArticleController::class)->only(['index', 'show']);
+
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('articles/create', [ArticleController::class, 'create'])->name('articles.create');
+    Route::post('articles', [ArticleController::class, 'store'])->name('articles.store');
+    Route::get('articles/{article}/edit', [ArticleController::class, 'edit'])->name('articles.edit');
+    Route::put('articles/{article}', [ArticleController::class, 'update'])->name('articles.update');
+    Route::delete('articles/{article}', [ArticleController::class, 'destroy'])->name('articles.destroy');
+});
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/challenges', [ChallengeController::class, 'index'])->name('challenges.index');

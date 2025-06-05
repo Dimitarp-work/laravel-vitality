@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             ArticleSeeder::class,
             UserSeeder::class,
             ChallengeSeeder::class,
+            DailyCheckInSeeder::class,
         ]);
 
         \App\Models\User::factory()->create([
