@@ -218,6 +218,12 @@
         </div>
     </div>
 
+    <div id="capychat-btn-container" class="w-full flex justify-center mt-4 hidden">
+        <a href="{{ route('capychat') }}" class="bg-pink-400 hover:bg-pink-500 text-white rounded-lg px-6 py-2 font-semibold transition text-base shadow">
+            Open Capy Chat
+        </a>
+    </div>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const form = document.getElementById('mood-form');
@@ -287,6 +293,9 @@
             messageDiv.textContent = message || '';
             if (messageContent) messageContent.classList.remove('hidden');
             if (loadingGif) loadingGif.classList.add('hidden');
+            if (document.getElementById('capychat-btn-container')) {
+                document.getElementById('capychat-btn-container').classList.remove('hidden');
+            }
         }
         // Render week moods
         function renderWeekMoods(data) {

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\MoodController;
 use App\Http\Controllers\ThoughtController;
+use App\Http\Controllers\CapyChatController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -77,4 +78,7 @@ Route::middleware(['auth'])->get('/mood/week', [MoodController::class, 'week'])-
 Route::get('/dashboard', function () {return view('dashboard'); })->name('dashboard');
 
 Route::post('/thought', [ThoughtController::class, 'store'])->name('thought.store');
+
+Route::get('/capychat', [CapyChatController::class, 'index'])->name('capychat');
+
 require __DIR__.'/auth.php';
