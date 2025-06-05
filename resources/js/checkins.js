@@ -106,21 +106,30 @@ function createCompleteButtonHandler(button) {
 
 function createNewCheckInElement(checkinData) {
     const newCheckin = document.createElement('div');
-    newCheckin.className = 'group grid grid-cols-[1fr,120px] gap-4 p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all';
+    newCheckin.className = 'group grid grid-cols-[1fr,120px] gap-4 p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all relative';
     newCheckin.innerHTML = `
         <div class="min-w-0">
             <span class="text-pink-900 break-all">${checkinData.title}</span>
         </div>
         <div class="flex justify-end">
-        <button
-            type="button"
-            data-id="${checkinData.id}"
-            data-completed="false"
+            <button
+                type="button"
+                data-id="${checkinData.id}"
+                data-completed="false"
                 class="complete-btn whitespace-nowrap text-white font-semibold px-4 py-2 rounded transition bg-pink-500 hover:bg-pink-600"
-        >
-            Not Done
-        </button>
+            >
+                Not Done
+            </button>
         </div>
+        <form action="/checkins/${checkinData.id}" method="POST" class="delete-form absolute -top-3 -right-3">
+            <input type="hidden" name="_token" value="${token}">
+            <input type="hidden" name="_method" value="DELETE">
+            <button type="button" onclick="openDeleteModal('${checkinData.id}')" class="delete-btn h-6 w-6 rounded-full bg-red-100 hover:bg-red-200 flex items-center justify-center transition-colors shadow-sm border border-red-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+            </button>
+        </form>
     `;
 
     const newButton = newCheckin.querySelector('.complete-btn');
