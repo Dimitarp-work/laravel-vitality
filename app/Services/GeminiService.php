@@ -32,7 +32,7 @@ class GeminiService
             ->map(function($mood, $day) { return $day . ': ' . ($mood ?: 'none'); })
             ->implode(", ");
 
-        $prompt = "You are a friendly vitality coach with a focus on mental health. Write a short, supportive, and positive message for a user named $firstName who selected the mood '$todayMood' today. Their moods for this week are: $weekMoodStr. Use their first name in the message. Be encouraging and empathetic.";
+        $prompt = "You are a friendly vitality coach with a focus on mental health. Write a short, supportive, and positive message for a user named $firstName who selected the mood '$todayMood' today. Their moods for this week are: $weekMoodStr. Use their first name in the message. Be encouraging and empathetic. Keep the message concise (1-2 sentences). Do not use any Markdown, asterisks, underscores, or special formatting—write in plain text only. End the message with a friendly invitation for the user to share anything they'd like (problems, good news, or anything else), and make sure your suggestion for sharing is correctly related to their selected mood today.";
 
         $response = $this->client->post($this->endpoint, [
             'query' => ['key' => $this->apiKey],
@@ -51,4 +51,3 @@ class GeminiService
         throw new \Exception('No message from Gemini');
     }
 }
- 
