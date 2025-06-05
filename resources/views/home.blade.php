@@ -94,7 +94,7 @@
                     <div id="mood-message-container" class="w-full flex justify-center mt-6 mb-8 px-4">
                         <div class="bg-pink-50 border border-pink-100 rounded-2xl shadow-sm max-w-lg w-full px-8 py-7 flex items-start gap-3">
                             <span class="material-icons text-pink-400 text-2xl mt-0.5" id="mood-message-icon">auto_awesome</span>
-                            <span id="mood-message" class="flex-1 text-pink-700 text-base font-normal leading-relaxed text-left"></span>
+                            <span id="mood-message" class="flex-1 text-pink-700 text-base font-normal leading-relaxed text-center"></span>
                         </div>
                     </div>
                 </div>
