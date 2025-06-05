@@ -41,4 +41,11 @@ class UserFactory extends Factory
             'email_verified_at' => null,
         ]);
     }
+    /**
+     * Get all goals for the user
+     */
+    public function goals()
+    {
+        return $this->hasMany(Goal::class);
+    }
 }

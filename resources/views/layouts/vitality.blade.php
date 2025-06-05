@@ -133,7 +133,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('my-goals') }}"
+                        <a href="{{ route('goals') }}"
                             class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
                             {{ request()->routeIs('my-goals') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
                             <span class="material-icons">flag</span> My Goals
@@ -144,7 +144,7 @@
                 <div class="text-xs text-pink-700 font-bold uppercase tracking-wider mb-2 mt-6">Challenges</div>
                 <ul class="space-y-1">
                     <li>
-                        <a href="{{ route('challenges.index') }}"
+                        <a href="{{ route('challenges') }}"
                             class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
                             {{ request()->routeIs('challenges.*') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
                             <span class="material-icons">emoji_events</span> Challenges
