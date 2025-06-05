@@ -18,8 +18,23 @@ use App\Constants\CheckInConstants;
             // Set form action URL
             document.getElementById('deleteForm').action = `/checkins/${id}`;
 
-            // Show the modal
-            document.getElementById('deleteModal').classList.remove('hidden');
+            // Show the modal with fade in
+            const modal = document.getElementById('deleteModal');
+            modal.classList.remove('hidden');
+            // Trigger reflow to ensure the transition works
+            modal.offsetHeight;
+            modal.classList.remove('opacity-0');
+            modal.querySelector('div').classList.remove('scale-95');
+        };
+
+        // Make closeDeleteModal available globally
+        window.closeDeleteModal = function() {
+            const modal = document.getElementById('deleteModal');
+            modal.classList.add('opacity-0');
+            modal.querySelector('div').classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300); // Wait for fade out animation to complete
         };
     </script>
     @vite(['resources/js/checkins.js', 'resources/js/confetti.js'])
@@ -45,12 +60,12 @@ use App\Constants\CheckInConstants;
         </div>
 
         <!-- Delete Confirmation Modal -->
-        <div id="deleteModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
-            <div class="bg-white rounded-xl shadow-md p-6 max-w-sm w-full">
+        <div id="deleteModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 transition-opacity duration-300 opacity-0">
+            <div class="bg-white rounded-xl shadow-md p-6 max-w-sm w-full transform transition-transform duration-300 scale-95">
                 <h3 class="text-lg font-medium mb-4">Confirm Deletion</h3>
                 <p class="text-gray-600 mb-6">Are you sure you want to delete this check-in? This action cannot be undone.</p>
                 <div class="flex justify-end gap-2">
-                    <button onclick="document.getElementById('deleteModal').classList.add('hidden')"
+                    <button onclick="closeDeleteModal()"
                             class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg">
                         Cancel
                     </button>
