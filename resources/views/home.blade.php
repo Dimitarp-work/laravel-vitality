@@ -312,6 +312,7 @@
         // Listen for mood selection
         form.addEventListener('change', function(e) {
             if (e.target.name !== 'mood') return;
+            setMoodSelectorState(e.target.value); // Highlight instantly
             // Send AJAX POST request to /mood
             fetch("{{ route('mood.store') }}", {
                 method: 'POST',
@@ -329,7 +330,6 @@
                         return;
                     }
                     setSupportiveMessage(data.message);
-                    setMoodSelectorState(e.target.value);
                     fetchWeekMoods();
                 })
                 .catch(() => {
