@@ -6,9 +6,44 @@ use App\Constants\CheckInConstants;
 
 @section('title', 'Daily Check-ins')
 
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script>
+        window.CheckInConstants = {
+            TITLE_MAX_LENGTH: {{ CheckInConstants::TITLE_MAX_LENGTH }}
+        };
+
+        // Make openDeleteModal available globally
+        window.openDeleteModal = function(id) {
+            // Set form action URL
+            document.getElementById('deleteForm').action = `/checkins/${id}`;
+
+            // Show the modal
+            document.getElementById('deleteModal').classList.remove('hidden');
+        };
+    </script>
+    @vite(['resources/js/checkins.js', 'resources/js/confetti.js'])
+@endpush
+
 @section('content')
 <div class="w-full pl-0 md:pl-72">
     <div class="max-w-5xl mx-auto flex flex-col gap-8 px-6 py-8">
+        <!-- Celebration Overlay -->
+        <div id="celebrationOverlay" class="hidden fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 transition-opacity duration-300 opacity-0">
+            <button onclick="document.getElementById('celebrationOverlay').classList.add('hidden')"
+                    class="fixed top-4 right-4 bg-red-100 rounded-full p-2 shadow-md hover:bg-red-200 transition-colors border border-red-300">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            <div class="text-center">
+                <img src="{{ asset('images/capybara-rub.gif') }}" alt="Celebration" class="w-64 h-64 mx-auto mb-4 animate-bounce">
+                <div class="bg-pink-100 border-2 border-pink-300 rounded-xl px-8 py-4 inline-block animate-bounce">
+                    <h2 class="text-4xl font-bold text-pink-600">GOOD JOB!</h2>
+                </div>
+            </div>
+        </div>
+
         <!-- Delete Confirmation Modal -->
         <div id="deleteModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
             <div class="bg-white rounded-xl shadow-md p-6 max-w-sm w-full">
@@ -157,20 +192,3 @@ use App\Constants\CheckInConstants;
     </div>
 </div>
 @endsection
-
-@push('scripts')
-    <script>
-        window.CheckInConstants = {
-            TITLE_MAX_LENGTH: {{ CheckInConstants::TITLE_MAX_LENGTH }}
-        };
-
-        function openDeleteModal(id) {
-            // Set form action URL
-            document.getElementById('deleteForm').action = `/checkins/${id}`;
-
-            // Show the modal
-            document.getElementById('deleteModal').classList.remove('hidden');
-        }
-    </script>
-    @vite(['resources/js/checkins.js'])
-@endpush

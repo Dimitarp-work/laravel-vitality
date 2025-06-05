@@ -1,3 +1,6 @@
+import { openDeleteModal, initializeCelebration } from './celebration';
+import { initializeConfetti } from './confetti';
+
 // DOM Elements and State Management
 let completedCount;
 let totalCount;
@@ -203,4 +206,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize custom check-in form
     const customForm = document.getElementById('custom-checkin-form');
     customForm.addEventListener('submit', handleCustomFormSubmit);
+
+    // Initialize celebration functionality
+    initializeCelebration();
+
+    // Initialize confetti
+    initializeConfetti();
 });
