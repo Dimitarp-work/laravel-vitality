@@ -135,7 +135,15 @@ class DailyCheckInController extends Controller
      */
     public function destroy(DailyCheckIn $dailyCheckIn)
     {
-        //
+        $userId = Auth::id();
+        if ($dailyCheckIn->stampcard_id !== $userId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized'
+            ], 403);
+        }
+        $dailyCheckIn->delete();
+        return redirect()->route('checkins.index')->with('success', 'Check-in deleted successfully');
     }
 
     /**

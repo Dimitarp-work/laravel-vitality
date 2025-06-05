@@ -93,6 +93,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/checkins/reminders', [DailyCheckInController::class, 'reminders'])->name('checkins.reminders');
     Route::post('/checkins/{dailyCheckIn}/complete', [DailyCheckInController::class, 'complete'])->name('checkins.complete');
     Route::get('/checkins/week', [DailyCheckInController::class, 'week'])->name('checkins.week');
+    Route::delete('/checkins/{dailyCheckIn}', [DailyCheckInController::class, 'destroy'])->name('checkins.destroy');
     Route::resource('/checkins', DailyCheckInController::class);
 });
 // Admin Routes
@@ -109,7 +110,7 @@ Route::get('/dashboard', function () {return view('dashboard'); })->name('dashbo
 Route::post('/thought', [ThoughtController::class, 'store'])->name('thought.store');
 require __DIR__.'/auth.php';
 
-Route::get('/challenges',  [Controller::class, 'challenges'])->name('challenges');
+Route::get('/challenges',  [Controller::class, 'challenges'])->name('challenges.index');
 Route::get('/goals',  [GoalController::class, 'goals'])->name('goals');
 Route::get('/goals/create', [GoalController::class, 'create'])->name('goals.create');
 Route::post('/goals', [GoalController::class, 'store'])->name('goals.store');

@@ -23,6 +23,6 @@ class Controller extends BaseController
     }
 
     function challenges(): View{
-        return view('challenges');
+        return view('challenges.index');
     }
 }

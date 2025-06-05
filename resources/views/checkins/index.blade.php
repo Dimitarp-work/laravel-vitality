@@ -9,6 +9,28 @@ use App\Constants\CheckInConstants;
 @section('content')
 <div class="w-full pl-0 md:pl-72">
     <div class="max-w-5xl mx-auto flex flex-col gap-8 px-6 py-8">
+        <!-- Delete Confirmation Modal -->
+        <div id="deleteModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white rounded-xl shadow-md p-6 max-w-sm w-full">
+                <h3 class="text-lg font-medium mb-4">Confirm Deletion</h3>
+                <p class="text-gray-600 mb-6">Are you sure you want to delete this check-in? This action cannot be undone.</p>
+                <div class="flex justify-end gap-2">
+                    <button onclick="document.getElementById('deleteModal').classList.add('hidden')"
+                            class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg">
+                        Cancel
+                    </button>
+                    <form id="deleteForm" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit"
+                                class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg">
+                            Delete Check-in
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
         <!-- Header Card -->
         <div class="w-full bg-gradient-to-r from-pink-200 to-pink-100 rounded-2xl shadow p-6">
             <h1 class="text-2xl font-bold text-pink-900 mb-4 flex items-center gap-2">
@@ -68,21 +90,30 @@ use App\Constants\CheckInConstants;
                 </div>
                 <div class="space-y-4">
                     @foreach($checkins as $checkin)
-                        <div class="group grid grid-cols-[1fr,120px] gap-4 p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all">
+                        <div class="group grid grid-cols-[1fr,120px] gap-4 p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all relative">
                             <div class="min-w-0">
                                 <span class="text-pink-900 break-all">{{$checkin->title}}</span>
                             </div>
                             <div class="flex justify-end">
-                                                        <button
-                                type="button"
-                                data-id="{{ $checkin->id }}"
-                                data-completed="{{ $checkin->isComplete }}"
+                                <button
+                                    type="button"
+                                    data-id="{{ $checkin->id }}"
+                                    data-completed="{{ $checkin->isComplete }}"
                                     class="complete-btn whitespace-nowrap text-white font-semibold px-4 py-2 rounded transition {{ $checkin->isComplete ? 'bg-green-500 hover:bg-green-600' : 'bg-pink-500 hover:bg-pink-600' }}"
-                                {{ $checkin->isComplete ? 'disabled' : '' }}
-                            >
-                                {{ $checkin->isComplete ? 'Completed' : 'Not Done' }}
-                            </button>
+                                    {{ $checkin->isComplete ? 'disabled' : '' }}
+                                >
+                                    {{ $checkin->isComplete ? 'Completed' : 'Not Done' }}
+                                </button>
                             </div>
+                            <form action="{{ route('checkins.destroy', $checkin) }}" method="POST" class="delete-form absolute -top-3 -right-3">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button" onclick="openDeleteModal('{{ $checkin->id }}')" class="delete-btn h-6 w-6 rounded-full bg-red-100 hover:bg-red-200 flex items-center justify-center transition-colors shadow-sm border border-red-200">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                    </svg>
+                                </button>
+                            </form>
                         </div>
                     @endforeach
                 </div>
@@ -132,6 +163,14 @@ use App\Constants\CheckInConstants;
         window.CheckInConstants = {
             TITLE_MAX_LENGTH: {{ CheckInConstants::TITLE_MAX_LENGTH }}
         };
+
+        function openDeleteModal(id) {
+            // Set form action URL
+            document.getElementById('deleteForm').action = `/checkins/${id}`;
+
+            // Show the modal
+            document.getElementById('deleteModal').classList.remove('hidden');
+        }
     </script>
     @vite(['resources/js/checkins.js'])
 @endpush
