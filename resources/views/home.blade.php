@@ -92,9 +92,12 @@
                     </form>
                     <!-- Supportive Message Display -->
                     <div id="mood-message-container" class="w-full flex justify-center mt-6 mb-8 px-4">
-                        <div class="bg-pink-50 border border-pink-100 rounded-2xl shadow-sm max-w-lg w-full px-8 py-7 flex items-start gap-3">
-                            <span class="material-icons text-pink-400 text-2xl mt-0.5" id="mood-message-icon">auto_awesome</span>
-                            <span id="mood-message" class="flex-1 text-pink-700 text-base font-normal leading-relaxed text-center"></span>
+                        <div class="relative bg-pink-50 border border-pink-100 rounded-2xl shadow-sm max-w-lg w-full px-8 py-7 flex justify-center">
+                            <div id="mood-message-content" class="flex items-start gap-3 w-full">
+                                <span class="material-icons text-pink-400 text-2xl mt-0.5" id="mood-message-icon">auto_awesome</span>
+                                <span id="mood-message" class="flex-1 text-pink-700 text-base font-normal leading-relaxed text-center"></span>
+                            </div>
+                            <img id="mood-loading-gif" src="/images/capybara-rub.gif" alt="Loading..." class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-32 w-32 hidden z-20" />
                         </div>
                     </div>
                 </div>
@@ -218,6 +221,8 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const form = document.getElementById('mood-form');
+        const messageContent = document.getElementById('mood-message-content');
+        const loadingGif = document.getElementById('mood-loading-gif');
         const messageDiv = document.getElementById('mood-message');
         const widget = document.getElementById('mood-widget');
         const moodLabels = document.querySelectorAll('#mood-form [data-mood]');
@@ -280,6 +285,8 @@
         // Set supportive message
         function setSupportiveMessage(message) {
             messageDiv.textContent = message || '';
+            if (messageContent) messageContent.classList.remove('hidden');
+            if (loadingGif) loadingGif.classList.add('hidden');
         }
         // Render week moods
         function renderWeekMoods(data) {
@@ -313,6 +320,11 @@
         form.addEventListener('change', function(e) {
             if (e.target.name !== 'mood') return;
             setMoodSelectorState(e.target.value); // Highlight instantly
+
+            // Show loading GIF, hide message content
+            if (loadingGif) loadingGif.classList.remove('hidden');
+            if (messageContent) messageContent.classList.add('hidden');
+
             // Send AJAX POST request to /mood
             fetch("{{ route('mood.store') }}", {
                 method: 'POST',
