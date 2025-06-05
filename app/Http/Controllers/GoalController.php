@@ -10,13 +10,11 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Illuminate\Support\Carbon;
 
-
 class GoalController extends Controller
 {
     public function goals(Request $request): View
     {
         $activeTab = $request->query('tab', 'current');
-        $showForm = $request->query('show_form') === '1';
 
         $currentGoals = Goal::where('achieved', false)->get();
         $achievedGoals = Goal::where('achieved', true)->get();
@@ -60,42 +58,47 @@ class GoalController extends Controller
             ]
         ];
 
-        return view('goals', compact('activeTab', 'currentGoals', 'achievedGoals', 'badges', 'showForm'));
+        return view('goals', compact('activeTab', 'currentGoals', 'achievedGoals', 'badges'));
+    }
+
+    public function create(): View
+    {
+        return view('goals.create');
     }
 
     public function store(Request $request): RedirectResponse
     {
-        $validatedData = $request->validate([
+        $validated = $request->validate([
             'emoji' => 'required|string|max:2',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'xp' => 'required|integer|min:10|max:1000',
             'duration_value' => 'required|integer|min:1',
-            'duration_unit' => 'required|in:hours,days'
+            'duration_unit' => 'required|in:hours,days',
         ]);
 
-        $validatedData['progress'] = 0;
-        $validatedData['streak'] = 0;
-        $validatedData['achieved'] = false;
-        $validatedData['user_id'] = auth()->id();
-        Goal::create($validatedData);
+        $goal = new Goal($validated);
+        $goal->user_id = auth()->id();
+        $goal->save();
 
-        return redirect()->route('goals')->with('success', 'Goal added successfully!');
+        return redirect()->route('goals')->with('success', 'Goal created successfully!');
+    }
+
+    public function edit(Goal $goal): View
+    {
+        return view('goals.edit', compact('goal'));
     }
 
     public function update(Request $request, Goal $goal): RedirectResponse
     {
         $validated = $request->validate([
-            'emoji'       => 'required|string|max:2',
-            'title'       => 'required|string|max:255',
+            'emoji' => 'required|string|max:2',
+            'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'xp'          => 'required|integer|min:10|max:1000',
+            'xp' => 'required|integer|min:10|max:1000',
             'duration_value' => 'required|integer|min:1',
             'duration_unit' => 'required|in:hours,days',
         ]);
-
-        $validatedData['user_id'] = auth()->id();
-
 
         $goal->update($validated);
 
@@ -140,16 +143,10 @@ class GoalController extends Controller
             $goal->achieved_at = now();
         }
         $goal->last_progress_date = now();
-
-        // **REMOVE THIS:**
-        // $goal->day_flow = ($goal->day_flow ?? 0) + 1;
-
         $goal->save();
 
         app(XPService::class)->reward($user, $xpPerUpdate, 0, 'Goal progress update');
-
-        // Instead of manually setting day_flow, just pass fresh from DB
-        $goal->refresh(); // reload model from DB to get latest progressLogs count
+        $goal->refresh();
 
         return back()->with([
             'success' => 'Goal updated and XP awarded!',

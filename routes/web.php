@@ -111,11 +111,14 @@ require __DIR__.'/auth.php';
 
 Route::get('/challenges',  [Controller::class, 'challenges'])->name('challenges');
 Route::get('/goals',  [GoalController::class, 'goals'])->name('goals');
+Route::get('/goals/create', [GoalController::class, 'create'])->name('goals.create');
 Route::post('/goals', [GoalController::class, 'store'])->name('goals.store');
+Route::get('/goals/{goal}/edit', [GoalController::class, 'edit'])->name('goals.edit');
 Route::post('/goals/default/{goal}/start', [GoalController::class, 'startDefault'])->name('goals.start-default');
 Route::put('/goals/{goal}', [GoalController::class, 'update'])->name('goals.update');
 Route::delete('/goals/{goal}', [GoalController::class, 'destroy'])->name('goals.destroy');
 Route::post('/goals/{goal}/daily-update', [GoalController::class, 'dailyUpdate'])->name('goals.daily-update');
+
 
 Route::get('/test-notify-overdue', function () {
     $overdueGoals = Goal::where('notified_about_deadline', false)
