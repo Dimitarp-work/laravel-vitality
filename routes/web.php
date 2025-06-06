@@ -81,4 +81,6 @@ Route::post('/thought', [ThoughtController::class, 'store'])->name('thought.stor
 
 Route::get('/capychat', [CapyChatController::class, 'index'])->name('capychat');
 
+Route::post('/capychat/message', [CapyChatController::class, 'message'])->name('capychat.message');
+
 require __DIR__.'/auth.php';

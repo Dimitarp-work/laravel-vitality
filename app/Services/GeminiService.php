@@ -50,4 +50,37 @@ class GeminiService
         }
         throw new \Exception('No message from Gemini');
     }
+
+    /**
+     * Generate a chat reply for Capy Chat using Gemini.
+     *
+     * @param string $userName
+     * @param array $history
+     * @param string $userMessage
+     * @return string
+     */
+    public function chatReply($userName, $history, $userMessage)
+    {
+        $historyText = '';
+        if (!empty($history)) {
+            $historyText = "Previous conversation:\n" . implode("\n", $history) . "\n";
+        }
+        $prompt = "You are Capybara, a friendly and empathetic AI wellness companion. $historyText" .
+            "The user ($userName) just said: '$userMessage'.\n" .
+            "Reply as Capybara in a warm, supportive, and concise way (1-2 sentences). Use only plain text, no markdown or formatting. If appropriate, ask a gentle follow-up question or offer to listen more.";
+        $response = $this->client->post($this->endpoint, [
+            'query' => ['key' => $this->apiKey],
+            'json' => [
+                'contents' => [
+                    ['parts' => [ ['text' => $prompt] ]]
+                ]
+            ],
+            'timeout' => 10,
+        ]);
+        $data = json_decode($response->getBody(), true);
+        if (isset($data['candidates'][0]['content']['parts'][0]['text'])) {
+            return trim($data['candidates'][0]['content']['parts'][0]['text']);
+        }
+        throw new \Exception('No message from Gemini');
+    }
 }
