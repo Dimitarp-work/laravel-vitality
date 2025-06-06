@@ -1,30 +1,14 @@
 <?php
 
-namespace App\Console\Commands;
-
-use Illuminate\Console\Command;
 use App\Models\Goal;
-use App\Notifications\GoalOverdueNotification;
+use App\Models\OverdueGoalNotification; // New model for in-app notifications
+use Illuminate\Console\Command;
 
 class NotifyOverdueGoals extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'app:notify-overdue-goals';
+    protected $description = 'Notify users in-app about overdue goals with recommendations';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Notify employees about overdue goals with recommendations';
-
-    /**
-     * Execute the console command.
-     */
     public function handle()
     {
         $overdueGoals = Goal::where('notified_about_deadline', false)
@@ -37,17 +21,20 @@ class NotifyOverdueGoals extends Command
             $user = $goal->user;
 
             if ($user) {
-                // Notify the user about their overdue goal
-                $user->notify(new GoalOverdueNotification($goal));
+                // Save the notification in the database instead of sending email
+                \App\Models\OverdueGoalNotification::create([
+                    'user_id' => $user->id,
+                    'goal_id' => $goal->id,
+                    'message' => 'Your goal "' . $goal->title . '" is overdue. Consider updating your progress or adjusting the deadline.',
+                ]);
 
-                // Mark this goal as notified so it won't notify again
                 $goal->notified_about_deadline = true;
                 $goal->save();
 
-                $this->info("Notified user {$user->id} for goal {$goal->id}");
+                $this->info("Saved in-app notification for user {$user->id} for goal {$goal->id}");
             }
         }
 
-        $this->info('Overdue goal notifications sent.');
+        $this->info('In-app overdue notifications saved.');
     }
 }

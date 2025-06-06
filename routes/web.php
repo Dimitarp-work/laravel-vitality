@@ -121,6 +121,7 @@ Route::delete('/goals/{goal}', [GoalController::class, 'destroy'])->name('goals.
 Route::post('/goals/{goal}/daily-update', [GoalController::class, 'dailyUpdate'])->name('goals.daily-update');
 
 
+
 Route::get('/test-notify-overdue', function () {
     $overdueGoals = Goal::where('notified_about_deadline', false)
         ->where('achieved', false)
