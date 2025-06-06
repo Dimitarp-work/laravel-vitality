@@ -66,6 +66,7 @@
                             <label class="block text-sm font-medium text-gray-700 mb-1">Duration Unit *</label>
                             <select name="duration_unit"
                                     class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500 @error('duration_unit') border-red-500 @enderror">
+                                <option value="minutes" {{ old('duration_unit') === 'minutes' ? 'selected' : '' }}>Minutes</option>
                                 <option value="days" {{ old('duration_unit', 'days') === 'days' ? 'selected' : '' }}>Days</option>
                                 <option value="hours" {{ old('duration_unit') === 'hours' ? 'selected' : '' }}>Hours</option>
                             </select>
