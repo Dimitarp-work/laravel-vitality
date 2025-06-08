@@ -47,6 +47,18 @@
             </div>
         </div>
 
+        <!-- Participants Overlay -->
+        <div id="participantsOverlay" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 hidden">
+            <div class="bg-white rounded-lg shadow-xl max-h-[80vh] w-full max-w-md overflow-y-auto p-6 relative">
+                <button onclick="toggleParticipantsOverlay(false)" class="absolute top-3 right-3 text-gray-400 hover:text-black text-xl">&times;</button>
+                <h2 class="text-xl font-semibold mb-4 text-pink-700">Participants</h2>
+                <ul id="participantsList" class="space-y-2">
+                    <!-- Participants will be injected here -->
+                </ul>
+            </div>
+        </div>
+
+
         <!-- Challenge Sections -->
         @foreach ([
             'Active Challenges' => $activeChallenges,
@@ -102,5 +114,35 @@
                 }
             });
         });
+    </script>
+
+    <!--Participant Overlay Script-->
+    <script>
+        function toggleParticipantsOverlay(show) {
+            const overlay = document.getElementById('participantsOverlay');
+            overlay.classList.toggle('hidden', !show);
+        }
+
+        async function openParticipantsOverlay(challengeId) {
+            // Optional: Fetch via AJAX
+            const response = await fetch(`/challenges/${challengeId}/participants`);
+            const participants = await response.json();
+
+            const list = document.getElementById('participantsList');
+            list.innerHTML = ''; // Clear previous
+
+            if (participants.length === 0) {
+                list.innerHTML = '<li class="text-gray-500">No participants yet.</li>';
+            } else {
+                participants.forEach(user => {
+                    const li = document.createElement('li');
+                    li.textContent = user.name;
+                    li.className = 'border-b pb-2 text-sm';
+                    list.appendChild(li);
+                });
+            }
+
+            toggleParticipantsOverlay(true);
+        }
     </script>
 @endsection
