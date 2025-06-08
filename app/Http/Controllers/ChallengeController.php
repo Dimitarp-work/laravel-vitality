@@ -23,6 +23,7 @@ class ChallengeController extends Controller
         // Get IDs of challenges the user has already joined
         $joinedIds = $user->joinedChallenges()->pluck('challenge_id');
 
+
         // Mark all expired challenges as completed
         $expiringChallenges = Challenge::where('status', '!=', 'completed')->get();
 
