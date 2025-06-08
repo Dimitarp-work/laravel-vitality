@@ -110,7 +110,6 @@ Route::get('/dashboard', function () {return view('dashboard'); })->name('dashbo
 Route::post('/thought', [ThoughtController::class, 'store'])->name('thought.store');
 require __DIR__.'/auth.php';
 
-Route::get('/challenges',  [Controller::class, 'challenges'])->name('challenges.index');
 Route::get('/goals',  [GoalController::class, 'goals'])->name('goals');
 Route::get('/goals/create', [GoalController::class, 'create'])->name('goals.create');
 Route::post('/goals', [GoalController::class, 'store'])->name('goals.store');
