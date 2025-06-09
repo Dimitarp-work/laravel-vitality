@@ -26,56 +26,52 @@
 
             <!-- Top 3 -->
             <div class="flex justify-center gap-12 mb-8">
-                <!-- 2nd Place -->
-                <div class="text-center">
-                    <div class="w-16 h-16 rounded-full bg-gray-200 mx-auto text-xl font-bold text-gray-700 flex items-center justify-center border-4 border-gray-300">JD</div>
-                    <div class="text-sm mt-2 font-medium text-gray-800">John Doe</div>
-                    <div class="text-sm text-gray-500">450 XP</div>
-                    <div class="text-xs text-pink-500 mt-1">Wellness Warrior</div>
-                    <div class="text-gray-600 font-bold text-sm mt-1">2</div>
-                </div>
+                @foreach ($topThree as $index => $user)
+                    @php
+                        $rank = $index + 1;
+                        $colors = [
+                            1 => ['bg' => 'bg-yellow-100', 'text' => 'text-yellow-700', 'border' => 'border-yellow-400', 'emoji' => '🏆'],
+                            2 => ['bg' => 'bg-gray-200', 'text' => 'text-gray-700', 'border' => 'border-gray-300', 'emoji' => ''],
+                            3 => ['bg' => 'bg-orange-100', 'text' => 'text-orange-700', 'border' => 'border-orange-400', 'emoji' => ''],
+                        ];
+                        $color = $colors[$rank];
+                        $initials = strtoupper(substr(explode(' ', $user['name'])[0] ?? '', 0, 1) . substr(explode(' ', $user['name'])[1] ?? '', 0, 1));
+                        $title = match($rank) {
+                            1 => 'Mindfulness Maven',
+                            2 => 'Wellness Warrior',
+                            3 => 'Streak Superstar',
+                            default => 'Top Performer',
+                        };
+                    @endphp
 
-                <!-- 1st Place -->
-                <div class="text-center">
-                    <div class="w-20 h-20 rounded-full bg-yellow-100 mx-auto text-xl font-bold text-yellow-700 flex items-center justify-center border-4 border-yellow-400 relative">
-                        JS
-                        <span class="absolute -top-5 left-1/2 transform -translate-x-1/2 text-yellow-500 text-xl">🏆</span>
+                    <div class="text-center">
+                        <div class="{{ $rank === 1 ? 'w-20 h-20 text-xl' : 'w-16 h-16 text-lg' }} rounded-full {{ $color['bg'] }} mx-auto font-bold {{ $color['text'] }} flex items-center justify-center border-4 {{ $color['border'] }} relative">
+                            {{ $initials }}
+                            @if ($color['emoji'])
+                                <span class="absolute -top-5 left-1/2 transform -translate-x-1/2 text-xl {{ $color['text'] }}">{{ $color['emoji'] }}</span>
+                            @endif
+                        </div>
+                        <div class="text-sm mt-2 font-medium text-gray-800">{{ $user['name'] }}</div>
+                        <div class="text-sm text-gray-500">{{ $user['xp'] }} XP</div>
+                        <div class="text-xs text-pink-500 mt-1">{{ $title }}</div>
+                        <div class="font-bold text-sm mt-1 {{ $color['text'] }}">{{ $rank }}</div>
                     </div>
-                    <div class="text-base mt-2 font-semibold text-gray-900">Jane Smith</div>
-                    <div class="text-sm text-gray-600">520 XP</div>
-                    <div class="text-xs text-pink-500 mt-1">Mindfulness Maven</div>
-                    <div class="text-yellow-600 font-bold text-sm mt-1">1</div>
-                </div>
-
-                <!-- 3rd Place -->
-                <div class="text-center">
-                    <div class="w-16 h-16 rounded-full bg-orange-100 mx-auto text-xl font-bold text-orange-700 flex items-center justify-center border-4 border-orange-400">AJ</div>
-                    <div class="text-sm mt-2 font-medium text-gray-800">Alex Johnson</div>
-                    <div class="text-sm text-gray-500">380 XP</div>
-                    <div class="text-xs text-pink-500 mt-1">Streak Superstar</div>
-                    <div class="text-orange-600 font-bold text-sm mt-1">3</div>
-                </div>
+                @endforeach
             </div>
 
             <!-- Rest of the leaderboard -->
             <div class="space-y-3">
-                @php
-                    $users = [
-                        ['rank' => 4, 'initials' => 'SW', 'name' => 'Sam Wilson', 'title' => 'Hydration Hero', 'xp' => 340],
-                        ['rank' => 5, 'initials' => 'TB', 'name' => 'Taylor Brown', 'title' => 'Wellness Rookie', 'xp' => 290],
-                        ['rank' => 6, 'initials' => 'JL', 'name' => 'Jordan Lee', 'title' => 'Meditation Master', 'xp' => 270],
-                        ['rank' => 7, 'initials' => 'CM', 'name' => 'Casey Miller', 'title' => 'Wellness Explorer', 'xp' => 250],
-                    ];
-                @endphp
-
-                @foreach ($users as $user)
+                @foreach ($users as $index => $user)
+                    @php
+                        $initials = strtoupper(substr(explode(' ', $user['name'])[0] ?? '', 0, 1) . substr(explode(' ', $user['name'])[1] ?? '', 0, 1));
+                    @endphp
                     <div class="flex justify-between items-center bg-gray-50 px-4 py-3 rounded-md">
                         <div class="flex items-center gap-4">
-                            <span class="text-gray-700 font-bold w-5">{{ $user['rank'] }}</span>
-                            <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center font-bold text-gray-600">{{ $user['initials'] }}</div>
+                            <span class="text-gray-700 font-bold w-5">{{ $index + 4 }}</span>
+                            <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center font-bold text-gray-600">{{ $initials }}</div>
                             <div>
                                 <div class="text-sm font-medium text-gray-800">{{ $user['name'] }}</div>
-                                <div class="text-xs text-pink-500">{{ $user['title'] }}</div>
+                                <div class="text-xs text-pink-500">{{ $user['title'] ?? 'Participant' }}</div>
                             </div>
                         </div>
                         <div class="text-gray-700 font-medium">{{ $user['xp'] }} XP</div>
