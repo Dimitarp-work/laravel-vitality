@@ -73,9 +73,11 @@ class MoodController extends Controller
 
         // Try Gemini first, fallback to template if it fails
         $messageWithName = null;
+        $isGemini = false;
         try {
             $gemini = new GeminiService();
             $messageWithName = $gemini->generateSupportiveMessage($firstName, $mood, $weekMoods);
+            $isGemini = true;
         } catch (\Exception $e) {
             \Log::error('Gemini API error: ' . $e->getMessage(), [
                 'exception' => $e,
@@ -85,6 +87,7 @@ class MoodController extends Controller
             $punct = preg_match('/[.!?]$/', $message, $matches) ? $matches[0] : '';
             $baseMessage = $punct ? mb_substr($message, 0, -1) : $message;
             $messageWithName = $baseMessage . ', ' . $firstName . $punct;
+            $isGemini = false;
         }
 
         // Update or create the mood for today (so user can only have one mood per day)
@@ -104,6 +107,7 @@ class MoodController extends Controller
             'success' => true,
             'mood' => $mood,
             'message' => $messageWithName,
+            'today_message_is_gemini' => $isGemini,
         ]);
     }
 
@@ -131,10 +135,30 @@ class MoodController extends Controller
 
         // Get today's supportive message if it exists
         $todayMessage = $moods[$today]->message ?? null;
-
+        // Determine if today's message is from Gemini or fallback
+        $todayMood = $moods[$today]->mood ?? null;
+        $isGemini = false;
+        if ($todayMessage && $todayMood && isset($this->fallbackMessages[$todayMood])) {
+            // Remove the user's name from the fallback message for comparison
+            $fallbacks = collect($this->fallbackMessages[$todayMood])->map(function($msg) use ($user) {
+                $firstName = explode(' ', trim($user->name))[0] ?? '';
+                // Remove any trailing punctuation and add possible name
+                $msgBase = preg_replace('/[.!?]$/', '', $msg);
+                return [
+                    $msg,
+                    $msgBase,
+                    $msgBase . ', ' . $firstName . '.',
+                    $msgBase . ', ' . $firstName . '!',
+                    $msgBase . ', ' . $firstName . '?',
+                    $msgBase . ', ' . $firstName,
+                ];
+            })->flatten()->unique()->toArray();
+            $isGemini = !in_array($todayMessage, $fallbacks);
+        }
         return response()->json([
             'week' => $result,
             'today_message' => $todayMessage,
+            'today_message_is_gemini' => $isGemini,
         ]);
     }
 }

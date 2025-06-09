@@ -91,13 +91,20 @@
                         </div>
                     </form>
                     <!-- Supportive Message Display -->
-                    <div id="mood-message-container" class="w-full flex justify-center mt-6 mb-8 px-4">
-                        <div class="relative bg-pink-50 border border-pink-100 rounded-2xl shadow-sm max-w-lg w-full px-8 py-7 flex justify-center">
+                    <div class="w-full flex justify-center mt-6 mb-8 px-4">
+                        <!-- GIF (loading) -->
+                        <img id="mood-loading-gif" src="/images/capybara-rub.gif" alt="Loading..." class="h-32 w-32 hidden z-20" />
+                        <!-- Pink box and message/button -->
+                        <div id="mood-message-container" class="relative bg-pink-50 border border-pink-100 rounded-2xl shadow-sm max-w-lg w-full px-8 py-7 flex flex-col items-center">
                             <div id="mood-message-content" class="flex items-start gap-3 w-full">
                                 <span class="material-icons text-pink-400 text-2xl mt-0.5" id="mood-message-icon">auto_awesome</span>
                                 <span id="mood-message" class="flex-1 text-pink-700 text-base font-normal leading-relaxed text-center"></span>
                             </div>
-                            <img id="mood-loading-gif" src="/images/capybara-rub.gif" alt="Loading..." class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-32 w-32 hidden z-20" />
+                            <div id="capychat-btn-container" class="w-full flex justify-center mt-4 hidden">
+                                <a href="{{ route('capychat') }}" class="bg-pink-400 hover:bg-pink-500 text-white rounded-lg px-6 py-2 font-semibold transition text-base shadow">
+                                    Open Capy Chat
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -283,19 +290,26 @@
                 selectedLabelClasses.forEach(cls => selectedLabel.classList.add(cls));
             }
         }
-        // Set supportive message
-        function setSupportiveMessage(message) {
+        // Show the supportive message and button
+        function setSupportiveMessage(message, isGemini) {
             messageDiv.textContent = message || '';
-            if (messageContent) messageContent.classList.remove('hidden');
             if (loadingGif) loadingGif.classList.add('hidden');
-            if (document.getElementById('capychat-btn-container')) {
-                document.getElementById('capychat-btn-container').classList.remove('hidden');
+            const messageContainer = document.getElementById('mood-message-container');
+            if (messageContainer) messageContainer.classList.remove('hidden');
+            const capyBtn = document.getElementById('capychat-btn-container');
+            if (capyBtn) {
+                if (isGemini) {
+                    capyBtn.classList.remove('hidden');
+                } else {
+                    capyBtn.classList.add('hidden');
+                }
             }
         }
         // Render week moods
         function renderWeekMoods(data) {
             const moods = data.week;
             const todayMessage = data.today_message;
+            const isGemini = data.today_message_is_gemini || false;
             weekMoodsDiv.innerHTML = '';
             const today = getTodayDay();
             let todaysMood = moods[today] || null;
@@ -307,7 +321,7 @@
             // Set the selected mood in the mood selector if today has a mood
             if (todaysMood) setMoodSelectorState(todaysMood);
             // Set the supportive message for today if it exists
-            setSupportiveMessage(todayMessage);
+            setSupportiveMessage(todayMessage, isGemini);
         }
         function parseResponse(response) {
             return response.json();
@@ -325,9 +339,10 @@
             if (e.target.name !== 'mood') return;
             setMoodSelectorState(e.target.value); // Highlight instantly
 
-            // Show loading GIF, hide message content
+            // Show loading GIF, hide pink box
             if (loadingGif) loadingGif.classList.remove('hidden');
-            if (messageContent) messageContent.classList.add('hidden');
+            const messageContainer = document.getElementById('mood-message-container');
+            if (messageContainer) messageContainer.classList.add('hidden');
 
             // Send AJAX POST request to /mood
             fetch("{{ route('mood.store') }}", {
@@ -342,14 +357,14 @@
                 .then(parseResponse)
                 .then(data => {
                     if (!data.success) {
-                        setSupportiveMessage('Something went wrong. Please try again.');
+                        setSupportiveMessage('Something went wrong. Please try again.', false);
                         return;
                     }
-                    setSupportiveMessage(data.message);
+                    setSupportiveMessage(data.message, data.today_message_is_gemini);
                     fetchWeekMoods();
                 })
                 .catch(() => {
-                    setSupportiveMessage('Could not connect to the server.');
+                    setSupportiveMessage('Could not connect to the server.', false);
                 });
         });
     });
