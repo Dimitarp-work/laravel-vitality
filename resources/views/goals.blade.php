@@ -179,17 +179,33 @@
 
                     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                         @foreach($badges as $badge)
-                            <div class="bg-white rounded-xl shadow-md {{ $badge['earned'] ? '' : 'opacity-70' }}">
-                                <div class="p-4 text-center">
-                                    <div class="text-5xl mb-2">{{ $badge['emoji'] }}</div>
-                                    <h3 class="font-semibold">{{ $badge['name'] }}</h3>
-                                    <p class="text-xs text-gray-500">{{ $badge['description'] }}</p>
+                            <div class="bg-white rounded-xl shadow-md border-none {{ $badge['earned'] ? '' : 'opacity-70' }}">
+                                <div class="p-4 flex flex-col items-center text-center">
+                                    <div class="text-5xl my-3">
+                                        {{ $badge['emoji'] ?? '🏅' }}
+                                    </div>
+                                    <h3 class="font-semibold text-sm text-pink-700 mb-1">{{ $badge['name'] }}</h3>
+                                    <p class="text-xs text-gray-500 mb-2">{{ $badge['description'] }}</p>
+
+                                    @if($badge['earned'])
+                                        <span class="text-xs text-green-600 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                Earned on {{ $badge['earnedDate'] ?? '—' }}
+                            </span>
+                                    @else
+                                        <span class="text-xs text-gray-400">
+                                {{ $badge['progress'] ?? 0 }} of {{ $badge['maxProgress'] ?? 1 }} completed
+                            </span>
+                                    @endif
                                 </div>
                             </div>
                         @endforeach
                     </div>
                 </div>
             @endif
+
         </div>
     </div>
 
