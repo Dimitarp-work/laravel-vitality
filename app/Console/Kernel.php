@@ -14,7 +14,7 @@ class Kernel extends ConsoleKernel
     {
         // Schedule the overdue goals notification to run daily at 9 AM
         $schedule->command('goals:notify-overdue')->dailyAt('09:00');
-        $schedule->command('reminders:check')->everyMinute();
+        // $schedule->command('reminders:check')->everyMinute(); // Removed as per user's request
     }
 
     /**

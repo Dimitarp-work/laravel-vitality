@@ -67,6 +67,16 @@
                         Test Reminders
                     </button>
                 </form>
+
+                <h3 class="text-lg font-medium text-gray-900 mb-4 mt-6">Quick Test Interval</h3>
+                <p class="text-sm text-gray-500 mb-4">Set reminder interval to 10 seconds for quick testing.</p>
+                <form action="{{ route('settings.set-test-reminder-interval') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="bg-pink-100 hover:bg-pink-200 text-pink-700 px-6 py-2 rounded-lg font-medium flex items-center gap-2">
+                        <span class="material-icons text-base">timer</span>
+                        Set 10s Interval
+                    </button>
+                </form>
             </div>
         </div>
     </div>
