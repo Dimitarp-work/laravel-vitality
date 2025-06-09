@@ -49,14 +49,6 @@ class DailyCheckInController extends Controller
     }
 
     /**
-     * Display the reminders view.
-     */
-    public function reminders()
-    {
-        return view('checkins.reminders');
-    }
-
-    /**
      * Show the form for creating a new resource.
      */
     public function create()

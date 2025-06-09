@@ -123,9 +123,6 @@ use App\Constants\CheckInConstants;
                 <a href="{{ route('checkins.week') }}" class="flex-1 px-4 py-3 text-pink-700 hover:bg-white/50 font-medium rounded-lg transition-all text-center">
                     This Week
                 </a>
-                <a href="{{ route('checkins.reminders') }}" class="flex-1 px-4 py-3 text-pink-700 hover:bg-white/50 font-medium rounded-lg transition-all text-center">
-                    My Reminders
-                </a>
             </div>
         </div>
 
