@@ -12,32 +12,8 @@ use App\Constants\CheckInConstants;
         window.CheckInConstants = {
             TITLE_MAX_LENGTH: {{ CheckInConstants::TITLE_MAX_LENGTH }}
         };
-
-        // Make openDeleteModal available globally
-        window.openDeleteModal = function(id) {
-            // Set form action URL
-            document.getElementById('deleteForm').action = `/checkins/${id}`;
-
-            // Show the modal with fade in
-            const modal = document.getElementById('deleteModal');
-            modal.classList.remove('hidden');
-            // Trigger reflow to ensure the transition works
-            modal.offsetHeight;
-            modal.classList.remove('opacity-0');
-            modal.querySelector('div').classList.remove('scale-95');
-        };
-
-        // Make closeDeleteModal available globally
-        window.closeDeleteModal = function() {
-            const modal = document.getElementById('deleteModal');
-            modal.classList.add('opacity-0');
-            modal.querySelector('div').classList.add('scale-95');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-            }, 300); // Wait for fade out animation to complete
-        };
     </script>
-    @vite(['resources/js/checkins.js', 'resources/js/confetti.js'])
+    @vite(['resources/js/modal-utils.js', 'resources/js/checkins.js', 'resources/js/confetti.js', 'resources/js/checkins_modals.js'])
 @endpush
 
 @section('content')

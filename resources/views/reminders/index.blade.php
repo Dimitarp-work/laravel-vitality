@@ -2,6 +2,10 @@
 
 @section('title', 'Reminders')
 
+@push('scripts')
+    @vite(['resources/js/modal-utils.js', 'resources/js/reminders_modals.js'])
+@endpush
+
 @section('content')
 <div class="w-full pl-0 md:pl-72">
     <div class="max-w-5xl mx-auto flex flex-col gap-8 px-6 py-8">
@@ -45,17 +49,6 @@
                     @foreach($remindersGroup as $reminder)
                         <div class="flex items-center justify-between rounded-lg p-4 {{ $reminder->is_completed ? 'bg-green-50 opacity-70' : 'bg-gray-50' }}">
                             <div class="flex items-center gap-4">
-                                <form action="{{ route('reminders.update', $reminder->id) }}" method="POST">
-                                    @csrf
-                                    @method('PUT')
-                                    <input type="hidden" name="is_completed" value="{{ $reminder->is_completed ? '0' : '1' }}">
-                                    <button type="submit"
-                                            class="w-8 h-8 flex items-center justify-center rounded-full transition duration-150
-                                            {{ $reminder->is_completed ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-pink-100 text-pink-700 hover:bg-pink-200' }}"
-                                            title="{{ $reminder->is_completed ? 'Mark as Incomplete' : 'Mark as Complete' }}">
-                                        <span class="material-icons text-base">{{ $reminder->is_completed ? 'check_circle' : 'radio_button_unchecked' }}</span>
-                                    </button>
-                                </form>
                                 @php
                                     $icon = 'notifications'; // Default icon
                                     $title = 'Unknown Reminder';
@@ -112,17 +105,6 @@
                 @forelse($reminders as $reminder)
                     <div class="flex items-center justify-between rounded-lg p-4 {{ $reminder->is_completed ? 'bg-green-50 opacity-70' : 'bg-gray-50' }}">
                         <div class="flex items-center gap-4">
-                            <form action="{{ route('reminders.update', $reminder->id) }}" method="POST">
-                                @csrf
-                                @method('PUT')
-                                <input type="hidden" name="is_completed" value="{{ $reminder->is_completed ? '0' : '1' }}">
-                                <button type="submit"
-                                        class="w-8 h-8 flex items-center justify-center rounded-full transition duration-150
-                                        {{ $reminder->is_completed ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-pink-100 text-pink-700 hover:bg-pink-200' }}"
-                                        title="{{ $reminder->is_completed ? 'Mark as Incomplete' : 'Mark as Complete' }}">
-                                    <span class="material-icons text-base">{{ $reminder->is_completed ? 'check_circle' : 'radio_button_unchecked' }}</span>
-                                </button>
-                            </form>
                             @php
                                 $icon = 'notifications'; // Default icon
                                 $title = 'Unknown Reminder';
@@ -176,12 +158,12 @@
     </div>
 
     <!-- Delete Confirmation Modal -->
-    <div id="deleteModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
-        <div class="bg-white rounded-xl shadow-md p-6 max-w-sm w-full">
+    <div id="deleteModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 transition-opacity duration-300 opacity-0">
+        <div class="bg-white rounded-xl shadow-md p-6 max-w-sm w-full transform transition-transform duration-300 scale-95">
             <h3 class="text-lg font-medium mb-4">Confirm Deletion</h3>
             <p class="text-gray-600 mb-6">Are you sure you want to delete this reminder? This action cannot be undone.</p>
             <div class="flex justify-end gap-2">
-                <button onclick="document.getElementById('deleteModal').classList.add('hidden')"
+                <button onclick="closeDeleteModal()"
                         class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg">
                     Cancel
                 </button>

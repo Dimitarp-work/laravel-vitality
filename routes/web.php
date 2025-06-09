@@ -106,7 +106,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/reminders', [RemindersController::class, 'index'])->name('reminders.index');
     Route::get('/reminders/create', [RemindersController::class, 'create'])->name('reminders.create');
     Route::post('/reminders', [RemindersController::class, 'store'])->name('reminders.store');
-    Route::put('/reminders/{reminder}', [RemindersController::class, 'update'])->name('reminders.update');
     Route::delete('/reminders/{reminder}', [RemindersController::class, 'destroy'])->name('reminders.destroy');
 });
 // Admin Routes

@@ -82,7 +82,10 @@ class RemindersController extends Controller
         // Fetch goals, challenges, and daily check-ins, excluding those that already have reminders
         $goals = Goal::where('user_id', $userId)->whereNotIn('id', $existingGoalIds)->get();
         $challenges = Auth::user()->joinedChallenges->whereNotIn('id', $existingChallengeIds);
-        $dailyCheckIns = DailyCheckIn::where('stampcard_id', $userId)->whereNotIn('id', $existingDailyCheckInIds)->get();
+        $dailyCheckIns = DailyCheckIn::where('stampcard_id', $userId)
+                                ->whereNotIn('id', $existingDailyCheckInIds)
+                                ->where('isComplete', false)
+                                ->get();
 
         return view('reminders.create', compact('goals', 'challenges', 'dailyCheckIns'));
     }
@@ -137,22 +140,6 @@ class RemindersController extends Controller
         }
 
         return redirect()->route('reminders.index')->with('success', 'Reminders added successfully!');
-    }
-
-    /**
-     * Update the specified reminder in storage.
-     */
-    public function update(Request $request, Reminder $reminder)
-    {
-        // Ensure the authenticated user owns this reminder
-        if (Auth::id() !== $reminder->user_id) {
-            abort(403, 'Unauthorized action.');
-        }
-
-        $reminder->is_completed = $request->has('is_completed'); // Check if the checkbox is present
-        $reminder->save();
-
-        return back()->with('success', 'Reminder status updated.');
     }
 
     /**
