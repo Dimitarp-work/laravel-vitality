@@ -211,17 +211,11 @@
     <div class="bg-gradient-to-r from-pink-200 to-pink-100 rounded-2xl shadow p-8 w-full mt-2">
         <div class="font-bold text-pink-900 mb-3 text-lg flex items-center gap-2"><span
                 class="material-icons text-pink-400">calendar_month</span>Your Week in Feelings</div>
-        <div id="week-moods" class="flex gap-6 mb-2 overflow-x-auto"></div>
+        <div id="week-moods" class="flex items-center mb-2 overflow-x-auto px-2 sm:px-4 scrollbar-hide sm:justify-between sm:overflow-visible"></div>
         <div class="text-xs md:text-sm text-pink-700 flex items-center">
             <span class="material-icons text-pink-400 mr-2 text-2xl" id="mood-message-icon">auto_awesome</span>
             Each day is a new opportunity.
         </div>
-    </div>
-
-    <div id="capychat-btn-container" class="w-full flex justify-center mt-4 hidden">
-        <a href="{{ route('capychat') }}" class="bg-pink-400 hover:bg-pink-500 text-white rounded-lg px-6 py-2 font-semibold transition text-base shadow">
-            Open Capy Chat
-        </a>
     </div>
 
 <script>
@@ -254,14 +248,15 @@
             return days[(jsDay + 6) % 7];
         }
         // Render a single day mood cell
-        function renderDayMood(day, mood, isToday) {
+        function renderDayMood(day, mood, isToday, isFirst, isLast) {
             const moodEmoji = moodEmojis[mood] || moodEmojis['none'];
-            const highlight = isToday && mood !== 'none' ? 'ring-4 ring-pink-300 bg-pink-100 shadow-md scale-110 transition-all duration-200' : '';
-            const highlightNone = isToday && mood === 'none' ? 'ring-2 ring-pink-200 bg-white scale-110 transition-all duration-200' : '';
+            const highlight = isToday && mood !== 'none' ? 'ring-4 ring-pink-300 bg-pink-100 shadow-md transition-all duration-200' : '';
+            const highlightNone = isToday && mood === 'none' ? 'ring-2 ring-pink-200 bg-white transition-all duration-200' : '';
             const dayLabel = `<span class="text-xs mt-1 ${isToday ? 'font-bold text-pink-700' : ''}">${day}</span>`;
+            const margin = isFirst ? 'ml-2 sm:ml-4' : isLast ? 'mr-2 sm:mr-4' : 'mx-1 sm:mx-2';
             return `
-                <div class="flex flex-col items-center min-w-[40px]">
-                    <span class="text-3xl w-10 h-10 flex items-center justify-center rounded-full mt-2 ${highlight} ${highlightNone}">
+                <div class="flex flex-col items-center min-w-[40px] sm:min-w-[48px] ${margin} pt-1">
+                    <span class="text-2xl sm:text-3xl w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full leading-none ${highlight} ${highlightNone}">
                         ${moodEmoji}
                     </span>
                     ${dayLabel}
@@ -304,10 +299,10 @@
             weekMoodsDiv.innerHTML = '';
             const today = getTodayDay();
             let todaysMood = moods[today] || null;
-            days.forEach(day => {
+            days.forEach((day, idx) => {
                 const mood = moods[day] || 'none';
                 const isToday = day === today;
-                weekMoodsDiv.innerHTML += renderDayMood(day, mood, isToday);
+                weekMoodsDiv.innerHTML += renderDayMood(day, mood, isToday, idx === 0, idx === days.length - 1);
             });
             // Set the selected mood in the mood selector if today has a mood
             if (todaysMood) setMoodSelectorState(todaysMood);
