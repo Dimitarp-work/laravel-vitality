@@ -13,7 +13,7 @@ use App\Constants\CheckInConstants;
             TITLE_MAX_LENGTH: {{ CheckInConstants::TITLE_MAX_LENGTH }}
         };
     </script>
-    @vite(['resources/js/modal-utils.js', 'resources/js/checkins.js', 'resources/js/confetti.js', 'resources/js/checkins_modals.js'])
+    @vite(['resources/js/checkins.js', 'resources/js/confetti.js'])
 @endpush
 
 @section('content')
@@ -36,26 +36,12 @@ use App\Constants\CheckInConstants;
         </div>
 
         <!-- Delete Confirmation Modal -->
-        <div id="deleteModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 transition-opacity duration-300 opacity-0">
-            <div class="bg-white rounded-xl shadow-md p-6 max-w-sm w-full transform transition-transform duration-300 scale-95">
-                <h3 class="text-lg font-medium mb-4">Confirm Deletion</h3>
-                <p class="text-gray-600 mb-6">Are you sure you want to delete this check-in? This action cannot be undone.</p>
-                <div class="flex justify-end gap-2">
-                    <button onclick="closeDeleteModal()"
-                            class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg">
-                        Cancel
-                    </button>
-                    <form id="deleteForm" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit"
-                                class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg">
-                            Delete Check-in
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
+        <x-delete-modal
+            title="Confirm Deletion"
+            message="Are you sure you want to delete this check-in? This action cannot be undone."
+            confirmText="Delete Check-in"
+            feature="checkins"
+        />
 
         <!-- Header Card -->
         <div class="w-full bg-gradient-to-r from-pink-200 to-pink-100 rounded-2xl shadow p-6">
