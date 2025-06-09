@@ -7,41 +7,33 @@ use App\Models\NotificationSetting;
 use App\Models\Goal;
 use App\Models\Challenge;
 use App\Models\DailyCheckIn;
+use Illuminate\Support\Facades\Auth;
 
 class SettingsController extends Controller
 {
     public function index()
     {
         $user = auth()->user();
-        $settings = $user->notificationSettings ?? new NotificationSetting([
-            'reminder_interval' => 60,
-            'is_enabled' => true
-        ]);
+        $settings = $user->notificationSettings;
 
         return view('settings.index', compact('settings'));
     }
 
     public function update(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'reminder_interval' => 'required|integer|min:15|max:1440', // Between 15 minutes and 24 hours
-            'is_enabled' => 'boolean'
+            'is_enabled' => 'boolean', // Ensure this is validated as a boolean
         ]);
 
-        $user = auth()->user();
-        $settings = $user->notificationSettings;
+        $userId = Auth::id();
 
-        if (!$settings) {
-            $settings = new NotificationSetting();
-            $settings->user_id = $user->id;
-        }
+        $notificationSettings = NotificationSetting::where('user_id', $userId)->first();
 
-        $settings->fill([
-            'reminder_interval' => $request->reminder_interval,
-            'is_enabled' => $request->boolean('is_enabled')
+        $notificationSettings->update([
+            'reminder_interval' => $validated['reminder_interval'],
+            'is_enabled' => $request->boolean('is_enabled'), // Use request->boolean() to correctly handle 'on'
         ]);
-
-        $settings->save();
 
         return redirect()->route('settings.index')
             ->with('success', 'Settings updated successfully.');
