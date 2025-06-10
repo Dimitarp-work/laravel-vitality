@@ -13,6 +13,8 @@ use App\Http\Controllers\ThoughtController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Models\Goal;
 use App\Notifications\GoalOverdueNotification;
+use App\Http\Controllers\RemindersController;
+use App\Http\Controllers\SettingsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -84,18 +86,27 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/challenges/{challenge}', [ChallengeController::class, 'update'])->name('challenges.update');
     Route::get('/challenges/{challenge}/confirm-delete', [ChallengeController::class, 'confirmDelete'])->name('challenges.confirmDelete');
     Route::delete('/challenges/{challenge}', [ChallengeController::class, 'destroy'])->name('challenges.destroy');
+
+    // Settings routes
+    Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
+    Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
+    Route::post('/settings/test-reminders', [SettingsController::class, 'testReminders'])->name('settings.test-reminders');
+    Route::post('/settings/set-test-reminder-interval', [SettingsController::class, 'setTestReminderInterval'])->name('settings.set-test-reminder-interval');
+    Route::post('/notifications/clear', [SettingsController::class, 'clearNotifications'])->name('notifications.clear');
 });
-
-
-//Route::get('/checkins', [DailyCheckInController::class,'checkins'])->name('checkins');
 
 // Check-in routes
 Route::middleware('auth')->group(function () {
-    Route::get('/checkins/reminders', [DailyCheckInController::class, 'reminders'])->name('checkins.reminders');
     Route::post('/checkins/{dailyCheckIn}/complete', [DailyCheckInController::class, 'complete'])->name('checkins.complete');
     Route::get('/checkins/week', [DailyCheckInController::class, 'week'])->name('checkins.week');
     Route::delete('/checkins/{dailyCheckIn}', [DailyCheckInController::class, 'destroy'])->name('checkins.destroy');
     Route::resource('/checkins', DailyCheckInController::class);
+
+    // Reminders routes
+    Route::get('/reminders', [RemindersController::class, 'index'])->name('reminders.index');
+    Route::get('/reminders/create', [RemindersController::class, 'create'])->name('reminders.create');
+    Route::post('/reminders', [RemindersController::class, 'store'])->name('reminders.store');
+    Route::delete('/reminders/{reminder}', [RemindersController::class, 'destroy'])->name('reminders.destroy');
 });
 // Admin Routes
 Route::prefix('admin')->name('admin.')->group(function () {
@@ -109,6 +120,7 @@ Route::middleware(['auth'])->get('/mood/week', [MoodController::class, 'week'])-
 Route::get('/dashboard', function () {return view('dashboard'); })->name('dashboard');
 
 Route::post('/thought', [ThoughtController::class, 'store'])->name('thought.store');
+
 require __DIR__.'/auth.php';
 
 Route::get('/goals',  [GoalController::class, 'goals'])->name('goals');
@@ -119,8 +131,6 @@ Route::post('/goals/default/{goal}/start', [GoalController::class, 'startDefault
 Route::put('/goals/{goal}', [GoalController::class, 'update'])->name('goals.update');
 Route::delete('/goals/{goal}', [GoalController::class, 'destroy'])->name('goals.destroy');
 Route::post('/goals/{goal}/daily-update', [GoalController::class, 'dailyUpdate'])->name('goals.daily-update');
-
-
 
 Route::get('/test-notify-overdue', function () {
     $overdueGoals = Goal::where('notified_about_deadline', false)
