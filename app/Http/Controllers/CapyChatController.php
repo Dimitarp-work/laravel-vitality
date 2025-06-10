@@ -80,4 +80,21 @@ class CapyChatController extends Controller
         $count = $chat->messages()->unreadCapy()->count();
         return response()->json(['count' => $count]);
     }
+
+    // Mark a Capy message as read by ID (AJAX)
+    public function markRead(Request $request)
+    {
+        $request->validate(['id' => 'required|integer']);
+        $user = Auth::user();
+        $msg = \App\Models\ChatMessage::where('id', $request->id)
+            ->whereHas('chat', function($q) use ($user) { $q->where('user_id', $user->id); })
+            ->where('sender', 'capy')
+            ->first();
+        if ($msg) {
+            $msg->read_at = now();
+            $msg->save();
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false], 404);
+    }
 } 

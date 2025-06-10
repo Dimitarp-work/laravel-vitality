@@ -9,7 +9,20 @@ window.Alpine = Alpine;
 Alpine.start();
 
 // Capy Chat unread message bubble
+function isOnCapyChatPage() {
+    return document.getElementById('chat-history') !== null;
+}
+
 function updateCapyUnreadBubble() {
+    // If on Capy Chat page, do not show the bubble
+    if (isOnCapyChatPage()) {
+        const bubble = document.getElementById('capy-unread-bubble');
+        if (bubble) {
+            bubble.classList.add('hidden');
+            bubble.textContent = '';
+        }
+        return;
+    }
     fetch('/capychat/unread-count', {
         headers: {
             'Accept': 'application/json',
