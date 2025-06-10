@@ -11,10 +11,19 @@
         <div class="flex flex-col items-center">
             <img src="/images/capybara-rub.gif" alt="Capybara" class="w-20 h-20 rounded-full" />
             <h1 class="text-2xl font-bold text-pink-900 mt-2 text-center">Capy Chat</h1>
-            <div class="text-pink-700 text-center mt-1 mb-4">Chat with Capybara, your AI wellness companion powered by Gemini. Share your thoughts, feelings, or anything on your mind!</div>
+            <div class="text-pink-700 text-center mt-1 mb-4">Chat with Capy, your chill wellness companion powered. Share your thoughts, feelings, or anything on your mind!</div>
         </div>
         <div id="chat-history" class="w-full flex-1 overflow-y-auto px-1" style="min-height:120px;">
+            @php $dividerShown = false; @endphp
             @foreach($messages as $msg)
+                @if(!$dividerShown && $firstUnreadId && $msg->id == $firstUnreadId)
+                    <div id="new-messages-divider" class="flex items-center my-2">
+                        <div class="flex-grow border-t border-pink-200"></div>
+                        <span class="mx-3 text-xs text-pink-500 bg-pink-100 px-3 py-1 rounded-full shadow">New messages below</span>
+                        <div class="flex-grow border-t border-pink-200"></div>
+                    </div>
+                    @php $dividerShown = true; @endphp
+                @endif
                 @if($msg->sender === 'user')
                     <div class="flex justify-end mb-1">
                         <div class='bg-pink-400 text-white rounded-lg px-4 py-2 max-w-xl text-left break-words whitespace-pre-line'>{{ $msg->message }}</div>
@@ -89,7 +98,12 @@
     });
 
     window.addEventListener('DOMContentLoaded', () => {
-        chatHistory.scrollTop = chatHistory.scrollHeight;
+        const divider = document.getElementById('new-messages-divider');
+        if (divider && chatHistory) {
+            chatHistory.scrollTop = divider.offsetTop - chatHistory.offsetTop - 24;
+        } else if (chatHistory) {
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
     });
 </script>
 @endsection

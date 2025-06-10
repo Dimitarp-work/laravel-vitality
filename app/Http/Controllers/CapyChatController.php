@@ -31,12 +31,17 @@ class CapyChatController extends Controller
             }
         }
 
+        // Find the first unread Capy message
+        $firstUnread = $chat->messages()->unreadCapy()->orderBy('created_at')->first();
+        $firstUnreadId = $firstUnread ? $firstUnread->id : null;
+
         // Mark all unread Capy messages as read
         $chat->messages()->unreadCapy()->update(['read_at' => now()]);
 
         return view('capychat', [
             'chat' => $chat,
             'messages' => $messages,
+            'firstUnreadId' => $firstUnreadId,
         ]);
     }
 
