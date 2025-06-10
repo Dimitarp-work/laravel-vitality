@@ -73,6 +73,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::delete('articles/{article}', [ArticleController::class, 'destroy'])->name('articles.destroy');
 });
 
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+});
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/challenges', [ChallengeController::class, 'index'])->name('challenges.index');
     Route::get('/challenges/create', [ChallengeController::class, 'create'])->name('challenges.create');
@@ -86,7 +90,6 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/challenges/{challenge}', [ChallengeController::class, 'destroy'])->name('challenges.destroy');
 });
 
-
 //Route::get('/checkins', [DailyCheckInController::class,'checkins'])->name('checkins');
 
 // Check-in routes
@@ -97,21 +100,15 @@ Route::middleware('auth')->group(function () {
     Route::delete('/checkins/{dailyCheckIn}', [DailyCheckInController::class, 'destroy'])->name('checkins.destroy');
     Route::resource('/checkins', DailyCheckInController::class);
 });
-// Admin Routes
-Route::prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-});
 
 // Mood routes
 Route::middleware(['auth'])->post('/mood', [MoodController::class, 'store'])->name('mood.store');
 Route::middleware(['auth'])->get('/mood/week', [MoodController::class, 'week'])->name('mood.week');
 
-Route::get('/dashboard', function () {return view('dashboard'); })->name('dashboard');
-
 Route::post('/thought', [ThoughtController::class, 'store'])->name('thought.store');
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
-Route::get('/goals',  [GoalController::class, 'goals'])->name('goals');
+Route::get('/goals', [GoalController::class, 'goals'])->name('goals');
 Route::get('/goals/create', [GoalController::class, 'create'])->name('goals.create');
 Route::post('/goals', [GoalController::class, 'store'])->name('goals.store');
 Route::get('/goals/{goal}/edit', [GoalController::class, 'edit'])->name('goals.edit');
@@ -119,8 +116,6 @@ Route::post('/goals/default/{goal}/start', [GoalController::class, 'startDefault
 Route::put('/goals/{goal}', [GoalController::class, 'update'])->name('goals.update');
 Route::delete('/goals/{goal}', [GoalController::class, 'destroy'])->name('goals.destroy');
 Route::post('/goals/{goal}/daily-update', [GoalController::class, 'dailyUpdate'])->name('goals.daily-update');
-
-
 
 Route::get('/test-notify-overdue', function () {
     $overdueGoals = Goal::where('notified_about_deadline', false)
