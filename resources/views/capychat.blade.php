@@ -87,5 +87,9 @@
             appendMessage('Sorry, Capybara could not reply right now.', 'capy');
         });
     });
+
+    window.addEventListener('DOMContentLoaded', () => {
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+    });
 </script>
 @endsection

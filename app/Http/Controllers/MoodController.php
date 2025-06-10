@@ -102,6 +102,14 @@ class MoodController extends Controller
             ]
         );
 
+        // Add the Gemini message to Capy chat
+        $chat = \App\Models\Chat::firstOrCreate(['user_id' => $user->id]);
+        \App\Models\ChatMessage::create([
+            'chat_id' => $chat->id,
+            'sender' => 'capy',
+            'message' => $messageWithName,
+        ]);
+
         // Return the message (for frontend to display)
         return response()->json([
             'success' => true,
