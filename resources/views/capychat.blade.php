@@ -99,10 +99,19 @@
 
     window.addEventListener('DOMContentLoaded', () => {
         const divider = document.getElementById('new-messages-divider');
+        const chatHistory = document.getElementById('chat-history');
         if (divider && chatHistory) {
             chatHistory.scrollTop = divider.offsetTop - chatHistory.offsetTop - 24;
         } else if (chatHistory) {
             chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+        setTimeout(() => {
+            if (window.updateCapyUnreadBubble) window.updateCapyUnreadBubble();
+        }, 300);
+        const bubble = document.getElementById('capy-unread-bubble');
+        if (bubble) {
+            bubble.classList.add('hidden');
+            bubble.textContent = '';
         }
     });
 </script>
