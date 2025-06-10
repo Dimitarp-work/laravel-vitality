@@ -138,6 +138,6 @@ class SettingsController extends Controller
     public function clearNotifications()
     {
         session()->forget('notifications');
-        return back()->with('success', 'All notifications cleared!');
+        return back();
     }
 }

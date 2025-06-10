@@ -104,6 +104,12 @@ class RemindersController extends Controller
             'daily_checkins.*' => 'exists:daily_check_ins,id',
         ]);
 
+        // Check if at least one reminder type is selected
+        if (empty($request->goals) && empty($request->challenges) && empty($request->daily_checkins)) {
+            return redirect()->route('reminders.create')
+                ->with('error', 'Please select at least one item to create a reminder.');
+        }
+
         $userId = Auth::id();
 
         if (!empty($request->goals)) {

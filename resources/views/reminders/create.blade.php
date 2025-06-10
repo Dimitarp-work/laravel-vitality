@@ -10,6 +10,12 @@
         <form action="{{ route('reminders.store') }}" method="POST" class="bg-white rounded-2xl shadow p-6 space-y-6">
             @csrf
 
+            @if(session('error'))
+                <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded">
+                    <p>{{ session('error') }}</p>
+                </div>
+            @endif
+
             <!-- Goals Section -->
             <div>
                 <h2 class="text-xl font-bold text-pink-900 mb-4">Goals</h2>

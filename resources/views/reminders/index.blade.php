@@ -11,6 +11,12 @@
     <div class="max-w-5xl mx-auto flex flex-col gap-8 px-6 py-8">
         <h1 class="text-2xl font-bold text-pink-900 mb-6">My Personal Reminders</h1>
 
+        @if(session('success'))
+            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded">
+                <p>{{ session('success') }}</p>
+            </div>
+        @endif
+
         <!-- Overall Reminders Progress -->
         <div class="w-full bg-gradient-to-r from-pink-200 to-pink-100 rounded-2xl shadow p-4 flex items-center justify-between">
             <span class="text-pink-900 font-bold text-lg">Reminders Progress</span>
