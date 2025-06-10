@@ -131,6 +131,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 setSupportiveMessage(data.message, data.today_message_is_gemini);
                 fetchWeekMoods();
+                if (window.updateCapyUnreadBubble) window.updateCapyUnreadBubble();
             })
             .catch(() => {
                 setSupportiveMessage('Could not connect to the server.', false);

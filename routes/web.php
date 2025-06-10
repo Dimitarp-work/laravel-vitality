@@ -83,4 +83,6 @@ Route::get('/capychat', [CapyChatController::class, 'index'])->name('capychat');
 
 Route::post('/capychat/message', [CapyChatController::class, 'message'])->name('capychat.message');
 
+Route::middleware(['auth'])->get('/capychat/unread-count', [App\Http\Controllers\CapyChatController::class, 'unreadCount'])->name('capychat.unreadCount');
+
 require __DIR__.'/auth.php';

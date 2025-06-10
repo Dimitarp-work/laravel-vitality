@@ -30,6 +30,10 @@ class CapyChatController extends Controller
                 $messages = $chat->messages()->orderBy('created_at')->get();
             }
         }
+
+        // Mark all unread Capy messages as read
+        $chat->messages()->unreadCapy()->update(['read_at' => now()]);
+
         return view('capychat', [
             'chat' => $chat,
             'messages' => $messages,
@@ -61,5 +65,14 @@ class CapyChatController extends Controller
             'user' => $userMsg,
             'capy' => $capyMsg,
         ]);
+    }
+
+    // Endpoint to get unread Capy message count
+    public function unreadCount(Request $request)
+    {
+        $user = Auth::user();
+        $chat = Chat::firstOrCreate(['user_id' => $user->id]);
+        $count = $chat->messages()->unreadCapy()->count();
+        return response()->json(['count' => $count]);
     }
 } 
