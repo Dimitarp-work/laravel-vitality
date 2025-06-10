@@ -14,12 +14,6 @@
             <button class="text-gray-500 hover:text-pink-600 font-semibold px-4 py-2 rounded-lg">🏆 Streak Masters</button>
         </div>
 
-        <!-- Filters -->
-        <div class="flex space-x-3 mb-6">
-            <button class="flex items-center gap-1 px-4 py-2 border rounded-md text-sm text-gray-600"><span class="material-icons text-base">filter_list</span>All Time</button>
-            <button class="flex items-center gap-1 px-4 py-2 border rounded-md text-sm text-gray-600"><span class="material-icons text-base">groups</span>Everyone</button>
-        </div>
-
         <!-- Leaderboard Panel -->
         <div class="bg-white rounded-xl shadow p-6">
             <h2 class="text-xl font-semibold mb-6">Experience Points Leaders</h2>
