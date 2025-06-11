@@ -89,5 +89,9 @@ class User extends Authenticatable
         return $this->hasMany(XPLog::class);
     }
 
+    public function diaryEntries()
+    {
+        return $this->hasMany(DiaryEntry::class);
+    }
 
 }

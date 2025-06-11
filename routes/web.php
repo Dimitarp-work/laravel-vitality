@@ -15,6 +15,7 @@ use App\Models\Goal;
 use App\Notifications\GoalOverdueNotification;
 use App\Http\Controllers\RemindersController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\DiaryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -154,3 +155,9 @@ Route::get('/test-notify-overdue', function () {
 
     return $output ?: 'No overdue goals to notify.';
 });
+
+Route::get('/diary', [DiaryController::class, 'index'])->name('diary');
+Route::get('/diary/new', [DiaryController::class, 'create'])->name('diary.new');
+Route::post('/diary', [DiaryController::class, 'store'])->name('diary.store');
+Route::get('/diary/{entry}', [DiaryController::class, 'show'])->name('diary.show');
+
