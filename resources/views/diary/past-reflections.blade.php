@@ -19,12 +19,39 @@
         @if($entries->count())
             <div class="space-y-4">
                 @foreach($entries as $entry)
-                    <div class="bg-white shadow rounded-lg p-4 border border-gray-100">
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm text-gray-500">{{ $entry->created_at->format('M d, Y') }}</span>
-                            <span class="text-sm text-pink-600 font-medium">{{ $entry->mood }}</span>
+                    <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-100">
+                        <div class="p-4 md:p-6 flex items-start">
+                            <!-- Mood -->
+                            <div class="mr-4 text-3xl md:text-4xl">
+                                {{ $entry->mood }}
+                            </div>
+
+                            <!-- Content -->
+                            <div class="flex-grow">
+                                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-2">
+                                    <h3 class="font-semibold text-base md:text-lg">
+                                        {{ \Illuminate\Support\Str::limit($entry->thoughts, 50) }}
+                                    </h3>
+                                    <span class="text-xs md:text-sm text-gray-400">
+                                {{ $entry->created_at->format('M d, Y') }}
+                            </span>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-3">
+                                    {{ \Illuminate\Support\Str::limit($entry->thoughts, 100) }}
+                                </p>
+
+                                @if($entry->tags)
+                                    <div class="flex flex-wrap gap-1">
+                                        @foreach(explode(',', $entry->tags) as $tag)
+                                            <span
+                                                class="px-2 py-1 bg-pink-100 text-pink-700 rounded-full text-xs">
+                                        #{{ trim($tag) }}
+                                    </span>
+                                        @endforeach
+                                    </div>
+                                @endif
+                            </div>
                         </div>
-                        <p class="mt-2 text-gray-800">{{ \Illuminate\Support\Str::limit($entry->thoughts, 100) }}</p>
                     </div>
                 @endforeach
             </div>
@@ -33,3 +60,4 @@
         @endif
     </div>
 @endsection
+

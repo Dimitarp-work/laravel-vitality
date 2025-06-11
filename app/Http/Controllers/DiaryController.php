@@ -42,12 +42,21 @@ class DiaryController extends Controller
         $entry->gratitude = $validated['gratitude'] ?? null;
         $entry->activities = $validated['activities'] ?? null;
         $entry->tags = $validated['tags'] ?? null;
-        $entry->status = $action === 'draft' ? 'draft' : 'submitted';
+        $entry->status = 'submitted'; // default save status
         $entry->user_id = auth()->id();
 
         $entry->save();
 
         return redirect()->route('diary', ['tab' => 'past'])
             ->with('success', 'Entry saved successfully!');
+    }
+    // Show past entries
+    public function past()
+    {
+        $entries = DiaryEntry::where('user_id', auth()->id())
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('diary.past', compact('entries'));
     }
 }

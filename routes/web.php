@@ -159,6 +159,7 @@ Route::get('/test-notify-overdue', function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/diary', [DiaryController::class, 'index'])->name('diary');
     Route::post('/diary', [DiaryController::class, 'store'])->name('diary.store');
+    Route::get('/diary/past', [DiaryController::class, 'past'])->name('diary.past');
 });
 
 
