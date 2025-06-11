@@ -157,7 +157,5 @@ Route::get('/test-notify-overdue', function () {
 });
 
 Route::get('/diary', [DiaryController::class, 'index'])->name('diary');
-Route::get('/diary/new', [DiaryController::class, 'create'])->name('diary.new');
 Route::post('/diary', [DiaryController::class, 'store'])->name('diary.store');
-Route::get('/diary/{entry}', [DiaryController::class, 'show'])->name('diary.show');
 

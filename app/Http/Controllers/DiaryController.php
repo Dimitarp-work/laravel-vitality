@@ -7,16 +7,31 @@ use Illuminate\Http\Request;
 use App\Models\DiaryEntry;
 
 // Adjust model name if different
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\DiaryEntry;
 
 class DiaryController extends Controller
 {
-    // Show form for new diary entry
-    public function create()
+    public function index(Request $request)
     {
-        return view('diary.new-entry');
+        $activeTab = $request->query('tab', 'new'); // default tab = 'new'
+
+        // Only load past entries if the 'past' tab is active
+        $pastEntries = [];
+
+        if ($activeTab === 'past') {
+            // Assuming you have a DiaryEntry model
+            $pastEntries = DiaryEntry::where('user_id', auth()->id())
+                ->orderBy('created_at', 'desc')
+                ->get();
+        }
+
+        return view('diary.index', compact('activeTab', 'pastEntries'));
     }
 
-    // Store a new diary entry (handle form POST)
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -37,34 +52,12 @@ class DiaryController extends Controller
         $entry->gratitude = $validated['gratitude'] ?? null;
         $entry->activities = $validated['activities'] ?? null;
         $entry->tags = $validated['tags'] ?? null;
-
-        // You can handle draft or submit status here if you want
         $entry->status = $action === 'draft' ? 'draft' : 'submitted';
+        $entry->user_id = auth()->id(); // if using auth
 
-        $entry->user_id = auth()->id(); // if diary entries belong to users
         $entry->save();
 
-        if ($action === 'draft') {
-            return redirect()->route('diary.new')->with('success', 'Saved as draft.');
-        } else {
-            return redirect()->route('diary.entries')->with('success', 'Entry saved successfully!');
-        }
+        return redirect()->route('diary', ['tab' => 'past'])
+            ->with('success', 'Entry saved successfully!');
     }
-
-    public function index(Request $request)
-    {
-        $tab = $request->query('tab', 'all');
-
-        $entries = auth()->user()->diaryEntries()->latest()->get();
-
-        $favoriteEntries = $entries->where('is_favorite', true);
-
-        return view('diary.past-reflections', [
-            'activeTab' => $tab,
-            'entries' => $entries,
-            'favoriteEntries' => $favoriteEntries,
-        ]);
-    }
-
-
 }
