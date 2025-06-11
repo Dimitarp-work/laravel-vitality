@@ -16,5 +16,6 @@ class DiaryEntry extends Model
         'gratitude',
         'activities',
         'tags',
+        'status',
     ];
 }

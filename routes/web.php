@@ -156,6 +156,9 @@ Route::get('/test-notify-overdue', function () {
     return $output ?: 'No overdue goals to notify.';
 });
 
-Route::get('/diary', [DiaryController::class, 'index'])->name('diary');
-Route::post('/diary', [DiaryController::class, 'store'])->name('diary.store');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/diary', [DiaryController::class, 'index'])->name('diary');
+    Route::post('/diary', [DiaryController::class, 'store'])->name('diary.store');
+});
+
 

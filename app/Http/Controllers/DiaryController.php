@@ -1,12 +1,5 @@
 <?php
 
-
-namespace App\Http\Controllers;
-
-use Illuminate\Http\Request;
-use App\Models\DiaryEntry;
-
-// Adjust model name if different
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -18,11 +11,9 @@ class DiaryController extends Controller
     {
         $activeTab = $request->query('tab', 'new'); // default tab = 'new'
 
-        // Only load past entries if the 'past' tab is active
         $pastEntries = [];
 
         if ($activeTab === 'past') {
-            // Assuming you have a DiaryEntry model
             $pastEntries = DiaryEntry::where('user_id', auth()->id())
                 ->orderBy('created_at', 'desc')
                 ->get();
@@ -30,7 +21,6 @@ class DiaryController extends Controller
 
         return view('diary.index', compact('activeTab', 'pastEntries'));
     }
-
 
     public function store(Request $request)
     {
@@ -53,7 +43,7 @@ class DiaryController extends Controller
         $entry->activities = $validated['activities'] ?? null;
         $entry->tags = $validated['tags'] ?? null;
         $entry->status = $action === 'draft' ? 'draft' : 'submitted';
-        $entry->user_id = auth()->id(); // if using auth
+        $entry->user_id = auth()->id();
 
         $entry->save();
 

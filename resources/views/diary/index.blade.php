@@ -27,19 +27,26 @@
             @if($activeTab === 'new')
                 <form method="POST" action="{{ route('diary.store') }}" class="space-y-6 bg-white p-6 rounded-xl shadow-md">
                     @csrf
-
+                    <!-- Title: Today's Reflection -->
+                    <h2 class="text-xl font-semibold text-pink-700 mb-8">Today's Reflection</h2>
                     <!-- Mood -->
                     <div>
                         <label class="block text-sm font-medium mb-2 text-pink-600">How are you feeling today?</label>
-                        <div class="flex gap-3 flex-wrap">
+                        <div class="flex justify-between gap-4">
                             @foreach(['😢', '😕', '😐', '🙂', '😊'] as $emoji)
-                                <label class="w-14 h-14 text-3xl rounded-full bg-pink-100 hover:bg-pink-200 transition flex items-center justify-center cursor-pointer">
+                                <label class="w-14 h-14 flex items-center justify-center text-4xl rounded-full bg-pink-100 hover:bg-pink-200 transition cursor-pointer mx-auto">
                                     <input type="radio" name="mood" value="{{ $emoji }}" class="hidden" required>
                                     <span>{{ $emoji }}</span>
                                 </label>
                             @endforeach
                         </div>
                     </div>
+
+
+
+
+
+
 
                     <!-- Emotions -->
                     <div>
@@ -102,4 +109,6 @@
             @endif
         </div>
     </div>
+
+
 @endsection
