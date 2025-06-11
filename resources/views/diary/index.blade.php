@@ -16,7 +16,6 @@
                 <a href="?tab=past" class="{{ $activeTab === 'past' ? 'bg-pink-200 text-pink-800' : 'bg-pink-100 text-pink-600' }} px-4 py-2 rounded-lg text-center font-medium">Past Reflections</a>
             </div>
 
-            <!-- Success message inside container -->
             @if(session('success'))
                 <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded">
                     <p>{{ session('success') }}</p>
@@ -27,58 +26,76 @@
             @if($activeTab === 'new')
                 <form method="POST" action="{{ route('diary.store') }}" class="space-y-6 bg-white p-6 rounded-xl shadow-md">
                     @csrf
-                    <!-- Title: Today's Reflection -->
                     <h2 class="text-xl font-semibold text-pink-700 mb-8">Today's Reflection</h2>
-                    <!-- Mood -->
+
                     <div>
                         <label class="block text-sm font-medium mb-2 text-pink-600">How are you feeling today?</label>
                         <div class="flex justify-between gap-4">
-                            @foreach(['😢', '😕', '😐', '🙂', '😊'] as $emoji)
-                                <label class="w-14 h-14 flex items-center justify-center text-4xl rounded-full bg-pink-100 hover:bg-pink-200 transition cursor-pointer mx-auto">
-                                    <input type="radio" name="mood" value="{{ $emoji }}" class="hidden" required>
-                                    <span>{{ $emoji }}</span>
-                                </label>
+                            @foreach(['😢', '😕', '😐', '🙂', '😊'] as $index => $emoji)
+                                <div>
+                                    <input
+                                        type="radio"
+                                        name="mood"
+                                        id="mood-{{ $index }}"
+                                        value="{{ $emoji }}"
+                                        class="hidden peer"
+                                        {{ old('mood', $draft->mood ?? '') === $emoji ? 'checked' : '' }}
+                                    >
+                                    <label
+                                        for="mood-{{ $index }}"
+                                        class="w-14 h-14 flex items-center justify-center text-4xl rounded-full
+                           cursor-pointer transition-all duration-150 ease-in-out
+                           bg-pink-100 hover:bg-pink-200
+                           peer-checked:bg-pink-300
+                           peer-checked:ring-2
+                           peer-checked:ring-pink-500
+                           peer-checked:font-bold
+                           peer-checked:scale-105">
+                                        {{ $emoji }}
+                                    </label>
+                                </div>
                             @endforeach
                         </div>
+
                         @error('mood')
                         <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
-
-
-
-
-
-
                     <!-- Emotions -->
                     <div>
                         <label class="block text-sm font-medium mb-2 text-pink-600">What emotions are present?</label>
-                        <textarea name="emotions" class="w-full p-3 border border-pink-300 rounded-md min-h-[100px]" placeholder="Joy, anxiety, contentment..." required></textarea>
+                        <textarea name="emotions" class="w-full p-3 border border-pink-300 rounded-md min-h-[100px]" placeholder="Joy, anxiety, contentment...">{{ old('emotions', $draft->emotions ?? '') }}</textarea>
+                        @error('emotions')
+                        <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <!-- Thoughts -->
                     <div>
                         <label class="block text-sm font-medium mb-2 text-pink-600">What's on your mind?</label>
-                        <textarea name="thoughts" class="w-full p-3 border border-pink-300 rounded-md min-h-[100px]" required></textarea>
+                        <textarea name="thoughts" class="w-full p-3 border border-pink-300 rounded-md min-h-[100px]">{{ old('thoughts', $draft->thoughts ?? '') }}</textarea>
+                        @error('thoughts')
+                        <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <!-- Gratitude -->
                     <div>
                         <label class="block text-sm font-medium mb-2 text-pink-600">A moment of gratitude</label>
-                        <textarea name="gratitude" class="w-full p-3 border border-pink-300 rounded-md min-h-[100px]"></textarea>
+                        <textarea name="gratitude" class="w-full p-3 border border-pink-300 rounded-md min-h-[100px]">{{ old('gratitude', $draft->gratitude ?? '') }}</textarea>
                     </div>
 
                     <!-- Activities -->
                     <div>
                         <label class="block text-sm font-medium mb-2 text-pink-600">Activities (optional)</label>
-                        <textarea name="activities" class="w-full p-3 border border-pink-300 rounded-md min-h-[100px]"></textarea>
+                        <textarea name="activities" class="w-full p-3 border border-pink-300 rounded-md min-h-[100px]">{{ old('activities', $draft->activities ?? '') }}</textarea>
                     </div>
 
                     <!-- Tags -->
                     <div>
                         <label class="block text-sm font-medium mb-2 text-pink-600">Tags</label>
-                        <input type="text" name="tags" class="w-full p-3 border border-pink-300 rounded-md" placeholder="reflection, gratitude, work">
+                        <input type="text" name="tags" class="w-full p-3 border border-pink-300 rounded-md" placeholder="reflection, gratitude, work" value="{{ old('tags', $draft->tags ?? '') }}">
                         <p class="text-xs text-pink-400 mt-1">Tags help you find entries later</p>
                     </div>
 
@@ -112,6 +129,4 @@
             @endif
         </div>
     </div>
-
-
 @endsection

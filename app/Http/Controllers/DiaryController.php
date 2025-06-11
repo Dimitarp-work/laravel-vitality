@@ -9,54 +9,59 @@ class DiaryController extends Controller
 {
     public function index(Request $request)
     {
-        $activeTab = $request->query('tab', 'new'); // default tab = 'new'
-
+        $activeTab = $request->query('tab', 'new');
         $pastEntries = [];
+        $draft = null;
 
         if ($activeTab === 'past') {
             $pastEntries = DiaryEntry::where('user_id', auth()->id())
+                ->where('status', 'submitted')
                 ->orderBy('created_at', 'desc')
                 ->get();
+        } elseif ($activeTab === 'new') {
+            $draft = DiaryEntry::where('user_id', auth()->id())
+                ->where('status', 'draft')
+                ->latest()
+                ->first();
         }
 
-        return view('diary.index', compact('activeTab', 'pastEntries'));
+        return view('diary.index', compact('activeTab', 'pastEntries', 'draft'));
     }
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'mood' => 'required|string|max:5',
-            'emotions' => 'required|string',
-            'thoughts' => 'required|string',
+        $action = $request->input('action');
+
+        $rules = [
+            'mood' => $action === 'submit' ? 'required|string|max:5' : 'nullable|string|max:5',
+            'emotions' => $action === 'submit' ? 'required|string' : 'nullable|string',
+            'thoughts' => $action === 'submit' ? 'required|string' : 'nullable|string',
             'gratitude' => 'nullable|string',
             'activities' => 'nullable|string',
             'tags' => 'nullable|string',
-        ]);
+        ];
 
-        $action = $request->input('action');
+        $validated = $request->validate($rules);
 
-        $entry = new DiaryEntry();
-        $entry->mood = $validated['mood'];
-        $entry->emotions = $validated['emotions'];
-        $entry->thoughts = $validated['thoughts'];
+        // Save new draft or update existing one
+        $entry = DiaryEntry::where('user_id', auth()->id())
+            ->where('status', 'draft')
+            ->latest()
+            ->first() ?? new DiaryEntry();
+
+        $entry->mood = $validated['mood'] ?? null;
+        $entry->emotions = $validated['emotions'] ?? null;
+        $entry->thoughts = $validated['thoughts'] ?? null;
         $entry->gratitude = $validated['gratitude'] ?? null;
         $entry->activities = $validated['activities'] ?? null;
         $entry->tags = $validated['tags'] ?? null;
-        $entry->status = 'submitted'; // default save status
+        $entry->status = $action === 'submit' ? 'submitted' : 'draft';
         $entry->user_id = auth()->id();
 
         $entry->save();
 
-        return redirect()->route('diary', ['tab' => 'past'])
-            ->with('success', 'Entry saved successfully!');
-    }
-    // Show past entries
-    public function past()
-    {
-        $entries = DiaryEntry::where('user_id', auth()->id())
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        return view('diary.past', compact('entries'));
+        return redirect()->route('diary', ['tab' => 'new'])
+            ->with('success', $action === 'submit' ? 'Entry submitted!' : 'Draft saved!');
     }
 }
+

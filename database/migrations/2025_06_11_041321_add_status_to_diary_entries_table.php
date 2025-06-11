@@ -12,7 +12,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('diary_entries', function (Blueprint $table) {
-            $table->string('status')->default('draft'); // or 'submitted' depending on your logic
+            $table->string('status')->default('draft');
         });
     }
 
