@@ -79,7 +79,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware('auth')->group(function () {
     Route::get('/challenges', [ChallengeController::class, 'index'])->name('challenges.index');
     Route::get('/challenges/create', [ChallengeController::class, 'create'])->name('challenges.create');
     Route::post('/challenges', [ChallengeController::class, 'store'])->name('challenges.store');
@@ -90,9 +90,6 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/challenges/{challenge}', [ChallengeController::class, 'update'])->name('challenges.update');
     Route::get('/challenges/{challenge}/confirm-delete', [ChallengeController::class, 'confirmDelete'])->name('challenges.confirmDelete');
     Route::delete('/challenges/{challenge}', [ChallengeController::class, 'destroy'])->name('challenges.destroy');
-});
-
-//Route::get('/checkins', [DailyCheckInController::class,'checkins'])->name('checkins');
 
     // Settings routes
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
@@ -100,10 +97,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/settings/test-reminders', [SettingsController::class, 'testReminders'])->name('settings.test-reminders');
     Route::post('/settings/set-test-reminder-interval', [SettingsController::class, 'setTestReminderInterval'])->name('settings.set-test-reminder-interval');
     Route::post('/notifications/clear', [SettingsController::class, 'clearNotifications'])->name('notifications.clear');
-});
 
-// Check-in routes
-Route::middleware('auth')->group(function () {
+    // Check-ins routes
     Route::post('/checkins/{dailyCheckIn}/complete', [DailyCheckInController::class, 'complete'])->name('checkins.complete');
     Route::get('/checkins/week', [DailyCheckInController::class, 'week'])->name('checkins.week');
     Route::delete('/checkins/{dailyCheckIn}', [DailyCheckInController::class, 'destroy'])->name('checkins.destroy');
@@ -114,24 +109,29 @@ Route::middleware('auth')->group(function () {
     Route::get('/reminders/create', [RemindersController::class, 'create'])->name('reminders.create');
     Route::post('/reminders', [RemindersController::class, 'store'])->name('reminders.store');
     Route::delete('/reminders/{reminder}', [RemindersController::class, 'destroy'])->name('reminders.destroy');
+
+    // Mood routes
+    Route::middleware(['auth'])->post('/mood', [MoodController::class, 'store'])->name('mood.store');
+    Route::middleware(['auth'])->get('/mood/week', [MoodController::class, 'week'])->name('mood.week');
+
+    // Goals routes
+    Route::get('/goals', [GoalController::class, 'goals'])->name('goals');
+    Route::get('/goals/create', [GoalController::class, 'create'])->name('goals.create');
+    Route::post('/goals', [GoalController::class, 'store'])->name('goals.store');
+    Route::get('/goals/{goal}/edit', [GoalController::class, 'edit'])->name('goals.edit');
+    Route::post('/goals/default/{goal}/start', [GoalController::class, 'startDefault'])->name('goals.start-default');
+    Route::put('/goals/{goal}', [GoalController::class, 'update'])->name('goals.update');
+    Route::delete('/goals/{goal}', [GoalController::class, 'destroy'])->name('goals.destroy');
+    Route::post('/goals/{goal}/daily-update', [GoalController::class, 'dailyUpdate'])->name('goals.daily-update');
+
+    //Route for the thought
+    Route::post('/thought', [ThoughtController::class, 'store'])->name('thought.store');
 });
 
-// Mood routes
-Route::middleware(['auth'])->post('/mood', [MoodController::class, 'store'])->name('mood.store');
-Route::middleware(['auth'])->get('/mood/week', [MoodController::class, 'week'])->name('mood.week');
 
-Route::post('/thought', [ThoughtController::class, 'store'])->name('thought.store');
+
 
 require __DIR__.'/auth.php';
-
-Route::get('/goals', [GoalController::class, 'goals'])->name('goals');
-Route::get('/goals/create', [GoalController::class, 'create'])->name('goals.create');
-Route::post('/goals', [GoalController::class, 'store'])->name('goals.store');
-Route::get('/goals/{goal}/edit', [GoalController::class, 'edit'])->name('goals.edit');
-Route::post('/goals/default/{goal}/start', [GoalController::class, 'startDefault'])->name('goals.start-default');
-Route::put('/goals/{goal}', [GoalController::class, 'update'])->name('goals.update');
-Route::delete('/goals/{goal}', [GoalController::class, 'destroy'])->name('goals.destroy');
-Route::post('/goals/{goal}/daily-update', [GoalController::class, 'dailyUpdate'])->name('goals.daily-update');
 
 Route::get('/test-notify-overdue', function () {
     $overdueGoals = Goal::where('notified_about_deadline', false)
