@@ -29,12 +29,7 @@
                         ];
                         $color = $colors[$rank];
                         $initials = strtoupper(substr(explode(' ', $user['name'])[0] ?? '', 0, 1) . substr(explode(' ', $user['name'])[1] ?? '', 0, 1));
-                        $title = match($rank) {
-                            1 => 'Mindfulness Maven',
-                            2 => 'Wellness Warrior',
-                            3 => 'Streak Superstar',
-                            default => 'Top Performer',
-                        };
+                        $title = $user['title'] ?? 'Top Performer';
                     @endphp
 
                     <div class="text-center">

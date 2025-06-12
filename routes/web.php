@@ -56,12 +56,9 @@ Route::get('/diary', function () {
     return view('under-construction');
 })->name('diary');
 
-//Route::get('/leaderboard', function () {
-//    return view('leaderboard');
-//})->middleware(['auth'])->name('leaderboard');
-
 Route::resource('/articles', ArticleController::class);
 
+// Challenges Routes
 Route::middleware(['auth'])->group(function () {
     Route::get('/challenges', [ChallengeController::class, 'index'])->name('challenges.index');
     Route::get('/challenges/create', [ChallengeController::class, 'create'])->name('challenges.create');
@@ -74,13 +71,11 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/challenges/{challenge}', [ChallengeController::class, 'destroy'])->name('challenges.destroy');
 });
 
+// Leaderboard Routes
 Route::middleware(['auth'])->group(function () {
     Route::get('/leaderboard/xp', [LeaderboardController::class, 'xp'])->name('leaderboard.xp');
     Route::get('/leaderboard/badges', [LeaderboardController::class, 'badges'])->name('leaderboard.badges');
 });
-
-
-//Route::get('/checkins', [DailyCheckInController::class,'checkins'])->name('checkins');
 
 // Check-in routes
 Route::middleware('auth')->group(function () {
