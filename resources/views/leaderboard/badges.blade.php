@@ -9,8 +9,8 @@
 
         <!-- Tabs -->
         <div class="flex space-x-4 mb-6">
-            <a href="{{ route('leaderboard.xp') }}" class="bg-pink-100 text-pink-700 font-semibold px-4 py-2 rounded-lg">✨ XP Leaders</a>
-            <a href="{{ route('leaderboard.badges') }}" class="text-gray-500 hover:text-pink-600 font-semibold px-4 py-2 rounded-lg">🏅 Badge Leaders</a>
+            <a href="{{ route('leaderboard.xp') }}" class="text-gray-500 hover:text-pink-600 font-semibold px-4 py-2 rounded-lg">✨ XP Leaders</a>
+            <a href="{{ route('leaderboard.badges') }}" class="bg-pink-100 text-pink-700 font-semibold px-4 py-2 rounded-lg">🏅 Badge Leaders</a>
         </div>
 
         <!-- Leaderboard Panel -->

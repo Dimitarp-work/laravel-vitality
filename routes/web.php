@@ -76,6 +76,7 @@ Route::middleware(['auth'])->group(function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/leaderboard/xp', [LeaderboardController::class, 'xp'])->name('leaderboard.xp');
+    Route::get('/leaderboard/badges', [LeaderboardController::class, 'badges'])->name('leaderboard.badges');
 });
 
 

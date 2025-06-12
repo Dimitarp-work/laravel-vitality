@@ -16,10 +16,19 @@ class LeaderboardController extends Controller
     public function xp()
     {
         $topThree = User::orderByDesc('xp')->take(3)->get();
-        $users = User::orderByDesc('xp')->offset(3)->limit(100)->get(); // ✅ Works with MySQL
+        $users = User::orderByDesc('xp')->offset(3)->limit(100)->get();
 
 
         return view('leaderboard.xp', compact('topThree', 'users'));
+    }
+
+    public function badges()
+    {
+        $topThree = User::orderByDesc('xp')->take(3)->get();
+        $users = User::orderByDesc('xp')->offset(3)->limit(100)->get();
+
+
+        return view('leaderboard.badges', compact('topThree', 'users'));
     }
 
 }
