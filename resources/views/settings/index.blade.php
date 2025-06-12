@@ -58,6 +58,7 @@
 
             <!-- Test Reminders Button -->
             @if(auth()->user()->is_admin)
+            <hr class="my-6 border-1">
                 <form action="{{ route('settings.test-reminders') }}" method="POST">
                     @csrf
                     <button type="submit" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-2 rounded-lg font-medium flex items-center gap-2">
