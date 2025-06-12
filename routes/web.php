@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\MoodController;
 use App\Http\Controllers\ThoughtController;
+use App\Http\Controllers\CapyChatController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Models\Goal;
 use App\Notifications\GoalOverdueNotification;
@@ -134,6 +135,15 @@ Route::middleware(['auth'])->group(function () {
 });
 
 
+
+
+Route::get('/capychat', [CapyChatController::class, 'index'])->name('capychat');
+
+Route::post('/capychat/message', [CapyChatController::class, 'message'])->name('capychat.message');
+
+Route::middleware(['auth'])->get('/capychat/unread-count', [App\Http\Controllers\CapyChatController::class, 'unreadCount'])->name('capychat.unreadCount');
+
+Route::middleware(['auth'])->post('/capychat/mark-read', [App\Http\Controllers\CapyChatController::class, 'markRead'])->name('capychat.markRead');
 
 
 require __DIR__.'/auth.php';
