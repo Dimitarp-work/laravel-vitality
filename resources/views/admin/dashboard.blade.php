@@ -13,7 +13,7 @@
 
             if ($percentage === null) {
                 $value = 'New';
-                $class = 'text-green-600'; // Or any color you prefer for "New"
+                $class = 'text-green-600';
             } elseif ($percentage > 0) {
                 $class = 'text-green-600';
                 $symbol = '+';
@@ -55,7 +55,6 @@
                 </div>
                 <div class="text-2xl font-bold text-theme-900 mb-1">{{ $totalArticles }}</div>
                 <div class="text-theme-700 text-sm">Total Articles</div>
-                {{-- Display detailed weekly and monthly growth below --}}
                 <div class="text-xs text-theme-500 mt-2 flex flex-col gap-1">
                     <span class="font-medium">Weekly Change: @php echo renderGrowthPercentage($articlesWeeklyGrowth); @endphp</span>
                     <span class="font-medium">Monthly Change: @php echo renderGrowthPercentage($articlesMonthlyGrowth); @endphp</span>
@@ -70,7 +69,6 @@
                 </div>
                 <div class="text-2xl font-bold text-theme-900 mb-1">{{ number_format($totalUsers) }}</div>
                 <div class="text-theme-700 text-sm">Active Users</div>
-                {{-- Display detailed weekly and monthly growth for users below --}}
                 <div class="text-xs text-theme-500 mt-2 flex flex-col gap-1">
                     <span class="font-medium">Weekly Change: @php echo renderGrowthPercentage($usersWeeklyGrowth); @endphp</span>
                     <span class="font-medium">Monthly Change: @php echo renderGrowthPercentage($usersMonthlyGrowth); @endphp</span>
@@ -131,19 +129,16 @@
                             <tr class="hover:bg-theme-50 transition">
                                 <td class="px-4 py-3">
                                     <div class="flex items-center gap-3">
-                                        {{-- Conditional display of article image or a fallback icon --}}
                                         <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0">
                                             @if ($article->image)
                                                 <img src="{{ asset('storage/' . $article->image) }}" alt="{{ $article->title }}" class="w-full h-full object-cover">
                                             @else
-                                                {{-- Fallback icon if no image --}}
                                                 <div class="w-full h-10 bg-theme-100 flex items-center justify-center">
                                                     <span class="material-icons text-theme-400">article</span>
                                                 </div>
                                             @endif
                                         </div>
                                         <div>
-                                            {{-- Article title as a link to the article, no underline --}}
                                             <a href="{{ route('articles.show', $article) }}" class="font-medium text-theme-900 no-underline hover:text-theme-700">
                                                 {{ $article->title }}
                                             </a>
@@ -158,7 +153,6 @@
                                             <span class="material-icons text-theme-400 text-base">more_vert</span>
                                         </button>
 
-                                        {{-- Dropdown Menu --}}
                                         <div x-show="open"
                                              x-transition:enter="transition ease-out duration-100"
                                              x-transition:enter-start="transform opacity-0 scale-95"
