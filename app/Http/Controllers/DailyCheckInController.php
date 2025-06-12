@@ -6,6 +6,7 @@ use App\Models\DailyCheckIn;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use App\Models\Reminder;
 
 class DailyCheckInController extends Controller
 {
@@ -46,14 +47,6 @@ class DailyCheckInController extends Controller
     public function week()
     {
         return view('checkins.week');
-    }
-
-    /**
-     * Display the reminders view.
-     */
-    public function reminders()
-    {
-        return view('checkins.reminders');
     }
 
     /**
@@ -135,7 +128,15 @@ class DailyCheckInController extends Controller
      */
     public function destroy(DailyCheckIn $dailyCheckIn)
     {
-        //
+        $userId = Auth::id();
+        if ($dailyCheckIn->stampcard_id !== $userId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized'
+            ], 403);
+        }
+        $dailyCheckIn->delete();
+        return redirect()->route('checkins.index')->with('success', 'Check-in deleted successfully');
     }
 
     /**
@@ -152,6 +153,12 @@ class DailyCheckInController extends Controller
         }
 
         $dailyCheckIn->update(['isComplete' => true]);
+
+        // Delete associated reminder if it exists
+        Reminder::where('type', 'daily_checkin')
+            ->where('entity_id', $dailyCheckIn->id)
+            ->where('user_id', $userId) // Ensure it's the current user's reminder
+            ->delete();
 
         return response()->json([
             'success' => true,

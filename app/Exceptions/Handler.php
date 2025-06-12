@@ -24,46 +24,6 @@ class Handler extends ExceptionHandler
      */
     public function register(): void
     {
-        $this->reportable(function (Throwable $e) {
-            //
-        });
 
-        // Handle 404 errors
-        $this->renderable(function ( NotFoundHttpException $e) {
-            if (request()->wantsJson()) {
-                return response()->json(['message' => 'Resource not found'], 404);
-            }
-            return response()->view('errors.404', [], 404);
-        });
-
-        // Handle all other errors as 500
-        $this->renderable(function (Throwable $e) {
-            if ($e instanceof NotFoundHttpException) {
-                return null; // Let the NotFoundHttpException handler deal with it
-            }
-
-            if (request()->wantsJson()) {
-                return response()->json(['message' => 'Server error'], 500);
-            }
-            return response()->view('errors.500', [], 500);
-        });
-    }
-
-    /**
-     * Render an exception into an HTTP response.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Throwable  $e
-     * @return \Symfony\Component\HttpFoundation\Response
-     *
-     * @throws \Throwable
-     */
-    public function render($request, Throwable $e)
-    {
-        if ($e instanceof NotFoundHttpException) {
-            return response()->view('errors.404', [], 404);
-        }
-
-        return parent::render($request, $e);
     }
 }
