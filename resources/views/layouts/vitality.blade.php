@@ -162,9 +162,9 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('leaderboard') }}"
+                        <a href="{{ route('leaderboard.xp') }}"
                             class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
-                            {{ request()->routeIs('leaderboard') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
+                            {{ request()->routeIs('leaderboard.*') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
                             <span class="material-icons">leaderboard</span> Leaderboard
                         </a>
                     </li>
