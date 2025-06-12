@@ -46,64 +46,66 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div class="flex flex-col gap-8">
                 <!-- How are you feeling? -->
-                <div class="bg-white rounded-2xl shadow p-6 flex flex-col items-center min-h-[220px]" id="mood-widget">
-                    <div class="font-bold text-pink-900 mb-2 text-lg flex items-center gap-2">
+                <div class="bg-white rounded-2xl shadow p-0 flex flex-col items-center min-h-[220px] max-w-md mx-auto w-full" id="mood-widget">
+                    <div class="font-bold text-pink-900 mt-8 mb-4 text-lg flex items-center gap-2">
                         <span class="material-icons text-pink-400">mood</span>How are you feeling today?
                     </div>
                     <!-- Emoji Mood Selector -->
                     <form id="mood-form" class="flex flex-col items-center w-full">
-                        <div class="flex gap-8 text-3xl mb-2 justify-center">
+                        <div class="flex gap-6 sm:gap-8 text-3xl mb-2 justify-center">
                             <div class="flex flex-col items-center">
                                 <label>
                                     <input type="radio" name="mood" value="sad" class="sr-only" />
-                                    <span
-                                        class="cursor-pointer transition hover:scale-125 w-10 h-10 flex items-center justify-center rounded-full"
-                                        title="Sad">😢</span>
+                                    <span class="cursor-pointer transition hover:scale-125 w-12 h-12 flex items-center justify-center rounded-full" title="Sad">😢</span>
                                 </label>
                                 <span data-mood="sad" class="mt-1 text-xs text-gray-500">Sad</span>
                             </div>
                             <div class="flex flex-col items-center">
                                 <label>
                                     <input type="radio" name="mood" value="stressed" class="sr-only" />
-                                    <span
-                                        class="cursor-pointer transition hover:scale-125 w-10 h-10 flex items-center justify-center rounded-full"
-                                        title="Stressed">😣</span>
+                                    <span class="cursor-pointer transition hover:scale-125 w-12 h-12 flex items-center justify-center rounded-full" title="Stressed">😣</span>
                                 </label>
                                 <span data-mood="stressed" class="mt-1 text-xs text-gray-500">Stressed</span>
                             </div>
                             <div class="flex flex-col items-center">
                                 <label>
                                     <input type="radio" name="mood" value="neutral" class="sr-only" />
-                                    <span
-                                        class="cursor-pointer transition hover:scale-125 w-10 h-10 flex items-center justify-center rounded-full"
-                                        title="Neutral">😐</span>
+                                    <span class="cursor-pointer transition hover:scale-125 w-12 h-12 flex items-center justify-center rounded-full" title="Neutral">😐</span>
                                 </label>
                                 <span data-mood="neutral" class="mt-1 text-xs text-gray-500">Neutral</span>
                             </div>
                             <div class="flex flex-col items-center">
                                 <label>
                                     <input type="radio" name="mood" value="calm" class="sr-only" />
-                                    <span
-                                        class="cursor-pointer transition hover:scale-125 w-10 h-10 flex items-center justify-center rounded-full"
-                                        title="Calm">😌</span>
+                                    <span class="cursor-pointer transition hover:scale-125 w-12 h-12 flex items-center justify-center rounded-full" title="Calm">😌</span>
                                 </label>
                                 <span data-mood="calm" class="mt-1 text-xs text-gray-500">Calm</span>
                             </div>
                             <div class="flex flex-col items-center">
                                 <label>
                                     <input type="radio" name="mood" value="happy" class="sr-only" />
-                                    <span
-                                        class="cursor-pointer transition hover:scale-125 w-10 h-10 flex items-center justify-center rounded-full"
-                                        title="Happy">😊</span>
+                                    <span class="cursor-pointer transition hover:scale-125 w-12 h-12 flex items-center justify-center rounded-full" title="Happy">😊</span>
                                 </label>
                                 <span data-mood="happy" class="mt-1 text-xs text-gray-500">Happy</span>
                             </div>
                         </div>
                     </form>
                     <!-- Supportive Message Display -->
-                    <div id="mood-message-container" class="mt-4 flex items-center justify-center min-h-[40px]">
-                        <span class="material-icons text-pink-400 mr-2 text-2xl" id="mood-message-icon">auto_awesome</span>
-                        <span id="mood-message" class="text-center text-pink-700 text-base"></span>
+                    <div class="w-full flex justify-center mt-6 mb-8 px-4">
+                        <!-- GIF (loading) -->
+                        <img id="mood-loading-gif" src="/images/capybara-rub.gif" alt="Loading..." class="h-32 w-32 hidden z-20" />
+                        <!-- Pink box and message/button -->
+                        <div id="mood-message-container" class="relative bg-pink-50 border border-pink-100 rounded-2xl shadow-sm max-w-lg w-full px-8 py-7 flex flex-col items-center">
+                            <div id="mood-message-content" class="flex items-start gap-3 w-full">
+                                <span class="material-icons text-pink-400 text-2xl mt-0.5" id="mood-message-icon">auto_awesome</span>
+                                <span id="mood-message" class="flex-1 text-pink-700 text-base font-normal leading-relaxed text-center"></span>
+                            </div>
+                            <div id="capychat-btn-container" class="w-full flex justify-center mt-4 hidden">
+                                <a href="{{ route('capychat') }}" class="bg-pink-400 hover:bg-pink-500 text-white rounded-lg px-6 py-2 font-semibold transition text-base shadow">
+                                    Open Capy Chat
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!-- Wellness Inspiration -->
@@ -208,183 +210,21 @@
                     </div>
                     <button class="text-pink-500 text-xs font-semibold ml-auto hover:underline"
                         aria-label="View all badges">View All Badges</button>
-        <div class="flex flex-col gap-8">
-
-        <!-- Your Week in Feelings -->
-        <div class="bg-gradient-to-r from-pink-200 to-pink-100 rounded-2xl shadow p-8 w-full mt-2">
-            <div class="font-bold text-pink-900 mb-3 text-lg flex items-center gap-2"><span
-                    class="material-icons text-pink-400">calendar_month</span>Your Week in Feelings</div>
-            <div id="week-moods" class="flex gap-6 mb-2 overflow-x-auto"></div>
-            <div class="text-xs md:text-sm text-pink-700 flex items-center">
-                <span class="material-icons text-pink-400 mr-2 text-2xl" id="mood-message-icon">auto_awesome</span>
-                Each day is a new opportunity.
+                </div>
             </div>
         </div>
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const form = document.getElementById('mood-form');
-                const messageDiv = document.getElementById('mood-message');
-                const widget = document.getElementById('mood-widget');
-                const moodLabels = document.querySelectorAll('#mood-form [data-mood]');
-                const weekMoodsDiv = document.getElementById('week-moods');
-                // Tailwind classes for selected mood
-                const selectedClasses = [
-                    'ring-4', 'ring-pink-300', 'bg-pink-100', 'rounded-full', 'shadow-md', 'scale-110', 'transition-all', 'duration-200'
-                ];
-                const selectedLabelClasses = ['text-pink-600', 'font-bold'];
-                // Emoji map for moods
-                const moodEmojis = {
-                    sad: '😢',
-                    stressed: '😣',
-                    neutral: '😐',
-                    calm: '😌',
-                    happy: '😊',
-                    none: '<span class="text-gray-400">?</span>'
-                };
-                const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-                // Get today as day string
-                function getTodayDay() {
-                    const jsDay = new Date().getDay();
-                    return days[(jsDay + 6) % 7];
-                }
-                // Render a single day mood cell
-                function renderDayMood(day, mood, isToday) {
-                    const moodEmoji = moodEmojis[mood] || moodEmojis['none'];
-                    const highlight = isToday && mood !== 'none' ? 'ring-4 ring-pink-300 bg-pink-100 shadow-md scale-110 transition-all duration-200' : '';
-                    const highlightNone = isToday && mood === 'none' ? 'ring-2 ring-pink-200 bg-white scale-110 transition-all duration-200' : '';
-                    const dayLabel = `<span class="text-xs mt-1 ${isToday ? 'font-bold text-pink-700' : ''}">${day}</span>`;
-                    return `
-                        <div class="flex flex-col items-center min-w-[40px]">
-                            <span class="text-3xl w-10 h-10 flex items-center justify-center rounded-full mt-2 ${highlight} ${highlightNone}">
-                                ${moodEmoji}
-                            </span>
-                            ${dayLabel}
-                        </div>
-                    `;
-                }
-                // Set mood selector state
-                function setMoodSelectorState(mood) {
-                    // Set the radio button as checked
-                    const radio = form.querySelector(`input[name='mood'][value='${mood}']`);
-                    if (!radio) return;
-                    radio.checked = true;
-                    // Highlight the emoji
-                    form.querySelectorAll('label span').forEach(span => {
-                        selectedClasses.forEach(cls => span.classList.remove(cls));
-                    });
-                    selectedClasses.forEach(cls => radio.nextElementSibling.classList.add(cls));
-                    // Highlight the label
-                    moodLabels.forEach(label => {
-                        selectedLabelClasses.forEach(cls => label.classList.remove(cls));
-                    });
-                    const selectedLabel = form.querySelector(`[data-mood='${mood}']`);
-                    if (selectedLabel) {
-                        selectedLabelClasses.forEach(cls => selectedLabel.classList.add(cls));
-                    }
-                }
-                // Set supportive message
-                function setSupportiveMessage(message) {
-                    messageDiv.textContent = message || '';
-                }
-                // Render week moods
-                function renderWeekMoods(data) {
-                    const moods = data.week;
-                    const todayMessage = data.today_message;
-                    weekMoodsDiv.innerHTML = '';
-                    const today = getTodayDay();
-                    let todaysMood = moods[today] || null;
-                    days.forEach(day => {
-                        const mood = moods[day] || 'none';
-                        const isToday = day === today;
-                        weekMoodsDiv.innerHTML += renderDayMood(day, mood, isToday);
-                    });
-                    // Set the selected mood in the mood selector if today has a mood
-                    if (todaysMood) setMoodSelectorState(todaysMood);
-                    // Set the supportive message for today if it exists
-                    setSupportiveMessage(todayMessage);
-                }
-                function parseResponse(response) {
-                    return response.json();
-                }
-                // Fetch and render week moods
-                function fetchWeekMoods() {
-                    fetch("{{ route('mood.week') }}")
-                        .then(parseResponse)
-                        .then(renderWeekMoods);
-                }
-                // Initial load
-                fetchWeekMoods();
-                // Listen for mood selection
-                form.addEventListener('change', function(e) {
-                    if (e.target.name !== 'mood') return;
-                    // Send AJAX POST request to /mood
-                    fetch("{{ route('mood.store') }}", {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                            'Accept': 'application/json',
-                        },
-                        body: JSON.stringify({ mood: e.target.value })
-                    })
-                        .then(parseResponse)
-                        .then(data => {
-                            if (!data.success) {
-                                setSupportiveMessage('Something went wrong. Please try again.');
-                                return;
-                            }
-                            setSupportiveMessage(data.message);
-                            setMoodSelectorState(e.target.value);
-                            fetchWeekMoods();
-                        })
-                        .catch(() => {
-                            setSupportiveMessage('Could not connect to the server.');
-                        });
-                });
-            });
-        </script>
-        <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const form = document.getElementById('thought-form');
 
-        form?.addEventListener('submit', function (e) {
-            e.preventDefault();
+    <!-- Your Week in Feelings (full width, after grid) -->
+    <div class="bg-gradient-to-r from-pink-200 to-pink-100 rounded-2xl shadow p-8 w-full mt-2">
+        <div class="font-bold text-pink-900 mb-3 text-lg flex items-center gap-2"><span
+                class="material-icons text-pink-400">calendar_month</span>Your Week in Feelings</div>
+        <div id="week-moods" class="flex items-center mb-2 overflow-x-auto px-2 sm:px-4 scrollbar-hide sm:justify-between sm:overflow-visible"></div>
+        <div class="text-xs md:text-sm text-pink-700 flex items-center">
+            <span class="material-icons text-pink-400 mr-2 text-2xl" id="mood-message-icon">auto_awesome</span>
+            Each day is a new opportunity.
+        </div>
+    </div>
 
-            const formData = new FormData(this);
-            const submitBtn = form.querySelector('button[type="submit"]');
-            submitBtn.disabled = true;
-
-            fetch(form.action, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Accept': 'application/json',
-                },
-                body: formData
-            })
-                .then(response => response.json())
-                .then(data => {
-                    submitBtn.disabled = false;
-                    form.reset();
-
-                    if (data.xp !== undefined) {
-                        document.getElementById('user-xp-text').textContent = `${data.xp_progress} / ${data.xp_to_next} XP`;
-                        document.getElementById('user-level').textContent = `Level ${data.level}`;
-                        document.getElementById('xp-bar').style.width = `${data.progress_percent}%`;
-                    }
-
-                    if (data.credits !== undefined) {
-                        document.getElementById('user-credits').textContent = `${data.credits} Credits`;
-                    }
-
-                    alert(data.message || 'Thought saved!');
-                })
-                .catch(() => {
-                    submitBtn.disabled = false;
-                    alert('Something went wrong.');
-                });
-        });
-    });
-</script>
+@vite('resources/js/app.js')
 
 @endsection

@@ -11,13 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('moods', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('mood');
-            $table->text('message');
-            $table->date('date');
-            $table->timestamps();
+        Schema::table('chat_messages', function (Blueprint $table) {
+            $table->timestamp('read_at')->nullable()->after('message');
         });
     }
 
@@ -26,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('moods');
+        Schema::table('chat_messages', function (Blueprint $table) {
+            $table->dropColumn('read_at');
+        });
     }
 };
