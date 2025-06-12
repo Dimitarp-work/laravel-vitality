@@ -1,3 +1,6 @@
+import { openDeleteModal, initializeCelebration } from './celebration';
+import { initializeConfetti } from './confetti';
+
 // DOM Elements and State Management
 let completedCount;
 let totalCount;
@@ -103,7 +106,7 @@ function createCompleteButtonHandler(button) {
 
 function createNewCheckInElement(checkinData) {
     const newCheckin = document.createElement('div');
-    newCheckin.className = 'group grid grid-cols-[1fr,120px] gap-4 p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all';
+    newCheckin.className = 'group grid grid-cols-[1fr,120px] gap-4 p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all relative';
     newCheckin.innerHTML = `
         <div class="min-w-0">
             <span class="text-pink-900 break-all">${checkinData.title}</span>
@@ -118,6 +121,15 @@ function createNewCheckInElement(checkinData) {
                 Not Done
             </button>
         </div>
+        <form action="/checkins/${checkinData.id}" method="POST" class="delete-form absolute -top-3 -right-3">
+            <input type="hidden" name="_token" value="${token}">
+            <input type="hidden" name="_method" value="DELETE">
+            <button type="button" onclick="openDeleteModal('${checkinData.id}')" class="delete-btn h-6 w-6 rounded-full bg-red-100 hover:bg-red-200 flex items-center justify-center transition-colors shadow-sm border border-red-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+            </button>
+        </form>
     `;
 
     const newButton = newCheckin.querySelector('.complete-btn');
@@ -170,49 +182,24 @@ function displayError(input, message) {
     // Add error class to input
     input.classList.add('border-red-500', 'focus:ring-red-500');
 
-    // Create error message element
-    const errorDiv = document.createElement('div');
-    errorDiv.className = 'error-message text-red-500 text-sm mt-1 flex items-center gap-1';
+    // Get the label element
+    const label = document.querySelector('label[for="custom-checkin-title"]');
 
-    // Add error icon
-    const icon = document.createElement('span');
-    icon.className = 'material-icons text-red-500 text-sm';
-    icon.textContent = 'error_outline';
-    errorDiv.appendChild(icon);
-
-    // Add error message
-    const messageSpan = document.createElement('span');
-    messageSpan.textContent = message;
-    errorDiv.appendChild(messageSpan);
-
-    // Get the form element
-    const form = input.closest('form');
-
-    // Create a wrapper div if it doesn't exist
-    let wrapper = form.querySelector('.input-wrapper');
-    if (!wrapper) {
-        wrapper = document.createElement('div');
-        wrapper.className = 'input-wrapper flex flex-col w-full';
-        input.parentElement.insertBefore(wrapper, input);
-        wrapper.appendChild(input);
-    }
-
-    // Insert error message after the input inside the wrapper
-    wrapper.appendChild(errorDiv);
+    // Update label with error message and styling
+    label.innerHTML = `<span class="material-icons text-red-500 text-sm">error_outline</span><span>${message}</span>`;
+    label.classList.remove('text-gray-500');
+    label.classList.add('text-red-500', 'flex', 'items-center', 'gap-1');
 }
 
 function clearErrors(input) {
     // Remove error class from input
     input.classList.remove('border-red-500', 'focus:ring-red-500');
 
-    // Remove existing error message if it exists
-    const wrapper = input.closest('.input-wrapper');
-    if (wrapper) {
-        const existingError = wrapper.querySelector('.error-message');
-        if (existingError) {
-            existingError.remove();
-        }
-    }
+    // Reset label to original state
+    const label = document.querySelector('label[for="custom-checkin-title"]');
+    label.textContent = `Max ${CheckInConstants.TITLE_MAX_LENGTH} characters`;
+    label.classList.remove('text-red-500', 'flex', 'items-center', 'gap-1');
+    label.classList.add('text-gray-500');
 }
 
 // init
@@ -228,4 +215,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize custom check-in form
     const customForm = document.getElementById('custom-checkin-form');
     customForm.addEventListener('submit', handleCustomFormSubmit);
+
+    // Initialize celebration functionality
+    initializeCelebration();
+
+    // Initialize confetti
+    initializeConfetti();
 });

@@ -8,6 +8,11 @@ export default defineConfig({
                 'resources/css/app.css',
                 'resources/js/app.js',
                 'resources/js/checkins.js',
+                'resources/js/celebration.js',
+                'resources/js/confetti.js',
+                'resources/js/modal-utils.js',
+                'resources/js/checkins_modals.js',
+                'resources/js/reminders_modals.js'
             ],
             refresh: true,
         }),

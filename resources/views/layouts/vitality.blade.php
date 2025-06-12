@@ -87,17 +87,21 @@
                     <div class="text-xs text-pink-700">Wellness Seeker</div>
                 </div>
             </div>
-            <div class="flex items-center gap-2 mb-2">
-    <span class="text-xs bg-pink-300 text-white rounded px-2 py-0.5" id="sidebar-level">Level {{ $level }}</span>
-    <span class="text-xs text-pink-700" id="sidebar-xp">{{ $xpProgress }} / {{ $xpToNextLevel }} XP</span>
-</div>
-<div class="w-full h-2 bg-pink-100 rounded-full overflow-hidden mb-2">
-    <div id="sidebar-xp-bar" class="h-full bg-pink-400 rounded-full transition-all duration-300 ease-in-out" style="width: {{ $progressPercent }}%"></div>
-</div>
-<div class="text-xs text-pink-700 font-semibold flex items-center gap-1">
-    <span class="material-icons text-pink-400 text-base">monetization_on</span>
-    <span id="sidebar-credits">{{ $credits }} Credits</span>
-</div>
+            <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-2">
+                    <span class="text-xs bg-pink-300 text-white rounded px-2 py-0.5" id="sidebar-level">Level {{ $level }}</span>
+                    <span class="text-xs text-pink-700" id="sidebar-xp">{{ $xpProgress }} / {{ $xpToNextLevel }} XP</span>
+                </div>
+                <x-notifications :notifications="session('notifications', [])" />
+            </div>
+            <div class="w-full h-2 bg-pink-100 rounded-full overflow-hidden mb-2">
+                <div id="sidebar-xp-bar" class="h-full bg-pink-400 rounded-full transition-all duration-300 ease-in-out" style="width: {{ $progressPercent }}%"></div>
+            </div>
+            <div class="text-xs text-pink-700 font-semibold flex items-center gap-1">
+                <span class="material-icons text-pink-400 text-base">monetization_on</span>
+                <span id="sidebar-credits">{{ $credits }} Credits</span>
+            </div>
+        </div>
 
         <!-- Navigation -->
         <nav class="flex-1 flex flex-col justify-between p-4">
@@ -112,8 +116,9 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#"
-                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition text-pink-900 hover:bg-pink-100">
+                        <a href="{{ route('diary') }}"
+                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
+                            {{ request()->routeIs('diary') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
                             <span class="material-icons">book</span> Diary
                         </a>
                     </li>
@@ -122,6 +127,13 @@
                             class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
                             {{ request()->routeIs('checkins.index') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
                             <span class="material-icons">check_circle</span> Daily Check-ins
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('reminders.index') }}"
+                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
+                            {{ request()->routeIs('reminders.index') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
+                            <span class="material-icons">notifications</span> Reminders
                         </a>
                     </li>
                     <li>
@@ -139,8 +151,16 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#"
-                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition text-pink-900 hover:bg-pink-100">
+                        <a href="{{ route('capychat') }}"
+                           class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition {{ request()->routeIs('capychat') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }} relative">
+                            <img src="/images/capybara-icon.svg" alt="Capy Chat" class="w-6 h-6 inline-block align-middle" /> Capy Chat
+                            <span id="capy-unread-bubble" class="absolute right-2 top-2 bg-pink-400 text-white text-xs font-bold rounded-full px-2 py-0.5 hidden"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('goals') }}"
+                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
+                            {{ request()->routeIs('my-goals') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
                             <span class="material-icons">flag</span> My Goals
                         </a>
                     </li>
@@ -156,8 +176,9 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#"
-                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition text-pink-900 hover:bg-pink-100">
+                        <a href="{{ route('leaderboard') }}"
+                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
+                            {{ request()->routeIs('leaderboard') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
                             <span class="material-icons">leaderboard</span> Leaderboard
                         </a>
                     </li>
@@ -166,20 +187,23 @@
                 <div class="text-xs text-pink-700 font-bold uppercase tracking-wider mb-2 mt-6">Customization</div>
                 <ul class="space-y-1">
                     <li>
-                        <a href="#"
-                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition text-pink-900 hover:bg-pink-100">
+                        <a href="{{ route('store') }}"
+                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
+                            {{ request()->routeIs('store') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
                             <span class="material-icons">store</span> Store
                         </a>
                     </li>
                     <li>
-                        <a href="#"
-                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition text-pink-900 hover:bg-pink-100">
+                        <a href="{{ route('appearance') }}"
+                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
+                            {{ request()->routeIs('appearance') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
                             <span class="material-icons">palette</span> Appearance
                         </a>
                     </li>
                     <li>
-                        <a href="#"
-                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition text-pink-900 hover:bg-pink-100">
+                        <a href="{{ route('settings.index') }}"
+                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
+                            {{ request()->routeIs('settings.*') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
                             <span class="material-icons">settings</span> Settings
                         </a>
                     </li>
@@ -195,6 +219,11 @@
     <main class="flex-1 bg-gray-50 min-h-screen p-4 md:p-8 md:ml-72 max-w-7xl mx-auto">
         @yield('content')
     </main>
+
+    <!-- Toast Notifications -->
+    @if(session('toast_notification'))
+        <x-toast-notification :notification="session('toast_notification')" />
+    @endif
 
     @stack('scripts')
 </body>

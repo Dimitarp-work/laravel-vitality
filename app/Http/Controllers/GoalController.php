@@ -1,0 +1,212 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Goal;
+use App\Models\GoalProgressLog;
+use App\Models\OverdueGoalNotification;
+use App\Services\XPService;
+use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
+use Illuminate\Support\Carbon;
+
+class GoalController extends Controller
+{
+    public function goals(Request $request): View
+    {
+        $activeTab = $request->query('tab', 'current');
+        $userId = auth()->id();
+
+        // Get current and achieved goals for the logged in user
+        $currentGoals = Goal::where('user_id', $userId)->where('achieved', false)->get();
+        $achievedGoals = Goal::where('user_id', $userId)->where('achieved', true)->get();
+
+        // Prepare recommendations for overdue goals without today's update
+        $recommendations = collect();
+
+        foreach ($currentGoals as $goal) {
+            // Calculate end date based on duration unit/value
+            $goalEndDate = $goal->created_at->copy();
+
+            switch ($goal->duration_unit) {
+                case 'minutes':
+                    $goalEndDate->addMinutes($goal->duration_value);
+                    break;
+                case 'hours':
+                    $goalEndDate->addHours($goal->duration_value);
+                    break;
+                case 'days':
+                    $goalEndDate->addDays($goal->duration_value);
+                    break;
+                default:
+                    $goalEndDate->addDays($goal->duration_value);
+            }
+
+            // Check if duration has passed and goal is incomplete
+            if ($goalEndDate->isPast() && $goal->progress < 100) {
+                // Check if user updated today
+                $updatedToday = $goal->progressLogs()
+                    ->where('user_id', $userId)
+                    ->whereDate('updated_on', now()->toDateString())
+                    ->exists();
+
+                if (!$updatedToday) {
+                    $recommendations->push([
+                        'message' => "Your goal '{$goal->title}' duration has passed and it's not completed yet. Please update your progress."
+                    ]);
+                }
+            }
+        }
+
+        // Fetch overdue goal notifications if you still want to use them elsewhere
+        $notifications = OverdueGoalNotification::where('user_id', $userId)
+            ->latest()
+            ->get();
+
+        $badges = [
+            [
+                'id' => 'hydration-champion',
+                'name' => 'Hydration Champion',
+                'icon' => '💧',
+                'description' => 'Track water intake for 14 days',
+                'earned' => true,
+                'date' => '2023-09-19',
+                'progress' => 100,
+            ],
+            [
+                'id' => 'movement-maven',
+                'name' => 'Movement Maven',
+                'icon' => '🏅',
+                'description' => 'Track movement for 14 days',
+                'earned' => false,
+                'progress' => 6,
+                'maxProgress' => 14,
+            ],
+            [
+                'id' => 'mindfulness-master',
+                'name' => 'Mindfulness Master',
+                'icon' => '⭐',
+                'description' => 'Practice mindfulness for 7 days',
+                'earned' => true,
+                'date' => '2023-09-15',
+                'progress' => 100,
+            ],
+            [
+                'id' => 'gratitude-guide',
+                'name' => 'Gratitude Guide',
+                'icon' => '🥹',
+                'description' => 'Log gratitude for 10 days',
+                'earned' => true,
+                'date' => '2023-04-10',
+                'progress' => 100,
+            ],
+        ];
+
+        return view('goals', compact('activeTab', 'currentGoals', 'achievedGoals', 'badges', 'notifications', 'recommendations'));
+    }
+
+    public function create(): View
+    {
+        return view('goals.create');
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'emoji' => 'required|string|max:2',
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'xp' => 'required|integer|min:10|max:1000',
+            'duration_value' => 'required|integer|min:1',
+            'duration_unit' => 'required|in:minutes,hours,days',
+        ]);
+
+        $goal = new Goal($validated);
+        $goal->user_id = auth()->id();
+        $goal->save();
+
+        return redirect()->route('goals')->with('success', 'Goal created successfully!');
+    }
+
+    public function edit(Goal $goal): View
+    {
+        return view('goals.edit', compact('goal'));
+    }
+
+    public function update(Request $request, Goal $goal): RedirectResponse
+    {
+        $validated = $request->validate([
+            'emoji' => 'required|string|max:2',
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'xp' => 'required|integer|min:10|max:1000',
+            'duration_value' => 'required|integer|min:1',
+            'duration_unit' => 'required|in:minutes,hours,days',
+        ]);
+
+        $goal->update($validated);
+
+        return redirect()->route('goals')->with('success', 'Goal updated successfully!');
+    }
+
+    public function destroy(Goal $goal): RedirectResponse
+    {
+        $goal->delete();
+
+        return redirect()->route('goals')->with('success', 'Goal deleted successfully!');
+    }
+
+    public function dailyUpdate(Request $request, Goal $goal): RedirectResponse
+    {
+        $user = auth()->user();
+        $today = Carbon::today();
+
+        // Check if the user already logged progress for this goal today
+        $alreadyLogged = GoalProgressLog::where('goal_id', $goal->id)
+            ->where('user_id', $user->id)
+            ->whereDate('updated_on', $today)
+            ->exists();
+
+        if ($alreadyLogged) {
+            return back()->with('error', 'You already updated this goal today.');
+        }
+
+        // Create progress log for today
+        GoalProgressLog::create([
+            'goal_id' => $goal->id,
+            'user_id' => $user->id,
+            'updated_on' => $today,
+        ]);
+
+        // Calculate progress increments based on duration unit/value
+        $durationInDays = match ($goal->duration_unit) {
+            'minutes' => max(1, $goal->duration_value / (24 * 60)),
+            'hours' => max(1, $goal->duration_value / 24),
+            'days' => $goal->duration_value,
+            default => 1,
+        };
+
+        $xpPerUpdate = round($goal->xp / $durationInDays);
+        $progressIncrement = 100 / $durationInDays;
+
+        // Update goal progress and status
+        $goal->progress += $progressIncrement;
+        if ($goal->progress >= 100) {
+            $goal->progress = 100;
+            $goal->achieved = true;
+            $goal->achieved_at = now();
+        }
+        $goal->last_progress_date = now();
+        $goal->save();
+
+        // Reward XP
+        app(XPService::class)->reward($user, $xpPerUpdate, 0, 'Goal progress update');
+        $goal->refresh();
+
+        return back()->with([
+            'success' => 'Goal updated and XP awarded!',
+            'day_flow' => $goal->day_flow,
+        ]);
+    }
+}
