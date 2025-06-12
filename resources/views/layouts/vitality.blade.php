@@ -144,6 +144,13 @@
                         </a>
                     </li>
                     <li>
+                        <a href="{{ route('capychat') }}"
+                           class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition {{ request()->routeIs('capychat') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }} relative">
+                            <img src="/images/capybara-icon.svg" alt="Capy Chat" class="w-6 h-6 inline-block align-middle" /> Capy Chat
+                            <span id="capy-unread-bubble" class="absolute right-2 top-2 bg-pink-400 text-white text-xs font-bold rounded-full px-2 py-0.5 hidden"></span>
+                        </a>
+                    </li>
+                    <li>
                         <a href="{{ route('goals') }}"
                             class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
                             {{ request()->routeIs('my-goals') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
