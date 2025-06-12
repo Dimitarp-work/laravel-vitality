@@ -4,6 +4,7 @@ use App\Http\Controllers\ChallengeController;
 use App\Http\Controllers\DailyCheckInController;
 use App\Http\Controllers\GoalController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\LeaderboardController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -36,7 +37,6 @@ Route::get('/login', function () {
 
 Route::get('/home', function () {
     return view('home');
-
 })->middleware(['auth', 'verified'])->name('home');
 
 Route::middleware('auth')->group(function () {
@@ -57,10 +57,6 @@ Route::get('/appearance', function () {
     return view('under-construction');
 })->name('appearance');
 
-Route::get('/leaderboard', function () {
-    return view('under-construction');
-})->name('leaderboard');
-
 Route::get('/diary', function () {
     return view('under-construction');
 })->name('diary');
@@ -79,7 +75,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
 
-Route::middleware('auth')->group(function () {
+// Challenges Routes
+Route::middleware(['auth'])->group(function () {
     Route::get('/challenges', [ChallengeController::class, 'index'])->name('challenges.index');
     Route::get('/challenges/create', [ChallengeController::class, 'create'])->name('challenges.create');
     Route::post('/challenges', [ChallengeController::class, 'store'])->name('challenges.store');
@@ -90,8 +87,16 @@ Route::middleware('auth')->group(function () {
     Route::put('/challenges/{challenge}', [ChallengeController::class, 'update'])->name('challenges.update');
     Route::get('/challenges/{challenge}/confirm-delete', [ChallengeController::class, 'confirmDelete'])->name('challenges.confirmDelete');
     Route::delete('/challenges/{challenge}', [ChallengeController::class, 'destroy'])->name('challenges.destroy');
+});
+
+// Leaderboard Routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/leaderboard/xp', [LeaderboardController::class, 'xp'])->name('leaderboard.xp');
+    Route::get('/leaderboard/badges', [LeaderboardController::class, 'badges'])->name('leaderboard.badges');
+});
 
     // Settings routes
+Route::middleware(['auth'])->group(function () {
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
     Route::post('/settings/test-reminders', [SettingsController::class, 'testReminders'])->name('settings.test-reminders');
