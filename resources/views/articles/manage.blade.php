@@ -9,7 +9,7 @@
                 <span class="material-icons text-theme-400">menu_book</span>
                 Manage Articles
             </h1>
-            <a href="{{ route('articles.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-200 flex items-center gap-2">
+            <a href="{{ route('articles.create') }}" class="bg-pink-400 hover:bg-pink-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-200 flex items-center gap-2">
                 <span class="material-icons text-base">add_circle</span>
                 New Article
             </a>

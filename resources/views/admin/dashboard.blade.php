@@ -3,7 +3,6 @@
 @section('title', 'Admin Dashboard')
 
 @section('content')
-
     @php
         function renderGrowthPercentage($percentage) {
             $class = 'text-gray-600';
@@ -43,13 +42,6 @@
                     Admin Dashboard
                 </h1>
                 <p class="text-theme-700 text-base">Welcome back! Here's what's happening today.</p>
-            </div>
-            <div class="flex gap-3">
-                <button
-                    class="bg-white hover:bg-gray-50 text-theme-700 border border-theme-200 rounded-lg px-6 py-2 font-semibold flex items-center gap-2 transition">
-                    <span class="material-icons text-base">download</span>
-                    Export
-                </button>
             </div>
         </div>
 
