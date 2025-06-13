@@ -99,10 +99,15 @@
                     <div class="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center">
                         <span class="material-icons text-purple-400 text-2xl">trending_up</span>
                     </div>
-                    <span class="text-purple-400 text-sm font-semibold">+18%</span>
                 </div>
-                <div class="text-2xl font-bold text-theme-900 mb-1">68%</div>
+                <div class="text-2xl font-bold text-theme-900 mb-1">
+                    {{ number_format($totalEngagementRate, 1) }}%
+                </div>
                 <div class="text-theme-700 text-sm">Engagement Rate</div>
+                <div class="text-xs text-theme-500 mt-2 flex flex-col gap-1">
+                    <span class="font-medium">Weekly Change: @php echo renderGrowthPercentage($engagementRateWeeklyGrowth); @endphp</span>
+                    <span class="font-medium">Monthly Change: @php echo renderGrowthPercentage($engagementRateMonthlyGrowth); @endphp</span>
+                </div>
             </div>
         </div>
 
