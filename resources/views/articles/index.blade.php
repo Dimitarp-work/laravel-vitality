@@ -44,7 +44,8 @@
         <div class="flex flex-col lg:flex-row gap-8">
             <div class="w-full lg:w-2/3">
                 <div class="inline-grid grid-cols-2 auto-cols-max gap-3">
-                    @foreach($articles as $article)
+                    {{-- ADDED: Check if articles exist, otherwise display a message --}}
+                    @forelse($articles as $article)
                         <div class="col-span-1 bg-white rounded-xl shadow-lg p-6 w-full max-w-[300px]">
                             <div class="flex flex-col gap-1">
                                 <a href="{{ route('articles.show', $article) }}"
@@ -95,7 +96,10 @@
                                 @endauth
                             </div>
                         </div>
-                    @endforeach
+                    @empty
+                        {{-- This block will be displayed if $articles is empty --}}
+                        <p class="col-span-2 text-center text-gray-500 text-lg my-8 w-full">No articles found.</p>
+                    @endforelse
                 </div>
             </div>
 
@@ -103,7 +107,7 @@
                 <div class="w-full lg:w-1/3 space-y-6">
                     @if($trendingArticles->count())
                         <div class="bg-gray-100 border border-pink-200 rounded-lg p-4 shadow">
-                            <h2 class="text-pink-400 text-lg font-bold mb-3">Newest & Most popular</h2>
+                            <h2 class="text-pink-400 text-lg font-bold mb-3">Newest and Most popular</h2>
                             <div class="space-y-3">
                                 @foreach($trendingArticles as $trending)
                                     <a href="{{ route('articles.show', $trending) }}"

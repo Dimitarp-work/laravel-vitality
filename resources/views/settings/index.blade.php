@@ -57,9 +57,8 @@
             </form>
 
             <!-- Test Reminders Button -->
-            <div class="mt-8 pt-8 border-t">
-                <h3 class="text-lg font-medium text-gray-900 mb-4">Test Notifications</h3>
-                <p class="text-sm text-gray-500 mb-4">Click the button below to test how your reminders will appear in notifications.</p>
+            @if(auth()->user()->is_admin)
+            <hr class="my-6 border-1">
                 <form action="{{ route('settings.test-reminders') }}" method="POST">
                     @csrf
                     <button type="submit" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-2 rounded-lg font-medium flex items-center gap-2">
@@ -67,17 +66,19 @@
                         Test Reminders
                     </button>
                 </form>
+            @endif
 
+            @if(auth()->user()->is_admin)
                 <h3 class="text-lg font-medium text-gray-900 mb-4 mt-6">Quick Test Interval</h3>
-                <p class="text-sm text-gray-500 mb-4">Set reminder interval to 10 seconds for quick testing.</p>
+                <p class="text-sm text-gray-500 mb-4">Set reminder interval to 1 minute for quick testing.</p>
                 <form action="{{ route('settings.set-test-reminder-interval') }}" method="POST">
                     @csrf
                     <button type="submit" class="bg-pink-100 hover:bg-pink-200 text-pink-700 px-6 py-2 rounded-lg font-medium flex items-center gap-2">
                         <span class="material-icons text-base">timer</span>
-                        Set 10s Interval
+                        Set 1m Interval
                     </button>
                 </form>
-            </div>
+            @endif
         </div>
     </div>
 </div>

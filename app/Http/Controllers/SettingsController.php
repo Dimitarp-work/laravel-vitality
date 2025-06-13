@@ -17,6 +17,14 @@ class SettingsController extends Controller
         $user = auth()->user();
         $settings = $user->notificationSettings;
 
+        if (!$settings) {
+            $settings = NotificationSetting::create([
+                'user_id' => $user->id,
+                'reminder_interval' => 60, // Default to 60 minutes
+                'is_enabled' => true,
+            ]);
+        }
+
         return view('settings.index', compact('settings'));
     }
 
