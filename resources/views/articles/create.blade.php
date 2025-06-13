@@ -1,4 +1,4 @@
-@extends('layouts.vitality')
+@extends('layouts.admin')
 
 @section('content')
     <h1 class="text-3xl font-bold text-pink-300">Create Article</h1>
@@ -11,7 +11,7 @@
             <input
                 type="text"
                 name="title"
-                class="form-control bg-gray-200 rounded-lg shadow px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-pink-300 @error('title') border-red-500 @enderror"
+                class="form-control bg-gray-200 rounded-lg shadow px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-pink-300 w-full @error('title') border-red-500 @enderror"
                 value="{{ old('title') }}"
                 required>
             @error('title')
@@ -58,7 +58,7 @@
                         select-none"
                           data-tag-id="{{ $tag->id }}"
                           data-tag-name="{{ $tag->name }}"
-                          @if(in_array($tag->id, old('tags', isset($article) ? $article->tags->pluck('id')->toArray() : [])))
+                          @if(in_array($tag->id, old('tags', [])))
                               data-selected="true"
                           @endif
                     >
@@ -91,7 +91,7 @@
     </form>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const tagItems = document.querySelectorAll('.tag-item');
             const hiddenTagsInput = document.getElementById('hidden-tags-input');
             let selectedTagIds = [];
@@ -109,17 +109,19 @@
             updateHiddenInput();
 
             tagItems.forEach(tagItem => {
-                tagItem.addEventListener('click', function() {
+                tagItem.addEventListener('click', function () {
                     const tagId = this.dataset.tagId;
 
                     if (selectedTagIds.includes(tagId)) {
                         selectedTagIds = selectedTagIds.filter(id => id !== tagId);
                         this.classList.remove('selected-tag', 'bg-pink-300', 'text-white');
                         this.classList.add('bg-gray-300', 'text-gray-700');
+                        this.dataset.selected = 'false';
                     } else {
                         selectedTagIds.push(tagId);
                         this.classList.add('selected-tag', 'bg-pink-300', 'text-white');
                         this.classList.remove('bg-gray-300', 'text-gray-700');
+                        this.dataset.selected = 'true';
                     }
                     updateHiddenInput();
                 });
@@ -151,7 +153,7 @@
             }
 
             const form = document.querySelector('form');
-            form.addEventListener('submit', function(event) {
+            form.addEventListener('submit', function (event) {
                 if (selectedTagIds.length === 0 && hiddenTagsInput.hasAttribute('required')) {
                 }
             });

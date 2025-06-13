@@ -62,11 +62,13 @@ Route::get('/diary', function () {
     return view('under-construction');
 })->name('diary');
 
-Route::resource('articles', ArticleController::class);
-
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/articles/manage', [ArticleController::class, 'manageArticles'])->name('admin.articles.index');
+    Route::resource('articles', ArticleController::class)->except(['index', 'show']);
 });
+
+Route::resource('articles', ArticleController::class)->only(['index', 'show']);
 
 // Challenges Routes
 Route::middleware(['auth'])->group(function () {

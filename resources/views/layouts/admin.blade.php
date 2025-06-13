@@ -40,8 +40,8 @@
             <div>
                 <div class="text-xs text-gray-600 font-bold uppercase tracking-wider mb-2 mt-2">Main</div>
                 <ul class="space-y-1">
-                    <li><a href="/admin/dashboard" class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium text-gray-900 bg-white/90 hover:bg-gray-200 hover:border-l-4 hover:border-pink-400 transition border-l-4 border-transparent"><span class="material-icons">dashboard</span> Dashboard</a></li>
-                    <li><a href="/articles" class="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-900 hover:bg-gray-200 hover:border-l-4 hover:border-pink-400 transition border-l-4 border-transparent"><span class="material-icons">article</span> Manage Articles</a></li>
+                    <li><a href="/dashboard" class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium text-gray-900 bg-white/90 hover:bg-gray-200 hover:border-l-4 hover:border-pink-400 transition border-l-4 border-transparent"><span class="material-icons">dashboard</span> Dashboard</a></li>
+                    <li><a href="/articles/manage" class="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-900 hover:bg-gray-200 hover:border-l-4 hover:border-pink-400 transition border-l-4 border-transparent"><span class="material-icons">article</span> Manage Articles</a></li>
                     <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-900 hover:bg-gray-200 hover:border-l-4 hover:border-pink-400 transition border-l-4 border-transparent"><span class="material-icons">group</span> Manage Users</a></li>
                     <li><a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-900 hover:bg-gray-200 hover:border-l-4 hover:border-pink-400 transition border-l-4 border-transparent"><span class="material-icons">analytics</span> Analytics</a></li>
                 </ul>
