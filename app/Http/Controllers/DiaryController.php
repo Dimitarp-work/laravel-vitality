@@ -34,16 +34,15 @@ class DiaryController extends Controller
 
         $rules = [
             'mood' => $action === 'submit' ? 'required|string|max:5' : 'nullable|string|max:5',
-            'emotions' => $action === 'submit' ? 'required|string' : 'nullable|string',
-            'thoughts' => $action === 'submit' ? 'required|string' : 'nullable|string',
-            'gratitude' => 'nullable|string',
-            'activities' => 'nullable|string',
-            'tags' => 'nullable|string',
+            'emotions' => $action === 'submit' ? 'required|string|max:50' : 'nullable|string|max:50',
+            'thoughts' => $action === 'submit' ? 'required|string|max:50' : 'nullable|string|max:50',
+            'gratitude' => 'nullable|string|max:50',
+            'activities' => 'nullable|string|max:50',
+            'tags' => 'nullable|string|max:50',
         ];
 
         $validated = $request->validate($rules);
 
-        // Save new draft or update existing one
         $entry = DiaryEntry::where('user_id', auth()->id())
             ->where('status', 'draft')
             ->latest()
@@ -63,5 +62,6 @@ class DiaryController extends Controller
         return redirect()->route('diary', ['tab' => 'new'])
             ->with('success', $action === 'submit' ? 'Entry submitted!' : 'Draft saved!');
     }
+
 }
 

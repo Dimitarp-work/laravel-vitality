@@ -65,7 +65,13 @@
                     <!-- Emotions -->
                     <div>
                         <label class="block text-sm font-medium mb-2 text-pink-600">What emotions are present?</label>
-                        <textarea name="emotions" class="w-full p-3 border border-pink-300 rounded-md min-h-[100px]" placeholder="Joy, anxiety, contentment...">{{ old('emotions', $draft->emotions ?? '') }}</textarea>
+                        <textarea
+                            name="emotions"
+                            class="w-full p-3 border border-pink-300 rounded-md min-h-[100px] max-h-[200px] overflow-y-auto resize-none"
+                            maxlength="50"
+                            placeholder="Joy, anxiety, contentment..."
+                            @if(old('action') === 'submit') required @endif
+    >{{ old('emotions', $draft->emotions ?? '') }}</textarea>
                         @error('emotions')
                         <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                         @enderror
@@ -74,7 +80,12 @@
                     <!-- Thoughts -->
                     <div>
                         <label class="block text-sm font-medium mb-2 text-pink-600">What's on your mind?</label>
-                        <textarea name="thoughts" class="w-full p-3 border border-pink-300 rounded-md min-h-[100px]">{{ old('thoughts', $draft->thoughts ?? '') }}</textarea>
+                        <textarea
+                            name="thoughts"
+                            class="w-full p-3 border border-pink-300 rounded-md min-h-[100px] max-h-[200px] overflow-y-auto resize-none"
+                            maxlength="50"
+                            @if(old('action') === 'submit') required @endif
+    >{{ old('thoughts', $draft->thoughts ?? '') }}</textarea>
                         @error('thoughts')
                         <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                         @enderror
@@ -83,21 +94,36 @@
                     <!-- Gratitude -->
                     <div>
                         <label class="block text-sm font-medium mb-2 text-pink-600">A moment of gratitude</label>
-                        <textarea name="gratitude" class="w-full p-3 border border-pink-300 rounded-md min-h-[100px]">{{ old('gratitude', $draft->gratitude ?? '') }}</textarea>
+                        <textarea
+                            name="gratitude"
+                            class="w-full p-3 border border-pink-300 rounded-md min-h-[100px] max-h-[200px] overflow-y-auto resize-none"
+                            maxlength="50"
+                        >{{ old('gratitude', $draft->gratitude ?? '') }}</textarea>
                     </div>
 
                     <!-- Activities -->
                     <div>
                         <label class="block text-sm font-medium mb-2 text-pink-600">Activities (optional)</label>
-                        <textarea name="activities" class="w-full p-3 border border-pink-300 rounded-md min-h-[100px]">{{ old('activities', $draft->activities ?? '') }}</textarea>
+                        <textarea
+                            name="activities"
+                            class="w-full p-3 border border-pink-300 rounded-md min-h-[100px] max-h-[200px] overflow-y-auto resize-none"
+                            maxlength="50"
+                        >{{ old('activities', $draft->activities ?? '') }}</textarea>
                     </div>
 
                     <!-- Tags -->
                     <div>
                         <label class="block text-sm font-medium mb-2 text-pink-600">Tags</label>
-                        <input type="text" name="tags" class="w-full p-3 border border-pink-300 rounded-md" placeholder="reflection, gratitude, work" value="{{ old('tags', $draft->tags ?? '') }}">
-                        <p class="text-xs text-pink-400 mt-1">Tags help you find entries later</p>
+                        <input
+                            type="text"
+                            name="tags"
+                            class="w-full p-3 border border-pink-300 rounded-md"
+                            placeholder="reflection, gratitude, work"
+                            maxlength="45"
+                            value="{{ old('tags', $draft->tags ?? '') }}"
+                        >
                     </div>
+
 
                     <!-- Actions -->
                     <div class="flex flex-col sm:flex-row gap-3 sm:justify-end">
