@@ -122,6 +122,6 @@ class ArticleController extends Controller
             Storage::delete('public/' . $article->image);
         }
         $article->delete();
-        return redirect()->route('articles.index')->with('success', 'Article deleted successfully');
+        return redirect()->back()->with('success', 'Article deleted successfully!');
     }
 }

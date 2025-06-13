@@ -11,7 +11,7 @@ use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $totalArticles = Article::count();
         $totalUsers = User::count();
@@ -56,7 +56,23 @@ class DashboardController extends Controller
 
         $usersMonthlyGrowth = $this->calculateGrowthPercentage($usersThisMonth, $usersLastMonth);
 
-        $recentArticles = Article::latest()->take(5)->get();
+        $totalViews = Article::sum('views');
+
+        $viewsLastWeek = Article::whereBetween('created_at', [$startOfLastArticleWeek, $endOfLastArticleWeek])->sum('views');
+        $viewsThisWeek = Article::whereBetween('created_at', [$startOfThisArticleWeek, $endOfThisArticleWeek])->sum('views');
+        $viewsWeeklyGrowth = $this->calculateGrowthPercentage($viewsThisWeek, $viewsLastWeek);
+
+        $viewsLastMonth = Article::whereBetween('created_at', [$startOfLastArticleMonth, $endOfLastArticleMonth])->sum('views');
+        $viewsThisMonth = Article::whereBetween('created_at', [$startOfThisArticleMonth, $endOfThisArticleMonth])->sum('views');
+        $viewsMonthlyGrowth = $this->calculateGrowthPercentage($viewsThisMonth, $viewsLastMonth);
+
+        $query = Article::latest();
+
+        if ($search = $request->input('search')) {
+            $query->where('title', 'like', '%' . $search . '%');
+        }
+
+        $recentArticles = $query->paginate(3);
 
         $logs = XPLog::with('user')->latest()->limit(10)->get();
 
@@ -67,21 +83,19 @@ class DashboardController extends Controller
             'articlesMonthlyGrowth',
             'usersWeeklyGrowth',
             'usersMonthlyGrowth',
+            'totalViews',
+            'viewsWeeklyGrowth',
+            'viewsMonthlyGrowth',
             'recentArticles',
-            'logs'
+            'logs',
+            'search'
         ));
     }
 
-    /**
-     * Calculates the percentage growth.
-     * Returns null if previous count is 0 and current count is > 0 (to indicate 'New' growth).
-     * Returns 0 if both are 0.
-     * Returns percentage otherwise.
-     */
     private function calculateGrowthPercentage($current, $previous)
     {
         if ($previous == 0) {
-            return $current == 0 ? 0 : null; // Use null to signify "New" or infinite growth
+            return $current == 0 ? 0 : null;
         }
         return (($current - $previous) / $previous) * 100;
     }

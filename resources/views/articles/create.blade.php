@@ -60,8 +60,7 @@
                           data-tag-name="{{ $tag->name }}"
                           @if(in_array($tag->id, old('tags', isset($article) ? $article->tags->pluck('id')->toArray() : [])))
                               data-selected="true"
-                          class="tag-item selected-tag bg-pink-200 text-pink-800 rounded-full px-3 py-1 text-sm font-semibold cursor-pointer transition select-none"
-                        @endif
+                          @endif
                     >
                         {{ $tag->name }}
                     </span>
@@ -100,6 +99,11 @@
             tagItems.forEach(item => {
                 if (item.dataset.selected === 'true') {
                     selectedTagIds.push(item.dataset.tagId);
+                    item.classList.add('selected-tag', 'bg-pink-300', 'text-white');
+                    item.classList.remove('bg-gray-300', 'text-gray-700');
+                } else {
+                    item.classList.add('bg-gray-300', 'text-gray-700');
+                    item.classList.remove('selected-tag', 'bg-pink-300', 'text-white');
                 }
             });
             updateHiddenInput();
@@ -111,11 +115,11 @@
                     if (selectedTagIds.includes(tagId)) {
                         selectedTagIds = selectedTagIds.filter(id => id !== tagId);
                         this.classList.remove('selected-tag', 'bg-pink-300', 'text-white');
-                        this.classList.add('bg-gray-100', 'text-gray-500');
+                        this.classList.add('bg-gray-300', 'text-gray-700');
                     } else {
                         selectedTagIds.push(tagId);
                         this.classList.add('selected-tag', 'bg-pink-300', 'text-white');
-                        this.classList.remove('bg-gray-100', 'text-gray-500');
+                        this.classList.remove('bg-gray-300', 'text-gray-700');
                     }
                     updateHiddenInput();
                 });
@@ -123,8 +127,8 @@
 
             function updateHiddenInput() {
                 const parentForm = hiddenTagsInput.form;
-                const existingHiddenInputs = parentForm.querySelectorAll('input[name="tags[]"]:not(#hidden-tags-input)');
-                existingHiddenInputs.forEach(input => input.remove());
+                const existingDynamicInputs = parentForm.querySelectorAll('input.dynamic-tag-input');
+                existingDynamicInputs.forEach(input => input.remove());
 
                 if (selectedTagIds.length > 0) {
                     selectedTagIds.forEach(id => {
@@ -132,11 +136,17 @@
                         input.type = 'hidden';
                         input.name = 'tags[]';
                         input.value = id;
+                        input.classList.add('dynamic-tag-input');
                         parentForm.appendChild(input);
                     });
+
+                    hiddenTagsInput.name = '__temp_tags_placeholder__';
                     hiddenTagsInput.removeAttribute('required');
+                    hiddenTagsInput.value = '';
                 } else {
+                    hiddenTagsInput.name = 'tags[]';
                     hiddenTagsInput.setAttribute('required', 'required');
+                    hiddenTagsInput.value = '';
                 }
             }
 
