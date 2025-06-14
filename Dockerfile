@@ -1,40 +1,36 @@
 FROM php:8.2-fpm
 
-# Install dependencies
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    zip unzip \
-    curl \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+    git unzip curl zip libpng-dev libonig-dev libxml2-dev \
+    libzip-dev libpq-dev \
+    nodejs npm \
+    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
 
+# Set working directory
 WORKDIR /var/www
 
-# Copy Laravel files into container
+# Copy application code
 COPY . .
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php && \
     mv composer.phar /usr/local/bin/composer
 
-ENV NODE_VERSION=22.0.0
-RUN apt install -y curl
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-ENV NVM_DIR=/root/.nvm
-RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION}
-RUN . "$NVM_DIR/nvm.sh" && nvm use v${NODE_VERSION}
-RUN . "$NVM_DIR/nvm.sh" && nvm alias default v${NODE_VERSION}
-ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
-RUN node --version
-RUN npm --version
+# Install PHP dependencies (Laravel)
+RUN composer install --no-dev --optimize-autoloader
 
-EXPOSE 8080
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8080"]
-
-
-# Install Node dependencies (including Tailwind)
+# Install Node.js dependencies
 RUN npm install
 
-# Run build process (e.g., compile assets with Vite/Mix)
+# Build frontend (Tailwind, Vite, etc.)
 RUN npm run build
+
+# Set permissions (optional, depending on your setup)
+RUN chmod -R 775 storage bootstrap/cache
+
+# Expose port for Laravel dev server
+EXPOSE 8080
+
+# Start Laravel server
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8080"]
