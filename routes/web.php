@@ -61,10 +61,9 @@ Route::post('/store/activate/{type}/{id}', [ShopController::class, 'activate'])-
     Route::get('/diary/past', [DiaryController::class, 'past'])->name('diary.past');
 
     // Check-ins routes
+    Route::resource('/checkins', DailyCheckInController::class);
     Route::post('/checkins/{dailyCheckIn}/complete', [DailyCheckInController::class, 'complete'])->name('checkins.complete');
     Route::get('/checkins/week', [DailyCheckInController::class, 'week'])->name('checkins.week');
-    Route::delete('/checkins/{dailyCheckIn}', [DailyCheckInController::class, 'destroy'])->name('checkins.destroy');
-    Route::resource('checkins', DailyCheckInController::class);
 
     // Reminders routes
     Route::get('/reminders', [RemindersController::class, 'index'])->name('reminders.index');
