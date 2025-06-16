@@ -5,26 +5,22 @@
 @section('content')
     <div class="w-full pl-0 md:pl-72">
         <div class="max-w-4xl mx-auto px-6 py-8">
-            <!-- Header -->
             <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
                 <h1 class="text-2xl md:text-3xl font-bold text-pink-900 flex items-center gap-2">
                     <span class="material-icons text-pink-400">edit</span>
                     Edit Article
                 </h1>
-                <a href="{{ route('articles.index') }}"
+                <a href="#" onclick="history.back(); return false; "
                    class="bg-pink-400 hover:bg-pink-500 text-white px-4 py-2 rounded-lg self-start sm:self-auto flex items-center transition-colors duration-200">
-                    <span class="material-icons text-base mr-1">arrow_back</span>
-                    Back to Articles
+                    Back<span class="material-icons text-base mr-1">redo</span>
                 </a>
             </div>
 
-            <!-- Form -->
             <div class="bg-white rounded-xl shadow-lg p-8">
                 <form method="POST" action="{{ route('articles.update', $article) }}" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     <div class="space-y-6">
-                        <!-- Title -->
                         <div>
                             <label for="title" class="block text-sm font-medium text-pink-900 mb-2">Title</label>
                             <input
@@ -35,11 +31,10 @@
                                 class="w-full px-4 py-2.5 rounded-lg border border-pink-200 focus:ring-2 focus:ring-pink-300 focus:border-pink-300 @error('title') border-red-500 focus:ring-red-500 @enderror"
                                 required>
                             @error('title')
-                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
 
-                        <!-- Content -->
                         <div>
                             <label for="content" class="block text-sm font-medium text-pink-900 mb-2">Content</label>
                             <textarea
@@ -49,11 +44,10 @@
                                 class="w-full px-4 py-2.5 rounded-lg border border-pink-200 focus:ring-2 focus:ring-pink-300 focus:border-pink-300 @error('content') border-red-500 focus:ring-red-500 @enderror"
                                 required>{{ old('content', $article->content) }}</textarea>
                             @error('content')
-                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
 
-                        <!-- Image -->
                         <div>
                             <label class="block text-sm font-medium text-pink-900 mb-2">Image</label>
                             @if ($article->image)
@@ -63,25 +57,28 @@
                                     <div class="flex items-center">
                                         <input type="checkbox" name="clear_image" id="clear_image" value="1"
                                                class="rounded border-gray-300 text-pink-600 shadow-sm focus:border-pink-300 focus:ring focus:ring-pink-200 focus:ring-opacity-50">
-                                        <label for="clear_image" class="ml-2 text-sm text-gray-700">Clear current image</label>
+                                        <label for="clear_image" class="ml-2 text-sm text-gray-700">Clear current
+                                            image</label>
                                     </div>
                                 </div>
                             @endif
                             <div class="flex items-center gap-4">
-                                <label class="flex items-center gap-2 bg-pink-400 hover:bg-pink-500 text-white px-4 py-2 rounded-lg cursor-pointer transition-colors duration-200">
+                                <label
+                                    class="flex items-center gap-2 bg-pink-400 hover:bg-pink-500 text-white px-4 py-2 rounded-lg cursor-pointer transition-colors duration-200">
                                     <span class="material-icons text-base">add_a_photo</span>
                                     Choose File
-                                    <input type="file" name="image" class="hidden" onchange="document.getElementById('file-name').textContent = this.files[0]?.name || 'No file chosen';">
+                                    <input type="file" name="image" class="hidden"
+                                           onchange="document.getElementById('file-name').textContent = this.files[0]?.name || 'No file chosen';">
                                 </label>
                                 <span id="file-name" class="text-sm text-gray-500">No file chosen</span>
                             </div>
-                            <p class="mt-2 text-sm text-gray-500">Allowed file types: JPG, JPEG, PNG, GIF, SVG, WEBP (Max 8MB)</p>
+                            <p class="mt-2 text-sm text-gray-500">Allowed file types: JPG, JPEG, PNG, GIF, SVG, WEBP
+                                (Max 8MB)</p>
                             @error('image')
-                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
 
-                        <!-- Tags -->
                         <div>
                             <label class="block text-sm font-medium text-pink-900 mb-2">Tags</label>
                             <div id="tag-selection-container"
@@ -106,36 +103,13 @@
                             </div>
                             <input type="hidden" name="tags[]" id="hidden-tags-input" required>
                             @error('tags')
-                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                             @error('tags.*')
-                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
 
-        <div class="form-group mt-4">
-            <label class="text-xl text-pink-300 block mb-2">Tags :</label>
-            <div id="tag-selection-container"
-                 class="flex flex-wrap gap-2 p-3 bg-gray-200 rounded-lg shadow w-full @error('tags') border border-red-500 @enderror">
-                @forelse($tags as $tag)
-                    <span class="tag-item
-                        bg-gray-300 text-gray-700
-                        hover:bg-gray-400 hover:text-gray-800
-                        selected-hover:bg-pink-400 selected-hover:text-white
-                        rounded-full px-3 py-1 text-sm font-semibold cursor-pointer transition
-                        select-none"
-                          data-tag-id="{{ $tag->id }}"
-                          data-tag-name="{{ $tag->name }}"
-                          @if(in_array($tag->id, old('tags', $articleTags)))
-                              data-selected="true"
-                          @endif
-                    >
-                        {{ $tag->name }}
-                    </span>
-                @empty
-                    <p class="text-gray-500 text-sm">No tags available. Please create some first.</p>
-                @endforelse
-                        <!-- Submit Buttons -->
                         <div class="flex gap-4">
                             <button type="submit"
                                     class="bg-pink-400 hover:bg-pink-500 text-white px-6 py-2.5 rounded-lg flex items-center gap-2 transition-colors duration-200">
@@ -163,9 +137,9 @@
             function applyTagClasses(item, isSelected) {
                 if (isSelected) {
                     item.classList.add('selected-tag', 'bg-pink-300', 'text-white', 'selected-hover:bg-pink-400', 'selected-hover:text-white');
-                    item.classList.remove('bg-gray-300', 'text-gray-700', 'hover:bg-gray-400', 'hover:text-gray-800');
+                    item.classList.remove('bg-white', 'text-pink-700', 'hover:bg-pink-100');
                 } else {
-                    item.classList.add('bg-gray-300', 'text-gray-700', 'hover:bg-gray-400', 'hover:text-gray-800');
+                    item.classList.add('bg-white', 'text-pink-700', 'hover:bg-pink-100');
                     item.classList.remove('selected-tag', 'bg-pink-300', 'text-white', 'selected-hover:bg-pink-400', 'selected-hover:text-white');
                 }
             }
@@ -174,8 +148,6 @@
                 const isInitiallySelected = item.dataset.selected === 'true';
                 if (isInitiallySelected) {
                     selectedTagIds.push(item.dataset.tagId);
-                    item.classList.add('selected-tag', 'bg-pink-400', 'text-white');
-                    item.classList.remove('bg-white', 'text-pink-700');
                 }
                 applyTagClasses(item, isInitiallySelected);
             });
@@ -188,14 +160,10 @@
 
                     if (isSelected) {
                         selectedTagIds = selectedTagIds.filter(id => id !== tagId);
-                        this.classList.remove('selected-tag', 'bg-pink-400', 'text-white');
-                        this.classList.add('bg-white', 'text-pink-700');
                         this.dataset.selected = 'false';
                         isSelected = false;
                     } else {
                         selectedTagIds.push(tagId);
-                        this.classList.add('selected-tag', 'bg-pink-400', 'text-white');
-                        this.classList.remove('bg-white', 'text-pink-700');
                         this.dataset.selected = 'true';
                         isSelected = true;
                     }
