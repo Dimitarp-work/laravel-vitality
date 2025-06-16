@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite';
+import {defineConfig} from 'vite';
 import laravel from 'laravel-vite-plugin';
 
 export default defineConfig({
@@ -12,7 +12,8 @@ export default defineConfig({
                 'resources/js/confetti.js',
                 'resources/js/modal-utils.js',
                 'resources/js/checkins_modals.js',
-                'resources/js/reminders_modals.js'
+                'resources/js/reminders_modals.js',
+                'resources/js/articles_modal.js',
             ],
             refresh: true,
         }),
