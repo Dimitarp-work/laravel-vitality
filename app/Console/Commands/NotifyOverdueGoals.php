@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Console\Commands;
+
 use App\Models\Goal;
 use App\Models\OverdueGoalNotification; // New model for in-app notifications
 use Illuminate\Console\Command;

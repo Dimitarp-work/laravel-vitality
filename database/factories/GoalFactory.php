@@ -12,13 +12,12 @@ class GoalFactory extends Factory
 
     public function definition(): array
     {
-        $durationUnits = ['minutes', 'hours', 'days', 'weeks', 'months'];
+        $durationUnits = ['minutes', 'hours', 'days'];
 
         return [
             'emoji' => $this->faker->randomElement(['🎯', '🔥', '🚀', '📚', '🏃‍♂️']),
             'title' => $this->faker->sentence(3),
             'description' => $this->faker->paragraph(),
-            'xp' => $this->faker->numberBetween(50, 500),
             'duration_value' => $this->faker->numberBetween(1, 10),
             'duration_unit' => $this->faker->randomElement($durationUnits),
             'progress' => 0,

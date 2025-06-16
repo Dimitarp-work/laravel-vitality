@@ -70,10 +70,6 @@
                            class="flex-1 px-4 py-3 text-pink-700 font-medium rounded-lg {{ $activeTab === 'achieved' ? 'bg-white shadow-sm' : 'hover:bg-white/50' }} text-center transition-all">
                             Achieved
                         </a>
-                        <a href="?tab=badges"
-                           class="flex-1 px-4 py-3 text-pink-700 font-medium rounded-lg {{ $activeTab === 'badges' ? 'bg-white shadow-sm' : 'hover:bg-white/50' }} text-center transition-all">
-                            My Badges
-                        </a>
                     </div>
                 </div>
 
@@ -90,12 +86,10 @@
                                             <h3 class="font-semibold text-lg mb-1 truncate" title="{{ $goal->title }}">
                                                 {{ \Illuminate\Support\Str::limit($goal->title, 60) }}
                                             </h3>
-
                                             <p class="text-sm text-gray-500 mb-2" title="{{ $goal->description }}">
                                                 {{ \Illuminate\Support\Str::limit($goal->description, 60) }}
                                             </p>
 
-                                            <!-- Duration Display -->
                                             <div class="flex items-center gap-2 mb-4">
                                                 <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
                                                     Duration: {{ $goal->duration_value }} {{ $goal->duration_unit }}
@@ -133,7 +127,6 @@
                                             <a href="{{ route('goals.edit', $goal->id) }}" class="text-gray-400 hover:text-gray-600 h-8 w-8 p-0 flex items-center justify-center">
                                                 <span class="material-icons text-base">edit</span>
                                             </a>
-
                                             <button onclick="openDeleteModal('{{ $goal->id }}')"
                                                     class="text-red-400 hover:text-red-600 h-8 w-8 p-0 flex items-center justify-center">
                                                 <span class="material-icons text-base">delete</span>
@@ -181,28 +174,6 @@
                                 <p>No goals achieved yet.</p>
                             </div>
                         @endif
-                    </div>
-                @endif
-
-                <!-- Badges -->
-                @if($activeTab === 'badges')
-                    <div class="mb-6">
-                        <h2 class="text-lg font-medium mb-2">My Badges</h2>
-                        <p class="text-sm text-gray-500 mb-4">
-                            Badges are earned passively as you use the app. They reflect your wellness journey and achievements.
-                        </p>
-
-                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                            @foreach($badges as $badge)
-                                <div class="bg-white rounded-xl shadow-md {{ $badge['earned'] ? '' : 'opacity-70' }}">
-                                    <div class="p-4 text-center">
-                                        <div class="text-5xl mb-2">{{ $badge['emoji'] }}</div>
-                                        <h3 class="font-semibold">{{ $badge['name'] }}</h3>
-                                        <p class="text-xs text-gray-500">{{ $badge['description'] }}</p>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
                     </div>
                 @endif
             </div>
