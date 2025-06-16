@@ -20,7 +20,7 @@
          x-transition:leave="transition ease-in duration-75"
          x-transition:leave-start="transform opacity-100 scale-100"
          x-transition:leave-end="transform opacity-0 scale-95"
-         class="absolute left-full top-0 ml-2 w-80 bg-white rounded-lg shadow-lg overflow-hidden z-50">
+         class="absolute md:left-full left-auto right-[-8rem] top-12 md:top-0 md:ml-2 w-80 bg-white rounded-lg shadow-lg overflow-hidden z-50">
 
         <div class="p-4 border-b">
             <h3 class="text-lg font-semibold text-gray-900">Notifications</h3>
