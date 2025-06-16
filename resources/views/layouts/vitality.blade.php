@@ -199,9 +199,9 @@
             <div class="text-xs text-pink-700 font-bold uppercase tracking-wider mb-2 mt-6">Customization</div>
             <ul class="space-y-1">
                 <li>
-                    <a href="{{ route('store') }}"
+<a href="{{ route('shop.index') }}"
                        class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
-                            {{ request()->routeIs('store') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
+                            {{ request()->routeIs('shop') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
                         <span class="material-icons">store</span> Store
                     </a>
                 </li>

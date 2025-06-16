@@ -18,6 +18,7 @@ use App\Notifications\GoalOverdueNotification;
 use App\Http\Controllers\RemindersController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\BadgeController;
+use App\Http\Controllers\ShopController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,13 +48,17 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
+Route::post('/shop/badge/{badgeId}/toggle', [ShopController::class, 'setBadge'])->name('badges.toggle');
+Route::post('/shop/badge/remove', [ShopController::class, 'removeBadge'])->name('badges.remove');
+Route::post('/store/purchase/{item}', [ShopController::class, 'purchase'])->name('store.purchase');
+Route::post('/store/activate/{type}/{id}', [ShopController::class, 'activate'])->name('customize.activate');
+
 Route::get('/settings', function () {
     return view('under-construction');
 })->name('settings');
 
-Route::get('/store', function () {
-    return view('under-construction');
-})->name('store');
+
 
 Route::get('/appearance', function () {
     return view('under-construction');
@@ -128,7 +133,6 @@ Route::middleware(['auth'])->group(function () {
     //Route for the thought
     Route::post('/thought', [ThoughtController::class, 'store'])->name('thought.store');
 });
-
 
 
 Route::middleware(['auth'])->post('/badges', [BadgeController::class, 'store']);

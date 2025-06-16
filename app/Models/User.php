@@ -88,10 +88,16 @@ class User extends Authenticatable
     {
         return $this->hasMany(XPLog::class);
     }
-
 public function badges()
 {
     return $this->belongsToMany(\App\Models\Badge::class)->withTimestamps();
 }
+
+public function activeBadge()
+{
+    return $this->belongsTo(\App\Models\Badge::class, 'active_badge_id');
+}
+
+
 
 }

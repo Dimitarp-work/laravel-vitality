@@ -22,26 +22,37 @@
                 {{ strtoupper(substr(explode(' ', $user->name)[0] ?? '', 0, 1) . substr(explode(' ', $user->name)[1] ?? '', 0, 1)) }}
             </div>
             <div>
-                <div class="font-semibold text-xl text-pink-900">
-                    {{ $user->name }}
-                    <span class="ml-2 text-xs bg-pink-200 text-pink-700 rounded px-2 py-0.5">Wellness Seeker</span>
-                </div>
+         <div class="font-semibold text-xl text-pink-900">
+    <div class="flex items-center gap-2">
+        <span>Welcome, {{ $user->name }}</span>
+
+        @if($user->activeBadge && $user->activeBadge->image_url)
+            <img src="{{ asset($user->activeBadge->image_url) }}"
+                 alt="{{ $user->activeBadge->name }}"
+                 title="{{ $user->activeBadge->name }}"
+                 class="w-6 h-6 rounded-full object-contain ring ring-pink-300" />
+        @endif
+    </div>
+
+    {{-- 👇 Only one "Wellness Seeker" here --}}
+    <span class="text-sm text-pink-700">{{ $user->activeBadge->name ?? 'No Badge' }}</span>
+</div>
+
+
+
                 <div class="flex items-center gap-2 mt-1">
                     <span class="text-xs bg-pink-300 text-white rounded px-2 py-0.5" id="user-level">Level {{ $level }}</span>
                     <span class="text-xs text-pink-700" id="user-xp-text">{{ $xpProgress }} / {{ $xpToNextLevel }} XP</span>
                 </div>
+
                 <div class="w-40 h-2 bg-pink-100 rounded-full overflow-hidden mt-2">
                     <div id="xp-bar" class="h-full bg-pink-400 rounded-full transition-all duration-300 ease-in-out" style="width: {{ $progressPercent }}%"></div>
                 </div>
             </div>
         </div>
-        <div class="flex flex-col items-end">
-            <span class="text-xs text-pink-700 font-semibold flex items-center gap-1">
-                <span class="material-icons text-pink-400 text-base">monetization_on</span>
-                <span id="user-credits">{{ $credits }} Credits</span>
-            </span>
-        </div>
     </div>
+</div>
+
         <!-- Main grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div class="flex flex-col gap-8">
@@ -130,11 +141,15 @@
                 <div class="bg-white rounded-2xl shadow p-6 flex flex-col">
                     <div class="font-bold text-pink-900 mb-2 flex items-center gap-2"><span
                             class="material-icons text-pink-400">store</span>Customization Store</div>
-                    <span class="text-pink-700 font-extrabold text-lg">450 Credits</span>
-                    <span class="text-xs text-pink-700 mb-2">Use your credits to customize your profile</span>
-                    <button
-                        class="bg-pink-100 text-pink-700 rounded-lg px-4 py-1 mt-2 font-semibold w-fit hover:bg-pink-200 transition text-sm self-start"
-                        aria-label="Visit store">Visit Store</button>
+      <span class="text-pink-700 font-extrabold text-lg">{{ Auth::user()->credits }} Credits</span>
+<span class="text-xs text-pink-700 mb-2">Use your credits to customize your profile</span>
+
+<a
+    href="{{ route('shop.index') }}"
+    class="bg-pink-100 text-pink-700 rounded-lg px-4 py-1 mt-2 font-semibold w-fit hover:bg-pink-200 transition text-sm self-start"
+>
+    Visit Store
+</a></button>
                 </div>
             </div>
             <div class="flex flex-col gap-8">
