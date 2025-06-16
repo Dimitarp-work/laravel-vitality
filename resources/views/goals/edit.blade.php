@@ -40,13 +40,11 @@
                         @error('description') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Icon *</label>
-                            <input type="text" name="emoji" maxlength="2" placeholder="🏋️" value="{{ old('emoji', $goal->emoji) }}"
-                                   class="w-full px-4 py-2 border rounded-lg text-2xl h-[42px] text-center focus:ring-2 focus:ring-pink-500 @error('emoji') border-red-500 @enderror">
-                            @error('emoji') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                        </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Icon *</label>
+                        <input type="text" name="emoji" maxlength="2" placeholder="🏋️" value="{{ old('emoji', $goal->emoji) }}"
+                               class="w-full px-4 py-3 border rounded-lg text-4xl h-[64px] text-center focus:ring-2 focus:ring-pink-500 @error('emoji') border-red-500 @enderror">
+                        @error('emoji') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <!-- Duration Fields -->
@@ -61,7 +59,7 @@
                             <label class="block text-sm font-medium text-gray-700 mb-1">Duration Unit *</label>
                             <select name="duration_unit"
                                     class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500 @error('duration_unit') border-red-500 @enderror">
-                                <option value="minutes" {{ old('duration_unit') === 'minutes' ? 'selected' : '' }}>Minutes</option>
+                                <option value="minutes" {{ old('duration_unit', $goal->duration_unit) === 'minutes' ? 'selected' : '' }}>Minutes</option>
                                 <option value="days" {{ old('duration_unit', $goal->duration_unit) === 'days' ? 'selected' : '' }}>Days</option>
                                 <option value="hours" {{ old('duration_unit', $goal->duration_unit) === 'hours' ? 'selected' : '' }}>Hours</option>
                             </select>

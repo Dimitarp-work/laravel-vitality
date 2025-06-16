@@ -18,7 +18,6 @@ class GoalFactory extends Factory
             'emoji' => $this->faker->randomElement(['🎯', '🔥', '🚀', '📚', '🏃‍♂️']),
             'title' => $this->faker->sentence(3),
             'description' => $this->faker->paragraph(),
-            'xp' => $this->faker->numberBetween(50, 500),
             'duration_value' => $this->faker->numberBetween(1, 10),
             'duration_unit' => $this->faker->randomElement($durationUnits),
             'progress' => 0,
