@@ -82,7 +82,7 @@ class ArticleController extends Controller
             $article->tags()->detach();
         }
 
-        return redirect()->route('dashboard')->with('success', 'Article created successfully!');
+        return redirect()->route('admin.articles.index')->with('success', 'Article created successfully!');
     }
 
     public function show(Article $article)
@@ -133,7 +133,7 @@ class ArticleController extends Controller
             $article->tags()->detach();
         }
 
-        return redirect()->route('dashboard')->with('success', 'Article updated successfully!');
+        return redirect()->route('admin.articles.index')->with('success', 'Article updated successfully!');
     }
 
     public function destroy(Article $article)
@@ -142,7 +142,7 @@ class ArticleController extends Controller
             Storage::disk('public')->delete($article->image);
         }
         $article->delete();
-        return redirect()->route('dashboard')->with('success', 'Article deleted successfully!');
+        return redirect()->route('admin.articles.index')->with('success', 'Article deleted successfully!');
     }
 
     public function manageArticles()

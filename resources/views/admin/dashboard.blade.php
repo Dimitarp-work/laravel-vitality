@@ -191,18 +191,12 @@
                                                     <span class="material-icons text-base">edit</span>Edit
                                                 </a>
 
-                                                <form action="{{ route('articles.destroy', $article->id) }}"
-                                                      method="POST"
-                                                      onsubmit="return confirm('Are you sure you want to delete this article?');"
-                                                      class="block">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit"
-                                                            class="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-red-50 hover:text-red-900 transition"
-                                                            role="menuitem">
-                                                        <span class="material-icons text-base">delete</span>Delete
-                                                    </button>
-                                                </form>
+                                                <button type="button"
+                                                        onclick="window.ModalUtils.openDeleteModal('{{ $article->id }}', '{{ url('articles') }}')"
+                                                        class="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-red-50 hover:text-red-900 transition"
+                                                        role="menuitem">
+                                                    <span class="material-icons text-base">delete</span>Delete
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -243,21 +237,6 @@
                             <span class="material-icons text-theme-400">add_circle</span>
                             <span class="text-sm font-medium text-theme-700">New Article</span>
                         </a>
-                        <button
-                            class="p-4 bg-theme-50 rounded-xl hover:bg-theme-100 transition flex flex-col items-center gap-2">
-                            <span class="material-icons text-theme-400">group_add</span>
-                            <span class="text-sm font-medium text-theme-700">Add User</span>
-                        </button>
-                        <button
-                            class="p-4 bg-theme-50 rounded-xl hover:bg-theme-100 transition flex flex-col items-center gap-2">
-                            <span class="material-icons text-theme-400">analytics</span>
-                            <span class="text-sm font-medium text-theme-700">Analytics</span>
-                        </button>
-                        <button
-                            class="p-4 bg-theme-50 rounded-xl hover:bg-theme-100 transition flex flex-col items-center gap-2">
-                            <span class="material-icons text-theme-400">settings</span>
-                            <span class="text-sm font-medium text-theme-700">Settings</span>
-                        </button>
                     </div>
                 </div>
 
@@ -304,47 +283,15 @@
         </div>
     </div>
 
-    <div class="bg-white rounded-2xl shadow p-6">
-        <h2 class="font-semibold text-lg text-theme-900 mb-4 flex items-center gap-2">
-            <span class="material-icons text-theme-400">history_edu</span>
-            XP & Credit Logs
-        </h2>
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-theme-100">
-                <thead>
-                <tr class="bg-theme-50">
-                    <th class="px-4 py-3 text-xs font-semibold text-theme-700 uppercase tracking-wider text-left">User
-                    </th>
-                    <th class="px-4 py-3 text-xs font-semibold text-theme-700 uppercase tracking-wider text-left">XP
-                        Change
-                    </th>
-                    <th class="px-4 py-3 text-xs font-semibold text-theme-700 uppercase tracking-wider text-left">Credit
-                        Change
-                    </th>
-                    <th class="px-4 py-3 text-xs font-semibold text-theme-700 uppercase tracking-wider text-left">
-                        Reason
-                    </th>
-                    <th class="px-4 py-3 text-xs font-semibold text-theme-700 uppercase tracking-wider text-left">
-                        Timestamp
-                    </th>
-                </tr>
-                </thead>
-                <tbody class="divide-y divide-theme-100">
-                @foreach ($logs as $log)
-                    <tr class="hover:bg-theme-50 transition">
-                        <td class="px-4 py-3 text-theme-700">{{ $log->user->name }}</td>
-                        <td class="px-4 py-3 text-theme-900 font-medium {{ $log->xp_change > 0 ? 'text-green-600' : 'text-red-600' }}">
-                            {{ $log->xp_change }}
-                        </td>
-                        <td class="px-4 py-3 text-theme-900 font-medium {{ $log->credit_change > 0 ? 'text-green-600' : 'text-red-600' }}">
-                            {{ $log->credit_change }}
-                        </td>
-                        <td class="px-4 py-3 text-theme-700">{{ $log->reason }}</td>
-                        <td class="px-4 py-3 text-theme-500 text-sm">{{ $log->created_at->diffForHumans() }}</td>
-                    </tr>
-                @endforeach
-                </tbody>
-            </table>
-        </div>
-    </div>
+    <x-delete-modal
+        title="Delete Article"
+        message="Are you sure you want to delete this article? This action cannot be undone."
+        confirmText="Yes"
+        cancelText="No"
+        feature="articles"
+    />
 @endsection
+
+@push('scripts')
+    @vite('resources/js/modal-utils.js')
+@endpush

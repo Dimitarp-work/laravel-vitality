@@ -13,6 +13,7 @@ use App\Models\Goal;
 use App\Models\Challenge;
 use App\Models\DailyCheckIn;
 use Carbon\Carbon;
+use App\Models\Article;
 
 class Controller extends BaseController
 {
@@ -26,9 +27,15 @@ class Controller extends BaseController
         });
     }
 
-    function home(): View{
-        return view('home');
+    function home(): View
+    {
+        $articles = Article::latest()->get();
+
+        return view('home', [
+            'articles' => $articles
+        ]);
     }
+
     function settings(): View{
         return view('settings');
     }
@@ -43,12 +50,10 @@ class Controller extends BaseController
             $user = Auth::user();
             $settings = $user->notificationSettings;
 
-            // Check if we have notification settings and if they are enabled
             if (!$settings || !$settings->is_enabled) {
                 return;
             }
 
-            // Check if the reminder interval has passed
             $lastNotification = $settings->last_notification_at;
             $now = Carbon::now();
 
@@ -56,16 +61,13 @@ class Controller extends BaseController
                 return;
             }
 
-            // Add a random chance (e.g., 1 in 5 requests)
             if (rand(1, 5) !== 1) {
                 return;
             }
 
-            // Get a random uncompleted reminder for the user
             $reminder = $user->reminders()->where('is_completed', false)->inRandomOrder()->first();
 
             if ($reminder) {
-                // Manually load the related entity
                 $relatedEntity = null;
                 switch ($reminder->type) {
                     case 'goal':
@@ -107,16 +109,13 @@ class Controller extends BaseController
                     }
                 }
 
-                // Store notifications in session
                 $existingNotifications = session('notifications', []);
                 array_unshift($existingNotifications, $notificationData);
-                $existingNotifications = array_slice($existingNotifications, 0, 10); // Keep only the last 10
+                $existingNotifications = array_slice($existingNotifications, 0, 10);
                 session()->put('notifications', $existingNotifications);
 
-                // Store the latest notification for toast display
                 session()->flash('toast_notification', $notificationData);
 
-                // Update last notification time
                 $settings->update(['last_notification_at' => $now]);
             }
         }

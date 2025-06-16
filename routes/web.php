@@ -14,7 +14,8 @@ use App\Http\Controllers\{
     RemindersController,
     SettingsController,
     DiaryController,
-    BadgeController
+    BadgeController,
+    Controller
 };
 use App\Http\Controllers\Admin\DashboardController;
 use App\Models\Goal;
@@ -26,14 +27,13 @@ use App\Http\Controllers\ShopController;
 | Web Routes
 |--------------------------------------------------------------------------
 */
+Route::get('/home', [Controller::class, 'home'])->middleware(['auth', 'verified'])->name('home');
 
 Route::redirect('/', '/login');
 
 Route::get('/trigger-500', fn () => abort(500));
 
 Route::get('/login', fn () => view('welcome'));
-
-Route::get('/home', fn () => view('home'))->middleware(['auth', 'verified'])->name('home');
 
 // Authenticated user routes
 Route::middleware(['auth'])->group(function () {
