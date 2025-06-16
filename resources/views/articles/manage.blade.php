@@ -57,7 +57,7 @@
         </div>
     </div>
 
-    <x-delete-confirmation-modal
+    <x-delete-modal
         title="Delete Article"
         message="Are you sure you want to delete this article? This action cannot be undone."
         confirmText="Yes"
