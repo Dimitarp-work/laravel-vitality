@@ -17,6 +17,7 @@ use App\Models\Goal;
 use App\Notifications\GoalOverdueNotification;
 use App\Http\Controllers\RemindersController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\BadgeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -128,6 +129,7 @@ Route::middleware(['auth'])->group(function () {
 
 
 
+Route::middleware(['auth'])->post('/badges', [BadgeController::class, 'store']);
 
 Route::get('/capychat', [CapyChatController::class, 'index'])->name('capychat');
 
