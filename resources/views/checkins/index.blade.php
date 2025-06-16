@@ -78,12 +78,9 @@ use App\Constants\CheckInConstants;
 
         <!-- Navigation Tabs -->
         <div class="bg-pink-50 rounded-2xl shadow p-1.5 max-w-2xl mx-auto w-full">
-            <div class="flex space-x-2">
-                <a href="{{ route('checkins.index') }}" class="flex-1 px-4 py-3 text-pink-900 font-medium rounded-lg bg-white shadow-sm text-center">
+            <div class="flex">
+                <a href="{{ route('checkins.index') }}" class="w-full px-4 py-3 text-pink-900 font-medium rounded-lg bg-white shadow-sm text-center">
                     Today
-                </a>
-                <a href="{{ route('checkins.week') }}" class="flex-1 px-4 py-3 text-pink-700 hover:bg-white/50 font-medium rounded-lg transition-all text-center">
-                    This Week
                 </a>
             </div>
         </div>
