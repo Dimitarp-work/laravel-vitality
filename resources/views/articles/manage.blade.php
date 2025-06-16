@@ -25,7 +25,11 @@
             @forelse ($articles as $article)
                 <div class="bg-white rounded-2xl shadow p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div class="flex-grow">
-                        <h2 class="text-xl font-bold text-theme-900 mb-2">{{ $article->title }}</h2>
+                        <h2 class="text-xl font-bold text-theme-900 mb-2">
+                            <a href="{{ route('articles.show', $article) }}">
+                                {{ $article->title }}
+                            </a>
+                        </h2>
                         <p class="text-theme-700 text-sm">{{ Str::limit($article->content, 30, '...') }}</p>
                     </div>
                     <div class="flex gap-3 items-center flex-shrink-0">
@@ -33,14 +37,12 @@
                             <span class="material-icons text-base">edit</span>
                             Edit
                         </a>
-                        <form action="{{ route('articles.destroy', $article->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this article?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="bg-red-100 hover:bg-red-200 text-red-700 font-semibold py-2 px-4 rounded-lg flex items-center gap-2 transition duration-200">
-                                <span class="material-icons text-base">delete</span>
-                                Delete
-                            </button>
-                        </form>
+                        <button type="button"
+                                onclick="window.ModalUtils.openDeleteModal('{{ $article->id }}', '{{ url('articles') }}')"
+                                class="bg-red-100 hover:bg-red-200 text-red-700 font-semibold py-2 px-4 rounded-lg flex items-center gap-2 transition duration-200">
+                            <span class="material-icons text-base">delete</span>
+                            Delete
+                        </button>
                     </div>
                 </div>
             @empty
@@ -54,4 +56,16 @@
             {{ $articles->links('pagination::tailwind') }}
         </div>
     </div>
+
+    <x-delete-modal
+        title="Delete Article"
+        message="Are you sure you want to delete this article? This action cannot be undone."
+        confirmText="Yes"
+        cancelText="No"
+        feature="articles"
+    />
 @endsection
+
+@push('scripts')
+    @vite('resources/js/modal-utils.js')
+@endpush

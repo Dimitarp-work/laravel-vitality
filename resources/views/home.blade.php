@@ -4,53 +4,49 @@
 
 @section('content')
 
-@php
-    $user = Auth::user();
-    $xp = $user->xp ?? 0;
-    $credits = $user->credits ?? 0;
-    $xpToNextLevel = 500;
-    $level = floor($xp / $xpToNextLevel) + 1;
-    $xpProgress = $xp % $xpToNextLevel;
-    $progressPercent = min(100, ($xpProgress / $xpToNextLevel) * 100);
-@endphp
+    @php
+        $user = Auth::user();
+        $xp = $user->xp ?? 0;
+        $credits = $user->credits ?? 0;
+        $xpToNextLevel = 500;
+        $level = floor($xp / $xpToNextLevel) + 1;
+        $xpProgress = $xp % $xpToNextLevel;
+        $progressPercent = min(100, ($xpProgress / $xpToNextLevel) * 100);
+    @endphp
 
-<div class="w-full max-w-6xl mx-auto flex flex-col gap-8">
-    <!-- User summary card -->
-    <div class="w-full bg-gradient-to-r from-pink-200 to-pink-100 rounded-2xl shadow p-6 flex flex-col md:flex-row items-center gap-6">
-        <div class="flex items-center gap-4 flex-1">
-            <div class="w-16 h-16 rounded-full bg-pink-300 flex items-center justify-center text-3xl font-bold text-white">
-                {{ strtoupper(substr(explode(' ', $user->name)[0] ?? '', 0, 1) . substr(explode(' ', $user->name)[1] ?? '', 0, 1)) }}
+    <div class="w-full max-w-6xl mx-auto flex flex-col gap-8">
+        <div class="w-full bg-gradient-to-r from-pink-200 to-pink-100 rounded-2xl shadow p-6 flex flex-col md:flex-row items-center gap-6">
+            <div class="flex items-center gap-4 flex-1">
+                <div class="w-16 h-16 rounded-full bg-pink-300 flex items-center justify-center text-3xl font-bold text-white">
+                    {{ strtoupper(substr(explode(' ', $user->name)[0] ?? '', 0, 1) . substr(explode(' ', $user->name)[1] ?? '', 0, 1)) }}
+                </div>
+                <div>
+                    <div class="font-semibold text-xl text-pink-900">
+                        {{ $user->name }}
+                        <span class="ml-2 text-xs bg-pink-200 text-pink-700 rounded px-2 py-0.5">Wellness Seeker</span>
+                    </div>
+                    <div class="flex items-center gap-2 mt-1">
+                        <span class="text-xs bg-pink-300 text-white rounded px-2 py-0.5" id="user-level">Level {{ $level }}</span>
+                        <span class="text-xs text-pink-700" id="user-xp-text">{{ $xpProgress }} / {{ $xpToNextLevel }} XP</span>
+                    </div>
+                    <div class="w-40 h-2 bg-pink-100 rounded-full overflow-hidden mt-2">
+                        <div id="xp-bar" class="h-full bg-pink-400 rounded-full transition-all duration-300 ease-in-out" style="width: {{ $progressPercent }}%"></div>
+                    </div>
+                </div>
             </div>
-            <div>
-                <div class="font-semibold text-xl text-pink-900">
-                    {{ $user->name }}
-                    <span class="ml-2 text-xs bg-pink-200 text-pink-700 rounded px-2 py-0.5">Wellness Seeker</span>
-                </div>
-                <div class="flex items-center gap-2 mt-1">
-                    <span class="text-xs bg-pink-300 text-white rounded px-2 py-0.5" id="user-level">Level {{ $level }}</span>
-                    <span class="text-xs text-pink-700" id="user-xp-text">{{ $xpProgress }} / {{ $xpToNextLevel }} XP</span>
-                </div>
-                <div class="w-40 h-2 bg-pink-100 rounded-full overflow-hidden mt-2">
-                    <div id="xp-bar" class="h-full bg-pink-400 rounded-full transition-all duration-300 ease-in-out" style="width: {{ $progressPercent }}%"></div>
-                </div>
-            </div>
-        </div>
-        <div class="flex flex-col items-end">
+            <div class="flex flex-col items-end">
             <span class="text-xs text-pink-700 font-semibold flex items-center gap-1">
                 <span class="material-icons text-pink-400 text-base">monetization_on</span>
                 <span id="user-credits">{{ $credits }} Credits</span>
             </span>
+            </div>
         </div>
-    </div>
-        <!-- Main grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div class="flex flex-col gap-8">
-                <!-- How are you feeling? -->
                 <div class="bg-white rounded-2xl shadow p-0 flex flex-col items-center min-h-[220px] max-w-md mx-auto w-full" id="mood-widget">
                     <div class="font-bold text-pink-900 mt-8 mb-4 text-lg flex items-center gap-2">
                         <span class="material-icons text-pink-400">mood</span>How are you feeling today?
                     </div>
-                    <!-- Emoji Mood Selector -->
                     <form id="mood-form" class="flex flex-col items-center w-full">
                         <div class="flex gap-6 sm:gap-8 text-3xl mb-2 justify-center">
                             <div class="flex flex-col items-center">
@@ -90,11 +86,8 @@
                             </div>
                         </div>
                     </form>
-                    <!-- Supportive Message Display -->
                     <div class="w-full flex justify-center mt-6 mb-8 px-4">
-                        <!-- GIF (loading) -->
                         <img id="mood-loading-gif" src="/images/capybara-rub.gif" alt="Loading..." class="h-32 w-32 hidden z-20" />
-                        <!-- Pink box and message/button -->
                         <div id="mood-message-container" class="relative bg-pink-50 border border-pink-100 rounded-2xl shadow-sm max-w-lg w-full px-8 py-7 flex flex-col items-center">
                             <div id="mood-message-content" class="flex items-start gap-3 w-full">
                                 <span class="material-icons text-pink-400 text-2xl mt-0.5" id="mood-message-icon">auto_awesome</span>
@@ -108,25 +101,22 @@
                         </div>
                     </div>
                 </div>
-                <!-- Wellness Inspiration -->
                 <div class="bg-pink-50 rounded-2xl shadow p-6 flex flex-col">
                     <div class="font-bold text-pink-900 mb-3 flex items-center gap-2"><span
                             class="material-icons text-pink-400">lightbulb</span>Wellness Inspiration</div>
                     <div class="space-y-2">
-                        <div class="bg-white rounded-lg p-3 flex flex-col shadow-sm">
-                            <span class="font-semibold text-pink-900">Gentle Stretches for Better Sleep</span>
-                            <span class="text-xs text-pink-600">5 min read</span>
-                        </div>
-                        <div class="bg-white rounded-lg p-3 flex flex-col shadow-sm">
-                            <span class="font-semibold text-pink-900">Finding Calm in Daily Moments</span>
-                            <span class="text-xs text-pink-600">3 min read</span>
-                        </div>
+                        @forelse($articles->take(2) as $article)
+                            <a href="{{ route('articles.show', $article) }}" class="block bg-white rounded-lg p-3 flex flex-col shadow-sm hover:bg-gray-50 transition">
+                                <span class="font-semibold text-pink-900">{{ $article->title }}</span>
+                            </a>
+                        @empty
+                            <p class="text-pink-700 text-sm">No articles found yet. Check back soon!</p>
+                        @endforelse
                     </div>
-                    <button
-                        class="bg-pink-100 text-pink-700 rounded-lg px-4 py-1 mt-4 font-semibold w-fit hover:bg-pink-200 transition text-sm self-start"
-                        aria-label="Explore articles">Explore Articles</button>
+                    <a href="{{ route('articles.index') }}"
+                       class="bg-pink-100 text-pink-700 rounded-lg px-4 py-1 mt-4 font-semibold w-fit hover:bg-pink-200 transition text-sm self-start"
+                       aria-label="Explore articles">Explore Articles</a>
                 </div>
-                <!-- Customization Store -->
                 <div class="bg-white rounded-2xl shadow p-6 flex flex-col">
                     <div class="font-bold text-pink-900 mb-2 flex items-center gap-2"><span
                             class="material-icons text-pink-400">store</span>Customization Store</div>
@@ -138,22 +128,20 @@
                 </div>
             </div>
             <div class="flex flex-col gap-8">
-                <!-- A thought to capture? -->
-            <form method="POST" action="{{ route('thought.store') }}">
-    @csrf
-    <div class="bg-white rounded-2xl shadow p-6 flex flex-col">
-        <div class="font-bold text-pink-900 mb-2 text-lg flex items-center gap-2">
-            <span class="material-icons text-pink-400">edit</span>
-            A thought to capture?
-        </div>
+                <form method="POST" action="{{ route('thought.store') }}">
+                    @csrf
+                    <div class="bg-white rounded-2xl shadow p-6 flex flex-col">
+                        <div class="font-bold text-pink-900 mb-2 text-lg flex items-center gap-2">
+                            <span class="material-icons text-pink-400">edit</span>
+                            A thought to capture?
+                        </div>
 
-        <textarea name="thought" required class="border border-pink-200 rounded-lg p-2 mb-3 resize-none focus:ring-2 focus:ring-pink-300 text-sm" rows="2" placeholder="Write anything that comes to mind..."></textarea>
-        <button type="submit" class="bg-pink-400 hover:bg-pink-500 text-white rounded-lg px-5 py-1.5 font-semibold w-24 ml-auto transition text-sm" aria-label="Save thought">
-            Save
-        </button>
-    </div>
-</form>
-                <!-- Gentle Reminders -->
+                        <textarea name="thought" required class="border border-pink-200 rounded-lg p-2 mb-3 resize-none focus:ring-2 focus:ring-pink-300 text-sm" rows="2" placeholder="Write anything that comes to mind..."></textarea>
+                        <button type="submit" class="bg-pink-400 hover:bg-pink-500 text-white rounded-lg px-5 py-1.5 font-semibold w-24 ml-auto transition text-sm" aria-label="Save thought">
+                            Save
+                        </button>
+                    </div>
+                </form>
                 <div class="bg-white rounded-2xl shadow p-6 flex flex-col">
                     <div class="font-bold text-pink-900 mb-2 text-lg flex items-center gap-2"><span
                             class="material-icons text-pink-400">notifications_active</span>Gentle Reminders</div>
@@ -171,9 +159,8 @@
                                 class="material-icons text-pink-300 text-base">park</span>Connected with nature today?</li>
                     </ul>
                     <button class="text-pink-500 text-xs font-semibold ml-auto hover:underline"
-                        aria-label="View more reminders">View More</button>
+                            aria-label="View more reminders">View More</button>
                 </div>
-                <!-- Your Wellness Journey -->
                 <div class="bg-pink-50 rounded-2xl shadow p-6 flex flex-col">
                     <div class="font-bold text-pink-900 mb-2 flex items-center gap-2"><span
                             class="material-icons text-pink-400">directions_walk</span>Your Wellness Journey</div>
@@ -191,9 +178,8 @@
                             <span class="material-icons text-pink-400">air</span> Take moments to breathe</li>
                     </ul>
                     <button class="text-pink-500 text-xs font-semibold ml-auto mt-2 hover:underline"
-                        aria-label="View journey">View Journey</button>
+                            aria-label="View journey">View Journey</button>
                 </div>
-                <!-- Recent Badges -->
                 <div class="bg-white rounded-2xl shadow p-6 flex flex-col">
                     <div class="font-bold text-pink-900 mb-2 flex items-center gap-2"><span
                             class="material-icons text-pink-400">stars</span>Recent Badges</div>
@@ -209,22 +195,21 @@
                                 class="material-icons text-pink-400 text-base">favorite</span>Gratitude Guide</span>
                     </div>
                     <button class="text-pink-500 text-xs font-semibold ml-auto hover:underline"
-                        aria-label="View all badges">View All Badges</button>
+                            aria-label="View all badges">View All Badges</button>
                 </div>
             </div>
         </div>
 
-    <!-- Your Week in Feelings (full width, after grid) -->
-    <div class="bg-gradient-to-r from-pink-200 to-pink-100 rounded-2xl shadow p-8 w-full mt-2">
-        <div class="font-bold text-pink-900 mb-3 text-lg flex items-center gap-2"><span
-                class="material-icons text-pink-400">calendar_month</span>Your Week in Feelings</div>
-        <div id="week-moods" class="flex items-center mb-2 overflow-x-auto px-2 sm:px-4 scrollbar-hide sm:justify-between sm:overflow-visible"></div>
-        <div class="text-xs md:text-sm text-pink-700 flex items-center">
-            <span class="material-icons text-pink-400 mr-2 text-2xl" id="mood-message-icon">auto_awesome</span>
-            Each day is a new opportunity.
+        <div class="bg-gradient-to-r from-pink-200 to-pink-100 rounded-2xl shadow p-8 w-full mt-2">
+            <div class="font-bold text-pink-900 mb-3 text-lg flex items-center gap-2"><span
+                    class="material-icons text-pink-400">calendar_month</span>Your Week in Feelings</div>
+            <div id="week-moods" class="flex items-center mb-2 overflow-x-auto px-2 sm:px-4 scrollbar-hide sm:justify-between sm:overflow-visible"></div>
+            <div class="text-xs md:text-sm text-pink-700 flex items-center">
+                <span class="material-icons text-pink-400 mr-2 text-2xl" id="mood-message-icon">auto_awesome</span>
+                Each day is a new opportunity.
+            </div>
         </div>
-    </div>
 
-@vite('resources/js/app.js')
+    @vite('resources/js/app.js')
 
 @endsection
