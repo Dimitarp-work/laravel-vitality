@@ -24,7 +24,7 @@ class ChallengeSeeder extends Seeder
             [
                 'title' => 'Hydration Hero',
                 'description' => 'Track your water intake for 14 days',
-                'category' => 'Hydration',
+                'category' => 'Nutrition',
                 'difficulty' => 'Intermediate',
                 'duration_days' => 14,
                 'badge_id' => 'hydration-champion',
@@ -35,7 +35,7 @@ class ChallengeSeeder extends Seeder
             [
                 'title' => 'Digital Detox',
                 'description' => 'Spend 30 minutes each day without screens',
-                'category' => 'Digital Wellness',
+                'category' => 'Self-Care',
                 'difficulty' => 'Advanced',
                 'duration_days' => 21,
                 'badge_id' => 'digital-balance',

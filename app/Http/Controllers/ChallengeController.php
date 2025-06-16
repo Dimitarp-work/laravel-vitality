@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Badge;
 use App\Models\Challenge;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -99,7 +100,8 @@ class ChallengeController extends Controller
      */
     public function create()
     {
-        return view('challenges.create');
+        $badges = Badge::all();
+        return view('challenges.create', ['badges' => $badges]);
     }
 
     /**
@@ -110,11 +112,11 @@ class ChallengeController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string|max:1000',
-            'category' => 'nullable|string|max:255',
+            'category' => 'required|in:Mindfulness,Movement,Nutrition,Sleep,Teamwork,Self-Care',
             'difficulty' => 'required|in:Beginner,Intermediate,Advanced',
             'duration_days' => 'required|integer|min:1',
             'xp_reward' => 'required|integer|min:0',
-            'badge_id' => 'nullable|string|max:255',
+            'badge_id' => 'nullable|exists:badges,id',
             'start_date' => 'required|date|after_or_equal:today',
         ]);
 
@@ -148,8 +150,8 @@ class ChallengeController extends Controller
     public function edit(Challenge $challenge)
     {
         $this->authorize('update', $challenge);
-
-        return view('challenges.edit', compact('challenge'));
+        $badges = Badge::all();
+        return view('challenges.edit', compact('challenge', 'badges'));
     }
 
 
@@ -164,11 +166,11 @@ class ChallengeController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string|max:1000',
-            'category' => 'nullable|string|max:255',
+            'category' => 'required|in:Mindfulness,Movement,Nutrition,Sleep,Teamwork,Self-Care',
             'difficulty' => 'required|in:Beginner,Intermediate,Advanced',
             'duration_days' => 'required|integer|min:1',
             'xp_reward' => 'required|integer|min:0',
-            'badge_id' => 'nullable|string|max:255',
+            'badge_id' => 'nullable|exists:badges,id',
             'start_date' => 'required|date|after_or_equal:today',
         ]);
 

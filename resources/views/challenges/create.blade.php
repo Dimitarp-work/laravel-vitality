@@ -29,10 +29,18 @@
                 <textarea name="description" rows="3" maxlength="1000" placeholder="Briefly describe the challenge..." class="w-full px-4 py-2 border border-pink-200 rounded text-sm focus:outline-none focus:ring-2 focus:ring-pink-300">{{ old('description') }}</textarea>
             </div>
 
-            {{-- Category --}}
+            {{-- Category dropdown --}}
             <div>
                 <label class="block text-sm font-semibold text-pink-800 mb-1">Category</label>
-                <input type="text" name="category" value="{{ old('category') }}" maxlength="255" placeholder="e.g. Mindfulness, Movement, Hydration" class="w-full px-4 py-2 border border-pink-200 rounded text-sm">
+                <select name="category" class="w-full px-4 py-2 border border-pink-200 rounded text-sm" required>
+                    <option value="">-- Select a Category --</option>
+                    @php
+                        $categories = ['Mindfulness', 'Movement', 'Nutrition', 'Sleep', 'Teamwork', 'Self-Care'];
+                    @endphp
+                    @foreach ($categories as $cat)
+                        <option value="{{ $cat }}" {{ old('category') == $cat ? 'selected' : '' }}>{{ $cat }}</option>
+                    @endforeach
+                </select>
             </div>
 
             {{-- Difficulty + Duration --}}
@@ -49,7 +57,7 @@
 
                 <div>
                     <label class="block text-sm font-semibold text-pink-800 mb-1">Duration in days <span class="text-red-500">*</span></label>
-                    <input type="number" name="duration_days" value="{{ old('duration_days') }}" required min="0" placeholder="e.g. 150" class="w-full px-4 py-2 border border-pink-200 rounded text-sm">
+                    <input type="number" name="duration_days" value="{{ old('duration_days') }}" required min="0" placeholder="e.g. 7" class="w-full px-4 py-2 border border-pink-200 rounded text-sm">
                 </div>
             </div>
 
@@ -59,10 +67,17 @@
                 <input type="number" name="xp_reward" value="{{ old('xp_reward') }}" required min="0" placeholder="e.g. 150" class="w-full px-4 py-2 border border-pink-200 rounded text-sm">
             </div>
 
-            {{-- Badge ID --}}
+            {{-- Badge Selection --}}
             <div>
-                <label class="block text-sm font-semibold text-pink-800 mb-1">Badge ID</label>
-                <input type="text" name="badge_id" value="{{ old('badge_id') }}" maxlength="255" placeholder="e.g. hydration-hero" class="w-full px-4 py-2 border border-pink-200 rounded text-sm">
+                <label class="block text-sm font-semibold text-pink-800 mb-1">Select Badge</label>
+                <select name="badge_id" class="w-full px-4 py-2 border border-pink-200 rounded text-sm">
+                    <option value="">-- Choose a Badge --</option>
+                    @foreach ($badges as $badge)
+                        <option value="{{ $badge->id }}" {{ old('badge_id') == $badge->id ? 'selected' : '' }}>
+                            {{ $badge->name }}
+                        </option>
+                    @endforeach
+                </select>
             </div>
 
             {{-- Start Date --}}
