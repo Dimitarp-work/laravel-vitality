@@ -14,7 +14,6 @@ class Goal extends Model
         'emoji',
         'title',
         'description',
-        'xp',
         'duration_value',
         'duration_unit',
         'progress',
@@ -34,7 +33,7 @@ class Goal extends Model
         'last_progress_date' => 'datetime',
     ];
 
-    // Optional: automatically append these computed attributes when serializing
+    // Append only streak and progress_percentage, with progress_percentage recalculated without XP
     protected $appends = ['streak', 'progress_percentage'];
 
     public function user()
@@ -69,23 +68,18 @@ class Goal extends Model
         return max(1, floor($this->duration_in_days));
     }
 
-    public function getXpPerUpdateAttribute(): float
-    {
-        return $this->xp / $this->allowed_updates;
-    }
-
-    public function getXpEarnedAttribute(): float
-    {
-        return $this->progressLogs()->count() * $this->xp_per_update;
-    }
-
+    // Recalculate progress_percentage purely based on progressLogs count vs allowed updates
     public function getProgressPercentageAttribute(): float
     {
-        if ($this->xp == 0) {
+        $totalUpdates = $this->allowed_updates;
+
+        if ($totalUpdates == 0) {
             return 0;
         }
 
-        return round(($this->xp_earned / $this->xp) * 100, 2);
+        $completedUpdates = $this->progressLogs()->count();
+
+        return round(min(1, $completedUpdates / $totalUpdates) * 100, 2);
     }
 
     public function addProgress($userId): bool

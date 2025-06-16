@@ -25,6 +25,7 @@
             <div class="p-6">
                 <form action="{{ route('goals.store') }}" method="POST">
                     @csrf
+
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Goal Title *</label>
                         <input type="text" name="title" required value="{{ old('title') }}"
@@ -39,19 +40,11 @@
                         @error('description') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Icon *</label>
-                            <input type="text" name="emoji" maxlength="2" placeholder="🏋️" value="{{ old('emoji') }}"
-                                   class="w-full px-4 py-2 border rounded-lg text-2xl h-[42px] text-center focus:ring-2 focus:ring-pink-500 @error('emoji') border-red-500 @enderror">
-                            @error('emoji') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">XP Reward *</label>
-                            <input type="number" name="xp" min="10" max="1000" value="{{ old('xp', 50) }}"
-                                   class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500 @error('xp') border-red-500 @enderror">
-                            @error('xp') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                        </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Icon *</label>
+                        <input type="text" name="emoji" maxlength="2" placeholder="🏋️" value="{{ old('emoji') }}"
+                               class="w-full px-4 py-3 border rounded-lg text-4xl h-[64px] text-center focus:ring-2 focus:ring-pink-500 @error('emoji') border-red-500 @enderror">
+                        @error('emoji') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <!-- Duration Fields -->
