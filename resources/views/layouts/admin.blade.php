@@ -16,18 +16,44 @@
 </head>
 <body class="bg-gray-50 min-h-screen">
 
-<!-- Mobile sidebar toggle -->
+<div id="flash-message-container" class="fixed top-4 right-4 z-50 w-full max-w-sm">
+    @if (session('success'))
+        <div class="bg-green-500 text-white p-4 rounded-lg shadow-lg mb-4 flex justify-between items-center animate-fade-in-down" role="alert">
+            <span>{{ session('success') }}</span>
+            <button type="button" class="ml-4 text-white hover:text-gray-100 text-lg leading-none" onclick="this.parentElement.remove();">&times;</button>
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div class="bg-red-500 text-white p-4 rounded-lg shadow-lg mb-4 flex justify-between items-center animate-fade-in-down" role="alert">
+            <span>{{ session('error') }}</span>
+            <button type="button" class="ml-4 text-white hover:text-gray-100 text-lg leading-none" onclick="this.parentElement.remove();">&times;</button>
+        </div>
+    @endif
+
+    @if (session('warning'))
+        <div class="bg-yellow-500 text-white p-4 rounded-lg shadow-lg mb-4 flex justify-between items-center animate-fade-in-down" role="alert">
+            <span>{{ session('warning') }}</span>
+            <button type="button" class="ml-4 text-white hover:text-gray-100 text-lg leading-none" onclick="this.parentElement.remove();">&times;</button>
+        </div>
+    @endif
+
+    @if (session('info'))
+        <div class="bg-blue-500 text-white p-4 rounded-lg shadow-lg mb-4 flex justify-between items-center animate-fade-in-down" role="alert">
+            <span>{{ session('info') }}</span>
+            <button type="button" class="ml-4 text-white hover:text-gray-100 text-lg leading-none" onclick="this.parentElement.remove();">&times;</button>
+        </div>
+    @endif
+</div>
+
 <button class="md:hidden fixed top-4 left-4 z-30 bg-gray-800 text-white rounded-full p-2 shadow-lg"
         aria-label="Open sidebar" onclick="toggleSidebar()">
     <span class="material-icons">menu</span>
 </button>
-<!-- Sidebar backdrop for mobile -->
 <div id="sidebar-backdrop" class="fixed inset-0 bg-black bg-opacity-30 z-20 hidden md:hidden"
      onclick="toggleSidebar()"></div>
-<!-- Sidebar -->
 <aside id="sidebar"
        class="w-72 bg-gradient-to-b from-gray-100 to-gray-50 p-0 flex flex-col min-h-screen shadow-xl border-r border-gray-100 fixed md:fixed z-30 transition-transform duration-200 md:translate-x-0 hidden md:flex h-screen top-0 left-0">
-    <!-- Admin Profile Card -->
     <div class="p-6 pb-4 border-b border-gray-100">
         <div class="flex items-center gap-4 mb-3">
             <div class="relative inline-block text-left">
@@ -42,7 +68,6 @@
             </div>
         </div>
     </div>
-    <!-- Navigation -->
     <nav class="flex-1 flex flex-col justify-between p-4">
         <div>
             <div class="text-xs text-gray-600 font-bold uppercase tracking-wider mb-2 mt-2">Main</div>
@@ -75,9 +100,54 @@
     <div class="text-xs text-gray-600 p-4 flex justify-center text-center">Syntess Vital Admin<br>Platform Management
     </div>
 </aside>
-<main class="flex-1 bg-gray-50 min-h-screen p-4 md:p-8 md:ml-72 max-w-7xl mx-auto">
-    @yield('content')
+<main class="flex-1 bg-gray-50 min-h-screen p-4 md:p-8 md:ml-72 flex justify-center"> {{-- Added 'flex justify-center', removed 'max-w-7xl mx-auto' --}}
+    <div class="w-full max-w-7xl">
+        @yield('content')
+    </div>
 </main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const flashMessages = document.querySelectorAll('#flash-message-container > div');
+        flashMessages.forEach(message => {
+            setTimeout(() => {
+                message.classList.add('animate-fade-out-up');
+                message.addEventListener('animationend', () => message.remove());
+            }, 4000);
+        });
+    });
+</script>
+<style>
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeOutUp {
+        from {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        to {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+    }
+
+    .animate-fade-in-down {
+        animation: fadeInDown 0.5s ease-out forwards;
+    }
+
+    .animate-fade-out-up {
+        animation: fadeOutUp 0.5s ease-in forwards;
+    }
+</style>
 
 @stack('scripts')
 
