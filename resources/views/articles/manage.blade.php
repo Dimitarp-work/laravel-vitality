@@ -26,7 +26,7 @@
                 <div class="bg-white rounded-2xl shadow p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div class="flex-grow">
                         <h2 class="text-xl font-bold text-theme-900 mb-2">
-                            <a href="{{ route('articles.show', $article) }}" class="hover:underline">
+                            <a href="{{ route('articles.show', $article) }}">
                                 {{ $article->title }}
                             </a>
                         </h2>
