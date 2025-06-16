@@ -25,7 +25,11 @@
             @forelse ($articles as $article)
                 <div class="bg-white rounded-2xl shadow p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div class="flex-grow">
-                        <h2 class="text-xl font-bold text-theme-900 mb-2">{{ $article->title }}</h2>
+                        <h2 class="text-xl font-bold text-theme-900 mb-2">
+                            <a href="{{ route('articles.show', $article) }}" class="hover:underline">
+                                {{ $article->title }}
+                            </a>
+                        </h2>
                         <p class="text-theme-700 text-sm">{{ Str::limit($article->content, 30, '...') }}</p>
                     </div>
                     <div class="flex gap-3 items-center flex-shrink-0">
