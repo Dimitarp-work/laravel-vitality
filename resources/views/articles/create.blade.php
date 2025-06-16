@@ -54,6 +54,7 @@
                     <span class="tag-item
                         bg-gray-300 text-gray-700
                         hover:bg-gray-400 hover:text-gray-800
+                        selected-hover:bg-pink-400 selected-hover:text-white
                         rounded-full px-3 py-1 text-sm font-semibold cursor-pointer transition
                         select-none"
                           data-tag-id="{{ $tag->id }}"
@@ -96,33 +97,40 @@
             const hiddenTagsInput = document.getElementById('hidden-tags-input');
             let selectedTagIds = [];
 
-            tagItems.forEach(item => {
-                if (item.dataset.selected === 'true') {
-                    selectedTagIds.push(item.dataset.tagId);
-                    item.classList.add('selected-tag', 'bg-pink-300', 'text-white');
-                    item.classList.remove('bg-gray-300', 'text-gray-700');
+            function applyTagClasses(item, isSelected) {
+                if (isSelected) {
+                    item.classList.add('selected-tag', 'bg-pink-300', 'text-white', 'selected-hover:bg-pink-400', 'selected-hover:text-white');
+                    item.classList.remove('bg-gray-300', 'text-gray-700', 'hover:bg-gray-400', 'hover:text-gray-800');
                 } else {
-                    item.classList.add('bg-gray-300', 'text-gray-700');
-                    item.classList.remove('selected-tag', 'bg-pink-300', 'text-white');
+                    item.classList.add('bg-gray-300', 'text-gray-700', 'hover:bg-gray-400', 'hover:text-gray-800');
+                    item.classList.remove('selected-tag', 'bg-pink-300', 'text-white', 'selected-hover:bg-pink-400', 'selected-hover:text-white');
                 }
+            }
+
+            tagItems.forEach(item => {
+                const isInitiallySelected = item.dataset.selected === 'true';
+                if (isInitiallySelected) {
+                    selectedTagIds.push(item.dataset.tagId);
+                }
+                applyTagClasses(item, isInitiallySelected);
             });
             updateHiddenInput();
 
             tagItems.forEach(tagItem => {
                 tagItem.addEventListener('click', function () {
                     const tagId = this.dataset.tagId;
+                    let isSelected = selectedTagIds.includes(tagId);
 
-                    if (selectedTagIds.includes(tagId)) {
+                    if (isSelected) {
                         selectedTagIds = selectedTagIds.filter(id => id !== tagId);
-                        this.classList.remove('selected-tag', 'bg-pink-300', 'text-white');
-                        this.classList.add('bg-gray-300', 'text-gray-700');
                         this.dataset.selected = 'false';
+                        isSelected = false;
                     } else {
                         selectedTagIds.push(tagId);
-                        this.classList.add('selected-tag', 'bg-pink-300', 'text-white');
-                        this.classList.remove('bg-gray-300', 'text-gray-700');
                         this.dataset.selected = 'true';
+                        isSelected = true;
                     }
+                    applyTagClasses(this, isSelected);
                     updateHiddenInput();
                 });
             });
