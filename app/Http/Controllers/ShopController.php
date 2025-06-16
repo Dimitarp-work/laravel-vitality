@@ -4,16 +4,21 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\StoreItem;
+use App\Models\Banner;
 
 class ShopController extends Controller
 {
-    public function index()
-    {
-        $storeItems = StoreItem::with('item')->get();
-        $user = auth()->user();
+public function index()
+{
+    $storeItems = StoreItem::with('item')->get();
+    $banners = StoreItem::with('item')
+        ->where('category', 'banner')
+        ->get();
 
-        return view('shop.index', compact('storeItems', 'user'));
-    }
+    $user = auth()->user();
+
+    return view('shop.index', compact('storeItems', 'banners', 'user'));
+}
 
     public function setBadge($badgeId)
     {
@@ -34,19 +39,26 @@ class ShopController extends Controller
 
         return redirect()->back();
     }
-    public function purchase($id)
+public function purchase($id)
 {
     $item = StoreItem::findOrFail($id);
     $user = auth()->user();
 
+    $relation = $item->category . 's';
+
+    if ($user->{$relation}->contains($item->item_id)) {
+        return back()->with('info', 'You already own this item.');
+    }
+
     if ($user->credits >= $item->price) {
         $user->credits -= $item->price;
-        $user->{$item->category . 's'}()->attach($item->item_id);
+        $user->{$relation}()->attach($item->item_id);
         $user->save();
     }
 
-    return back();
+    return back()->with('success', 'Item purchased successfully.');
 }
+
 
 public function activate($type, $id)
 {

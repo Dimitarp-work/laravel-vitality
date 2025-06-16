@@ -15,29 +15,36 @@
             $progressPercent = min(100, ($xpProgress / $xpToNextLevel) * 100);
         @endphp
 
-        <div class="w-full flex flex-col gap-8">
-            <!-- User summary card -->
-            <div class="w-full bg-gradient-to-r from-pink-200 to-pink-100 rounded-2xl shadow p-6 flex flex-col md:flex-row items-center gap-6">
-                <div class="flex items-center gap-4 flex-1">
-                    <div class="w-16 h-16 rounded-full bg-pink-300 flex items-center justify-center text-3xl font-bold text-white">
-                        {{ strtoupper(substr(explode(' ', $user->name)[0] ?? '', 0, 1) . substr(explode(' ', $user->name)[1] ?? '', 0, 1)) }}
-                    </div>
-                    <div>
-                        <div class="font-semibold text-xl text-pink-900">
-                            <div class="flex items-center gap-2">
-                                <span>Welcome, {{ $user->name }}</span>
-                                @if($user->activeBadge && $user->activeBadge->image_url)
-                                    <img src="{{ asset($user->activeBadge->image_url) }}"
-                                         alt="{{ $user->activeBadge->name }}"
-                                         title="{{ $user->activeBadge->name }}"
-                                         class="w-6 h-6 rounded-full object-contain ring ring-pink-300" />
-                                @endif
-                            </div>
-                            <span class="text-sm text-pink-700">{{ $user->activeBadge->name ?? 'No Badge' }}</span>
-                        </div>
-                    </div>
+      @php
+    $bannerUrl = $user->banner?->image_url;
+    $style = $bannerUrl
+        ? "background-image: linear-gradient(to right, rgba(255,255,255,0.6), rgba(255,255,255,0.1)), url('" . e($bannerUrl) . "');"
+        : "background-image: linear-gradient(to right, #fbcfe8, #fce7f3);";
+@endphp
+
+<div class="w-full rounded-2xl shadow p-6 flex flex-col md:flex-row items-center gap-6 mb-6"
+     style="{{ $style }} background-size: cover; background-position: center;">
+
+    <div class="flex items-center gap-4 flex-1">
+        <div class="w-16 h-16 rounded-full bg-pink-300 flex items-center justify-center text-3xl font-bold text-white">
+            {{ strtoupper(substr(explode(' ', $user->name)[0] ?? '', 0, 1) . substr(explode(' ', $user->name)[1] ?? '', 0, 1)) }}
+        </div>
+        <div>
+            <div class="font-semibold text-xl text-pink-900">
+                <div class="flex items-center gap-2">
+                    <span>Welcome, {{ $user->name }}</span>
+                    @if($user->activeBadge && $user->activeBadge->image_url)
+                        <img src="{{ asset($user->activeBadge->image_url) }}"
+                             alt="{{ $user->activeBadge->name }}"
+                             title="{{ $user->activeBadge->name }}"
+                             class="w-6 h-6 rounded-full object-contain ring ring-pink-300" />
+                    @endif
                 </div>
+                <span class="text-sm text-pink-700">{{ $user->activeBadge->name ?? 'No Badge' }}</span>
             </div>
+        </div>
+    </div>
+</div>
 
             <!-- Main grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
