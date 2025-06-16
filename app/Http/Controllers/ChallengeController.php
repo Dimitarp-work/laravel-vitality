@@ -6,6 +6,7 @@ use App\Models\Challenge;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Services\XPService;
+use Illuminate\View\View;
 
 class ChallengeController extends Controller
 {
@@ -263,4 +264,9 @@ class ChallengeController extends Controller
         return back()->with('success', 'Progress logged successfully!');
     }
 
+    public function manageChallenges(): View
+    {
+        $challenges = Challenge::latest()->paginate(10);
+        return view('challenges.manage', compact('challenges'));
+    }
 }

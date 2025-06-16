@@ -64,6 +64,11 @@
                             {{ request()->routeIs('admin.articles.index') ? 'bg-white/100 text-gray-900' : 'text-gray-900 hover:bg-gray-200' }}">
                         <span class="material-icons">article</span> Manage Articles
                     </a></li>
+                <li><a href="{{ route('admin.challenges.index') }}"
+                       class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
+                            {{ request()->routeIs('admin.challenges.index') ? 'bg-white/100 text-gray-900' : 'text-gray-900 hover:bg-gray-200' }}">
+                        <span class="material-icons">article</span> Manage Challenges
+                    </a></li>
                 <li><a href="{{ route('home') }}"
                        class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
                             {{ request()->routeIs('home') ? 'bg-white/90 text-gray-900' : 'text-gray-900 hover:bg-gray-200' }}">

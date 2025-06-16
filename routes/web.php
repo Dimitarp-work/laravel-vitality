@@ -115,6 +115,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/articles/manage', [ArticleController::class, 'manageArticles'])->name('admin.articles.index');
     Route::resource('articles', ArticleController::class)->except(['index', 'show']);
+    Route::get('/challenges/manage', [ChallengeController::class, 'manageChallenges'])->name('admin.challenges.index');
 });
 
 // Public article routes
