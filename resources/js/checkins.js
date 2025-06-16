@@ -162,7 +162,7 @@ async function handleCustomFormSubmit(e) {
         console.log('Response data:', data);
 
         if (data.success) {
-            const checkinsContainer = document.querySelector('.space-y-4');
+            const checkinsContainer = document.querySelector('.bg-white.rounded-2xl.shadow .space-y-4');
             const newCheckin = createNewCheckInElement(data.checkin);
             checkinsContainer.appendChild(newCheckin);
 

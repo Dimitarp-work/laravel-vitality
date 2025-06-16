@@ -14,17 +14,21 @@ use App\Http\Controllers\{
     RemindersController,
     SettingsController,
     DiaryController,
-    BadgeController
+    BadgeController,
+    Controller
 };
 use App\Http\Controllers\Admin\DashboardController;
 use App\Models\Goal;
 use App\Notifications\GoalOverdueNotification;
+use App\Http\Controllers\Admin\ActivityLogController;
+use App\Http\Controllers\ShopController;
 
 /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
 */
+Route::get('/home', [Controller::class, 'home'])->middleware(['auth', 'verified'])->name('home');
 
 Route::redirect('/', '/login');
 
@@ -32,14 +36,18 @@ Route::get('/trigger-500', fn () => abort(500));
 
 Route::get('/login', fn () => view('welcome'));
 
-Route::get('/home', fn () => view('home'))->middleware(['auth', 'verified'])->name('home');
-
 // Authenticated user routes
 Route::middleware(['auth'])->group(function () {
     // Profile routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
+Route::post('/shop/badge/{badgeId}/toggle', [ShopController::class, 'setBadge'])->name('badges.toggle');
+Route::post('/shop/badge/remove', [ShopController::class, 'removeBadge'])->name('badges.remove');
+Route::post('/store/purchase/{item}', [ShopController::class, 'purchase'])->name('store.purchase');
+Route::post('/store/activate/{type}/{id}', [ShopController::class, 'activate'])->name('customize.activate');
 
     // Settings routes
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
@@ -54,10 +62,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/diary/past', [DiaryController::class, 'past'])->name('diary.past');
 
     // Check-ins routes
+    Route::resource('/checkins', DailyCheckInController::class);
     Route::post('/checkins/{dailyCheckIn}/complete', [DailyCheckInController::class, 'complete'])->name('checkins.complete');
     Route::get('/checkins/week', [DailyCheckInController::class, 'week'])->name('checkins.week');
-    Route::delete('/checkins/{dailyCheckIn}', [DailyCheckInController::class, 'destroy'])->name('checkins.destroy');
-    Route::resource('checkins', DailyCheckInController::class);
 
     // Reminders routes
     Route::get('/reminders', [RemindersController::class, 'index'])->name('reminders.index');
@@ -105,6 +112,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/challenges/{challenge}/confirm-delete', [ChallengeController::class, 'confirmDelete'])->name('challenges.confirmDelete');
     Route::delete('/challenges/{challenge}', [ChallengeController::class, 'destroy'])->name('challenges.destroy');
 });
+Route::middleware(['auth'])->post('/badges', [BadgeController::class, 'store']);
 
 // Public CapyChat routes
 Route::get('/capychat', [CapyChatController::class, 'index'])->name('capychat');
@@ -114,6 +122,7 @@ Route::post('/capychat/message', [CapyChatController::class, 'message'])->name('
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/articles/manage', [ArticleController::class, 'manageArticles'])->name('admin.articles.index');
+    Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('admin.activity_logs.index');
     Route::resource('articles', ArticleController::class)->except(['index', 'show']);
     Route::get('/challenges/manage', [ChallengeController::class, 'manageChallenges'])->name('admin.challenges.index');
 });

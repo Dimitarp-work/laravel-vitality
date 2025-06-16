@@ -7,6 +7,9 @@ use App\Models\Article;
 use Illuminate\Http\Request;
 use App\Models\Tag;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+use App\Models\ActivityLog;
+use App\Models\ViewLog;
 
 class ArticleController extends Controller
 {
@@ -82,12 +85,25 @@ class ArticleController extends Controller
             $article->tags()->detach();
         }
 
-        return redirect()->route('dashboard')->with('success', 'Article created successfully!');
+        ActivityLog::create([
+            'user_id' => Auth::id(),
+            'action' => 'created',
+            'description' => 'Article "' . $article->title . '" was created.',
+            'loggable_type' => Article::class,
+            'loggable_id' => $article->id,
+        ]);
+
+        return redirect()->route('admin.articles.index')->with('success', 'Article created successfully!');
     }
 
     public function show(Article $article)
     {
         $article->increment('views');
+
+        ViewLog::create([
+            'article_id' => $article->id,
+        ]);
+
         return view('articles.show', compact('article'));
     }
 
@@ -109,8 +125,7 @@ class ArticleController extends Controller
             'tags.*' => 'exists:tags,id',
         ]);
 
-        $article->title = $validated['title'];
-        $article->content = $validated['content'];
+        $originalTitle = $article->title;
 
         if ($request->hasFile('image')) {
             if ($article->image) {
@@ -125,6 +140,8 @@ class ArticleController extends Controller
             }
         }
 
+        $article->title = $validated['title'];
+        $article->content = $validated['content'];
         $article->save();
 
         if (isset($validated['tags'])) {
@@ -133,16 +150,36 @@ class ArticleController extends Controller
             $article->tags()->detach();
         }
 
-        return redirect()->route('dashboard')->with('success', 'Article updated successfully!');
+        ActivityLog::create([
+            'user_id' => Auth::id(),
+            'action' => 'updated',
+            'description' => 'Article "' . $originalTitle . '" was updated.',
+            'loggable_type' => Article::class,
+            'loggable_id' => $article->id,
+        ]);
+
+        return redirect()->route('admin.articles.index')->with('success', 'Article updated successfully!');
     }
 
     public function destroy(Article $article)
     {
+        $articleTitle = $article->title;
+        $articleId = $article->id;
+
         if ($article->image) {
             Storage::disk('public')->delete($article->image);
         }
         $article->delete();
-        return redirect()->route('dashboard')->with('success', 'Article deleted successfully!');
+
+        ActivityLog::create([
+            'user_id' => Auth::id(),
+            'action' => 'deleted',
+            'description' => 'Article "' . $articleTitle . '" was deleted.',
+            'loggable_type' => Article::class,
+            'loggable_id' => $articleId,
+        ]);
+
+        return redirect()->route('admin.articles.index')->with('success', 'Article deleted successfully!');
     }
 
     public function manageArticles()
