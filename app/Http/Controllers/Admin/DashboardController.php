@@ -23,7 +23,6 @@ class DashboardController extends Controller
 
         $articlesLastWeek = Article::whereBetween('created_at', [$startOfLastArticleWeek, $endOfLastArticleWeek])->count();
         $articlesThisWeek = Article::whereBetween('created_at', [$startOfThisArticleWeek, $endOfThisArticleWeek])->count();
-
         $articlesWeeklyGrowth = $this->calculateGrowthPercentage($articlesThisWeek, $articlesLastWeek);
 
         $startOfLastArticleMonth = Carbon::now()->subMonth()->startOfMonth();
@@ -33,7 +32,6 @@ class DashboardController extends Controller
 
         $articlesLastMonth = Article::whereBetween('created_at', [$startOfLastArticleMonth, $endOfLastArticleMonth])->count();
         $articlesThisMonth = Article::whereBetween('created_at', [$startOfThisArticleMonth, $endOfThisArticleMonth])->count();
-
         $articlesMonthlyGrowth = $this->calculateGrowthPercentage($articlesThisMonth, $articlesLastMonth);
 
         $startOfLastUserWeek = Carbon::now()->subWeek()->startOfWeek();
@@ -43,7 +41,6 @@ class DashboardController extends Controller
 
         $usersLastWeek = User::whereBetween('created_at', [$startOfLastUserWeek, $endOfLastUserWeek])->count();
         $usersThisWeek = User::whereBetween('created_at', [$startOfThisUserWeek, $endOfThisUserWeek])->count();
-
         $usersWeeklyGrowth = $this->calculateGrowthPercentage($usersThisWeek, $usersLastWeek);
 
         $startOfLastUserMonth = Carbon::now()->subMonth()->startOfMonth();
@@ -53,7 +50,6 @@ class DashboardController extends Controller
 
         $usersLastMonth = User::whereBetween('created_at', [$startOfLastUserMonth, $endOfLastUserMonth])->count();
         $usersThisMonth = User::whereBetween('created_at', [$startOfThisUserMonth, $endOfThisUserMonth])->count();
-
         $usersMonthlyGrowth = $this->calculateGrowthPercentage($usersThisMonth, $usersLastMonth);
 
         $totalViews = Article::sum('views');
@@ -66,13 +62,24 @@ class DashboardController extends Controller
         $viewsThisMonth = Article::whereBetween('created_at', [$startOfThisArticleMonth, $endOfThisArticleMonth])->sum('views');
         $viewsMonthlyGrowth = $this->calculateGrowthPercentage($viewsThisMonth, $viewsLastMonth);
 
+        $totalEngagementRate = ($totalUsers > 0) ? ($totalViews / $totalUsers) * 100 : 0;
+
+        $engagementRateThisWeek = ($usersThisWeek > 0) ? ($viewsThisWeek / $usersThisWeek) : 0;
+        $engagementRateLastWeek = ($usersLastWeek > 0) ? ($viewsLastWeek / $usersLastWeek) : 0;
+        $engagementRateWeeklyGrowth = $this->calculateGrowthPercentage($engagementRateThisWeek, $engagementRateLastWeek);
+
+        $engagementRateThisMonth = ($usersThisMonth > 0) ? ($viewsThisMonth / $usersThisMonth) : 0;
+        $engagementRateLastMonth = ($usersLastMonth > 0) ? ($viewsLastMonth / $usersLastMonth) : 0;
+        $engagementRateMonthlyGrowth = $this->calculateGrowthPercentage($engagementRateThisMonth, $engagementRateLastMonth);
+
+
         $query = Article::latest();
 
         if ($search = $request->input('search')) {
             $query->where('title', 'like', '%' . $search . '%');
         }
 
-        $recentArticles = $query->paginate(3);
+        $recentArticles = $query->paginate(6);
 
         $logs = XPLog::with('user')->latest()->limit(10)->get();
 
@@ -86,6 +93,9 @@ class DashboardController extends Controller
             'totalViews',
             'viewsWeeklyGrowth',
             'viewsMonthlyGrowth',
+            'totalEngagementRate',
+            'engagementRateWeeklyGrowth',
+            'engagementRateMonthlyGrowth',
             'recentArticles',
             'logs',
             'search'
