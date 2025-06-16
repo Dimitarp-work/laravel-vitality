@@ -3,60 +3,60 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
 
 class LeaderboardController extends Controller
 {
     public function xp()
     {
-        $today = now()->toDateString();
-        $yesterday = now()->subDay()->toDateString();
+        $this->updateXpSnapshot();
 
-        // Get snapshot data grouped by user_id
+        // Get latest + previous snapshots per user
         $snapshots = DB::table('xp_leaderboard_snapshots')
-            ->whereIn('captured_at', [$yesterday, $today])
+            ->orderBy('captured_at', 'desc')
             ->get()
             ->groupBy('user_id');
 
-        // Top 3 users
+        $rankHistory = [];
+
+        foreach ($snapshots as $userId => $userSnaps) {
+            $latest = $userSnaps->first();
+            $previous = $userSnaps->skip(1)->first();
+
+            $rankHistory[$userId] = [
+                'previous' => $previous,
+            ];
+        }
+
         $topThree = User::orderByDesc('xp')
             ->take(3)
             ->get()
-            ->map(function ($user, $index) use ($snapshots, $yesterday) {
+            ->map(function ($user, $index) use ($rankHistory) {
                 $trend = 'same';
                 $todayRank = $index + 1;
+                $prevRank = $rankHistory[$user->id]['previous']->rank ?? null;
 
-                // Only check if snapshot for user exists
-                $userSnapshots = $snapshots[$user->id] ?? collect();
-                $yesterdayRank = $userSnapshots->firstWhere('captured_at', $yesterday)->rank ?? null;
-
-                if ($yesterdayRank !== null) {
-                    if ($todayRank < $yesterdayRank) $trend = 'up';
-                    elseif ($todayRank > $yesterdayRank) $trend = 'down';
+                if ($prevRank !== null) {
+                    if ($todayRank < $prevRank) $trend = 'up';
+                    elseif ($todayRank > $prevRank) $trend = 'down';
                 }
 
                 return array_merge($user->toArray(), ['trend' => $trend]);
             });
 
-        // The rest of the leaderboard
         $users = User::orderByDesc('xp')
             ->offset(3)
             ->limit(100)
             ->get()
             ->values()
-            ->map(function ($user, $index) use ($snapshots, $yesterday) {
+            ->map(function ($user, $index) use ($rankHistory) {
                 $trend = 'same';
                 $todayRank = $index + 4;
+                $prevRank = $rankHistory[$user->id]['previous']->rank ?? null;
 
-                $userSnapshots = $snapshots[$user->id] ?? collect();
-                $yesterdayRank = $userSnapshots->firstWhere('captured_at', $yesterday)->rank ?? null;
-
-                if ($yesterdayRank !== null) {
-                    if ($todayRank < $yesterdayRank) $trend = 'up';
-                    elseif ($todayRank > $yesterdayRank) $trend = 'down';
+                if ($prevRank !== null) {
+                    if ($todayRank < $prevRank) $trend = 'up';
+                    elseif ($todayRank > $prevRank) $trend = 'down';
                 }
 
                 return array_merge($user->toArray(), ['trend' => $trend]);
@@ -67,57 +67,94 @@ class LeaderboardController extends Controller
 
     public function badges()
     {
-        $today = now()->toDateString();
-        $yesterday = now()->subDay()->toDateString();
+        $this->updateBadgeSnapshot();
 
-        // Get snapshot data grouped by user_id
         $snapshots = DB::table('badge_leaderboard_snapshots')
-            ->whereIn('captured_at', [$yesterday, $today])
+            ->orderBy('captured_at', 'desc')
             ->get()
             ->groupBy('user_id');
 
-        // Top 3 users by badge count
+        $rankHistory = [];
+
+        foreach ($snapshots as $userId => $userSnaps) {
+            $latest = $userSnaps->first();
+            $previous = $userSnaps->skip(1)->first();
+
+            $rankHistory[$userId] = [
+                'previous' => $previous,
+            ];
+        }
+
         $topThree = User::withCount('badges')
             ->orderByDesc('badges_count')
             ->take(3)
             ->get()
-            ->map(function ($user, $index) use ($snapshots, $yesterday) {
+            ->map(function ($user, $index) use ($rankHistory) {
                 $trend = 'same';
                 $todayRank = $index + 1;
+                $prevRank = $rankHistory[$user->id]['previous']->rank ?? null;
 
-                $userSnapshots = $snapshots[$user->id] ?? collect();
-                $yesterdayRank = $userSnapshots->firstWhere('captured_at', $yesterday)->rank ?? null;
-
-                if ($yesterdayRank !== null) {
-                    if ($todayRank < $yesterdayRank) $trend = 'up';
-                    elseif ($todayRank > $yesterdayRank) $trend = 'down';
+                if ($prevRank !== null) {
+                    if ($todayRank < $prevRank) $trend = 'up';
+                    elseif ($todayRank > $prevRank) $trend = 'down';
                 }
 
                 return array_merge($user->toArray(), ['trend' => $trend]);
             });
 
-        // Rest of leaderboard
         $users = User::withCount('badges')
             ->orderByDesc('badges_count')
             ->offset(3)
             ->limit(100)
             ->get()
             ->values()
-            ->map(function ($user, $index) use ($snapshots, $yesterday) {
+            ->map(function ($user, $index) use ($rankHistory) {
                 $trend = 'same';
                 $todayRank = $index + 4;
+                $prevRank = $rankHistory[$user->id]['previous']->rank ?? null;
 
-                $userSnapshots = $snapshots[$user->id] ?? collect();
-                $yesterdayRank = $userSnapshots->firstWhere('captured_at', $yesterday)->rank ?? null;
-
-                if ($yesterdayRank !== null) {
-                    if ($todayRank < $yesterdayRank) $trend = 'up';
-                    elseif ($todayRank > $yesterdayRank) $trend = 'down';
+                if ($prevRank !== null) {
+                    if ($todayRank < $prevRank) $trend = 'up';
+                    elseif ($todayRank > $prevRank) $trend = 'down';
                 }
 
                 return array_merge($user->toArray(), ['trend' => $trend]);
             });
 
         return view('leaderboard.badges', compact('topThree', 'users'));
+    }
+
+    protected function updateXpSnapshot()
+    {
+        $now = now();
+        $xpUsers = User::orderByDesc('xp')->get();
+
+        foreach ($xpUsers as $index => $user) {
+            DB::table('xp_leaderboard_snapshots')->insert([
+                'user_id'      => $user->id,
+                'xp'           => $user->xp,
+                'rank'         => $index + 1,
+                'captured_at'  => $now, // full timestamp
+                'created_at'   => $now,
+                'updated_at'   => $now,
+            ]);
+        }
+    }
+
+    protected function updateBadgeSnapshot()
+    {
+        $now = now();
+        $badgeUsers = User::withCount('badges')->orderByDesc('badges_count')->get();
+
+        foreach ($badgeUsers as $index => $user) {
+            DB::table('badge_leaderboard_snapshots')->insert([
+                'user_id'        => $user->id,
+                'badges_count'   => $user->badges_count,
+                'rank'           => $index + 1,
+                'captured_at'    => $now,
+                'created_at'     => $now,
+                'updated_at'     => $now,
+            ]);
+        }
     }
 }

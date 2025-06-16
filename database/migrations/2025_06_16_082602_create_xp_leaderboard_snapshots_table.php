@@ -16,10 +16,8 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->integer('rank');
             $table->integer('xp');
-            $table->date('captured_at');
+            $table->timestamp('captured_at'); // changed from date to timestamp
             $table->timestamps();
-
-            $table->unique(['user_id', 'captured_at']);
         });
     }
 

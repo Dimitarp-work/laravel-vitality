@@ -69,27 +69,4 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'admin' => \App\Http\Middleware\AdminMiddleware::class,
     ];
-
-    protected function schedule(Schedule $schedule)
-    {
-        $schedule->call(function () {
-            // XP Snapshot
-            $xpUsers = User::orderByDesc('xp')->get();
-            foreach ($xpUsers as $index => $user) {
-                DB::table('xp_leaderboard_snapshots')->updateOrInsert(
-                    ['user_id' => $user->id, 'captured_at' => now()->toDateString()],
-                    ['rank' => $index + 1, 'xp' => $user->xp, 'updated_at' => now(), 'created_at' => now()]
-                );
-            }
-
-            // Badge Snapshot
-            $badgeUsers = User::withCount('badges')->orderByDesc('badges_count')->get();
-            foreach ($badgeUsers as $index => $user) {
-                DB::table('badge_leaderboard_snapshots')->updateOrInsert(
-                    ['user_id' => $user->id, 'captured_at' => now()->toDateString()],
-                    ['rank' => $index + 1, 'badges_count' => $user->badges_count, 'updated_at' => now(), 'created_at' => now()]
-                );
-            }
-        })->daily();
-    }
 }
