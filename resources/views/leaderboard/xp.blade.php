@@ -46,8 +46,7 @@
                                 ];
                                 $color = $colors[$rank];
                                 $initials = strtoupper(substr(explode(' ', $user['name'])[0] ?? '', 0, 1) . substr(explode(' ', $user['name'])[1] ?? '', 0, 1));
-                                $title = $user['title'] ?? 'Top Performer';
-                            @endphp
+                                    @endphp
 
                             <div class="text-center">
                                 <div class="{{ $rank === 1 ? 'w-20 h-20 text-xl' : 'w-16 h-16 text-lg' }} rounded-full {{ $color['bg'] }} mx-auto font-bold {{ $color['text'] }} flex items-center justify-center border-4 {{ $color['border'] }} relative">
@@ -58,9 +57,24 @@
                                 </div>
                                 <div class="text-sm mt-2 font-medium text-gray-800">{{ $user['name'] }}</div>
                                 <div class="text-sm text-gray-500">{{ $user['xp'] }} XP</div>
-                                <div class="text-xs text-pink-500 mt-1">{{ $title }}</div>
+                                <div class="text-xs text-pink-500 mt-1">{{ $user['title'] ?? 'Top Performer' }}</div>
                                 <div class="font-bold text-sm mt-1 {{ $color['text'] }}">{{ $rank }}</div>
-                            </div>
+                                <div class="mt-1">
+                            @if ($user['trend'] === 'up')
+                                <svg class="w-5 h-5 text-green-500 mx-auto" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+                                </svg>
+                            @elseif ($user['trend'] === 'down')
+                                <svg class="w-5 h-5 text-red-500 mx-auto" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                                </svg>
+                            @else
+                                <svg class="w-5 h-5 text-gray-400 mx-auto" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 12h16"/>
+                                </svg>
+                            @endif
+                        </div>
+                    </div>
                         @endforeach
                     </div>
 
@@ -79,7 +93,22 @@
                                         <div class="text-xs text-pink-500">{{ $user['title'] ?? 'Participant' }}</div>
                                     </div>
                                 </div>
-                                <div class="text-gray-700 font-medium">{{ $user['xp'] }} XP</div>
+                                <div class="flex items-center gap-2 text-gray-700 font-medium">
+                            {{ $user['xp'] }} XP
+                            @if ($user['trend'] === 'up')
+                                <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+                                </svg>
+                            @elseif ($user['trend'] === 'down')
+                                <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                                </svg>
+                            @else
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 12h16"/>
+                                </svg>
+                            @endif
+                        </div>
                             </div>
                         @endforeach
                     </div>
