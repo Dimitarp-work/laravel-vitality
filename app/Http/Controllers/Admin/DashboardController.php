@@ -4,9 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\XPLog;
+use App\Models\ActivityLog;
 use App\Models\Article;
 use App\Models\User;
+use App\Models\ViewLog;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -54,12 +55,12 @@ class DashboardController extends Controller
 
         $totalViews = Article::sum('views');
 
-        $viewsLastWeek = Article::whereBetween('created_at', [$startOfLastArticleWeek, $endOfLastArticleWeek])->sum('views');
-        $viewsThisWeek = Article::whereBetween('created_at', [$startOfThisArticleWeek, $endOfThisArticleWeek])->sum('views');
+        $viewsLastWeek = ViewLog::whereBetween('created_at', [$startOfLastArticleWeek, $endOfLastArticleWeek])->count();
+        $viewsThisWeek = ViewLog::whereBetween('created_at', [$startOfThisArticleWeek, $endOfThisArticleWeek])->count();
         $viewsWeeklyGrowth = $this->calculateGrowthPercentage($viewsThisWeek, $viewsLastWeek);
 
-        $viewsLastMonth = Article::whereBetween('created_at', [$startOfLastArticleMonth, $endOfLastArticleMonth])->sum('views');
-        $viewsThisMonth = Article::whereBetween('created_at', [$startOfThisArticleMonth, $endOfThisArticleMonth])->sum('views');
+        $viewsLastMonth = ViewLog::whereBetween('created_at', [$startOfLastArticleMonth, $endOfLastArticleMonth])->count();
+        $viewsThisMonth = ViewLog::whereBetween('created_at', [$startOfThisArticleMonth, $endOfThisArticleMonth])->count();
         $viewsMonthlyGrowth = $this->calculateGrowthPercentage($viewsThisMonth, $viewsLastMonth);
 
         $totalEngagementRate = ($totalUsers > 0) ? ($totalViews / $totalUsers) * 100 : 0;
@@ -72,7 +73,6 @@ class DashboardController extends Controller
         $engagementRateLastMonth = ($usersLastMonth > 0) ? ($viewsLastMonth / $usersLastMonth) : 0;
         $engagementRateMonthlyGrowth = $this->calculateGrowthPercentage($engagementRateThisMonth, $engagementRateLastMonth);
 
-
         $query = Article::latest();
 
         if ($search = $request->input('search')) {
@@ -81,7 +81,9 @@ class DashboardController extends Controller
 
         $recentArticles = $query->paginate(6);
 
-        $logs = XPLog::with('user')->latest()->limit(10)->get();
+        $recentAdminActivities = ActivityLog::with('user')->latest()->limit(3)->get();
+
+        $logs = ActivityLog::with('user')->latest()->limit(10)->get();
 
         return view('admin.dashboard', compact(
             'totalArticles',
@@ -98,6 +100,7 @@ class DashboardController extends Controller
             'engagementRateMonthlyGrowth',
             'recentArticles',
             'logs',
+            'recentAdminActivities',
             'search'
         ));
     }

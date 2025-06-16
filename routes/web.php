@@ -20,6 +20,7 @@ use App\Http\Controllers\{
 use App\Http\Controllers\Admin\DashboardController;
 use App\Models\Goal;
 use App\Notifications\GoalOverdueNotification;
+use App\Http\Controllers\Admin\ActivityLogController;
 
 /*
 |--------------------------------------------------------------------------
@@ -114,6 +115,7 @@ Route::post('/capychat/message', [CapyChatController::class, 'message'])->name('
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/articles/manage', [ArticleController::class, 'manageArticles'])->name('admin.articles.index');
+    Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('admin.activity_logs.index');
     Route::resource('articles', ArticleController::class)->except(['index', 'show']);
 });
 
