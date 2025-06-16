@@ -15,7 +15,7 @@
 
         <!-- Leaderboard Panel -->
         <div class="bg-white rounded-xl shadow p-6">
-            <h2 class="text-xl font-semibold mb-6">Experience Points Leaders</h2>
+            <h2 class="text-xl font-semibold mb-6">Badge Leaders</h2>
 
             <!-- Top 3 -->
             <div class="flex justify-center gap-12 mb-8">
@@ -40,7 +40,7 @@
                             @endif
                         </div>
                         <div class="text-sm mt-2 font-medium text-gray-800">{{ $user['name'] }}</div>
-                        <div class="text-sm text-gray-500">{{ $user['xp'] }} XP</div>
+                        <div class="text-sm text-gray-500">{{ $user['badges_count'] }} Badges</div>
                         <div class="text-xs text-pink-500 mt-1">{{ $title }}</div>
                         <div class="font-bold text-sm mt-1 {{ $color['text'] }}">{{ $rank }}</div>
                     </div>
@@ -62,7 +62,7 @@
                                 <div class="text-xs text-pink-500">{{ $user['title'] ?? 'Participant' }}</div>
                             </div>
                         </div>
-                        <div class="text-gray-700 font-medium">{{ $user['xp'] }} XP</div>
+                        <div class="text-gray-700 font-medium">{{ $user['badges_count'] }} Badges</div>
                     </div>
                 @endforeach
             </div>

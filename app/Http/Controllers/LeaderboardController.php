@@ -24,9 +24,18 @@ class LeaderboardController extends Controller
 
     public function badges()
     {
-        $topThree = User::orderByDesc('xp')->take(3)->get();
-        $users = User::orderByDesc('xp')->offset(3)->limit(100)->get();
+        $topThree = User::withCount('badges')
+            ->orderByDesc('badges_count')
+            ->take(3)
+            ->get()
+            ->map(fn($user) => $user->toArray());
 
+        $users = User::withCount('badges')
+            ->orderByDesc('badges_count')
+            ->offset(3)
+            ->limit(100)
+            ->get()
+            ->map(fn($user) => $user->toArray());
 
         return view('leaderboard.badges', compact('topThree', 'users'));
     }
