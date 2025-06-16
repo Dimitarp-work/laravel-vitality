@@ -5,9 +5,18 @@ namespace App\Http\Controllers;
 use App\Models\Challenge;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Services\XPService;
 
 class ChallengeController extends Controller
 {
+    protected $xpService;
+
+    public function __construct(XPService $xpService)
+    {
+        $this->xpService = $xpService;
+    }
+
+
     /**
      * Display a listing of the resource.
      */
@@ -236,8 +245,15 @@ class ChallengeController extends Controller
         $pivot->days_completed++;
 
         // if this was the final day, mark the challenge as completed for this user
-        if ($pivot->days_completed >= $challenge->duration_days) {
+        if ($pivot->days_completed >= $challenge->duration_days && !$pivot->completed) {
             $pivot->completed = true;
+
+            $this->xpService->reward(
+                $user,
+                $challenge->xp_reward,
+                $challenge->xp_reward,
+                "Completed challenge: {$challenge->title}"
+            );
         }
 
         // save the updated pivot data (days_completed and possibly completed)
