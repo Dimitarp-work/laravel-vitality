@@ -10,9 +10,10 @@ use Carbon\Carbon;
 
 class ArticleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function __construct()
+    {
+        $this->middleware(['auth', 'admin'])->except(['index', 'show']);
+    }
 
     public function index(Request $request)
     {
@@ -40,34 +41,26 @@ class ArticleController extends Controller
 
         if (Article::where('views', '>', 0)->exists()) {
             $allTrendingArticles = Article::where('views', '>', '0')
-            ->orderByRaw('views DESC, created_at DESC')
-            ->take(3)
+                ->orderByRaw('views DESC, created_at DESC')
+                ->take(3)
                 ->get();
         }
 
         return view('articles.index', compact('articles', 'tags', 'trendingArticles', 'allTrendingArticles'));
     }
 
-
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         $tags = Tag::all();
         return view('articles.create', compact('tags'));
     }
 
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string|max:4096',
-            'image' => 'nullable|image|max:4096',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:8096',
             'tags' => 'nullable|array',
             'tags.*' => 'exists:tags,id',
         ]);
@@ -82,58 +75,79 @@ class ArticleController extends Controller
         }
 
         $article->save();
-        $article->tags()->sync($request->input('tags', []));
 
+        if (isset($validated['tags'])) {
+            $article->tags()->sync($validated['tags']);
+        } else {
+            $article->tags()->detach();
+        }
 
-        return redirect()->route('articles.index')->with('success', 'Article added successfully');
+        return redirect()->route('dashboard')->with('success', 'Article created successfully!');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Article $article)
     {
         $article->increment('views');
         return view('articles.show', compact('article'));
     }
 
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Article $article)
     {
         $tags = Tag::all();
-        return view('articles.edit', compact('article', 'tags'));
+        $articleTags = $article->tags->pluck('id')->toArray();
+        return view('articles.edit', compact('article', 'tags', 'articleTags'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Article $article)
     {
-        $validatedData = $request->validate([
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'content' => 'required|string',
-            'image' => 'nullable|image|max:4096',
+            'content' => 'required|string|max:4096',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:8096',
+            'clear_image' => 'nullable|boolean',
             'tags' => 'nullable|array',
             'tags.*' => 'exists:tags,id',
         ]);
 
-        $article->update($validatedData);
-        $article->tags()->sync($request->input('tags', []));
-        return redirect()->route('articles.index')->with('success', 'Article updated successfully');
+        $article->title = $validated['title'];
+        $article->content = $validated['content'];
+
+        if ($request->hasFile('image')) {
+            if ($article->image) {
+                Storage::disk('public')->delete($article->image);
+            }
+            $imagePath = $request->file('image')->store('articles', 'public');
+            $article->image = $imagePath;
+        } elseif (isset($validated['clear_image']) && $validated['clear_image']) {
+            if ($article->image) {
+                Storage::disk('public')->delete($article->image);
+                $article->image = null;
+            }
+        }
+
+        $article->save();
+
+        if (isset($validated['tags'])) {
+            $article->tags()->sync($validated['tags']);
+        } else {
+            $article->tags()->detach();
+        }
+
+        return redirect()->route('dashboard')->with('success', 'Article updated successfully!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Article $article)
     {
         if ($article->image) {
-            Storage::delete('public/' . $article->image);
+            Storage::disk('public')->delete($article->image);
         }
         $article->delete();
-        return redirect()->route('articles.index')->with('success', 'Article deleted successfully');
+        return redirect()->route('dashboard')->with('success', 'Article deleted successfully!');
+    }
+
+    public function manageArticles()
+    {
+        $articles = Article::latest()->paginate(10);
+        return view('articles.manage', compact('articles'));
     }
 }

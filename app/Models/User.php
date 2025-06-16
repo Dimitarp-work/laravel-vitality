@@ -14,20 +14,6 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    public function challenges(): HasMany
-    {
-        return $this->hasMany(Challenge::class);
-    }
-
-    public function joinedChallenges(): BelongsToMany
-    {
-        return $this->belongsToMany(Challenge::class, 'challenge_user')
-            // this is needed because pivot tables aren’t full models by default - have to tell laravel what extra fields I need
-            ->withPivot(['days_completed', 'completed', 'joined_at']) // when you fetch the relationship, also include these extra columns from the pivot table
-            ->withTimestamps();
-    }
-
-
     /**
      * The attributes that are mass assignable.
      *
@@ -61,9 +47,34 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-    public function goals()
+
+    // Relationships
+
+    public function challenges(): HasMany
+    {
+        return $this->hasMany(Challenge::class);
+    }
+
+    public function joinedChallenges(): BelongsToMany
+    {
+        return $this->belongsToMany(Challenge::class, 'challenge_user')
+            ->withPivot(['days_completed', 'completed', 'joined_at'])
+            ->withTimestamps();
+    }
+
+    public function goals(): HasMany
     {
         return $this->hasMany(Goal::class);
+    }
+
+    public function reminders(): HasMany
+    {
+        return $this->hasMany(Reminder::class);
+    }
+
+    public function notificationSettings(): HasOne
+    {
+        return $this->hasOne(NotificationSetting::class);
     }
 
     public function stampcard(): HasOne
@@ -71,10 +82,19 @@ class User extends Authenticatable
         return $this->hasOne(Stampcard::class, 'user_id', 'id');
     }
 
-    public function xpLogs()
+    public function xpLogs(): HasMany
     {
         return $this->hasMany(XPLog::class);
     }
 
+    public function diaryEntries(): HasMany
+    {
+        return $this->hasMany(DiaryEntry::class);
+    }
 
+    public function badges(): BelongsToMany
+    {
+        return $this->belongsToMany(Badge::class)->withTimestamps();
+    }
 }
+

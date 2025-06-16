@@ -57,7 +57,10 @@
                 <span class="material-icons text-pink-400 text-base">schedule</span> {{ $challenge->duration_days }} days
             </div>
             <div class="flex items-center gap-1">
-                <span class="material-icons text-pink-400 text-base">group</span> {{ $challenge->participants->count() }} participants
+                <button onclick="openParticipantsOverlay({{ $challenge->id }})"
+                        class="text-pink-600 hover:underline text-sm ml-2">
+                    {{ $challenge->participants->count() }} participants
+                </button>
             </div>
         </div>
     </div>

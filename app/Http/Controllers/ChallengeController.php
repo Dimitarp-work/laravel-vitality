@@ -23,6 +23,7 @@ class ChallengeController extends Controller
         // Get IDs of challenges the user has already joined
         $joinedIds = $user->joinedChallenges()->pluck('challenge_id');
 
+
         // Mark all expired challenges as completed
         $expiringChallenges = Challenge::where('status', '!=', 'completed')->get();
 
@@ -197,6 +198,13 @@ class ChallengeController extends Controller
 
 
         return redirect()->back()->with('success', 'You joined the challenge!');
+    }
+
+    public function participants(Challenge $challenge)
+    {
+        return response()->json(
+            $challenge->participants()->select('name')->get()
+        );
     }
 
     public function logProgress(Request $request, Challenge $challenge)
