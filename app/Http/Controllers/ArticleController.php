@@ -61,7 +61,7 @@ class ArticleController extends Controller
             'title' => 'required|string|max:255',
             'content' => 'required|string|max:4096',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:8096',
-            'tags' => 'required|array|min:1',
+            'tags' => 'nullable|array',
             'tags.*' => 'exists:tags,id',
         ]);
 
@@ -75,9 +75,14 @@ class ArticleController extends Controller
         }
 
         $article->save();
-        $article->tags()->sync($request->input('tags', []));
 
-        return redirect()->route('articles.index')->with('success', 'Article added successfully');
+        if (isset($validated['tags'])) {
+            $article->tags()->sync($validated['tags']);
+        } else {
+            $article->tags()->detach();
+        }
+
+        return redirect()->route('dashboard')->with('success', 'Article created successfully!');
     }
 
     public function show(Article $article)
@@ -88,20 +93,24 @@ class ArticleController extends Controller
 
     public function edit(Article $article)
     {
-        // Removed passing $tags and $articleTags since they are no longer needed in the view
-        return view('articles.edit', compact('article'));
+        $tags = Tag::all();
+        $articleTags = $article->tags->pluck('id')->toArray();
+        return view('articles.edit', compact('article', 'tags', 'articleTags'));
     }
 
     public function update(Request $request, Article $article)
     {
-        $validatedData = $request->validate([
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'content' => 'required|string',
+            'content' => 'required|string|max:4096',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:8096',
+            'clear_image' => 'nullable|boolean',
+            'tags' => 'nullable|array',
+            'tags.*' => 'exists:tags,id',
         ]);
 
-        $article->title = $validatedData['title'];
-        $article->content = $validatedData['content'];
+        $article->title = $validated['title'];
+        $article->content = $validated['content'];
 
         if ($request->hasFile('image')) {
             if ($article->image) {
@@ -109,19 +118,36 @@ class ArticleController extends Controller
             }
             $imagePath = $request->file('image')->store('articles', 'public');
             $article->image = $imagePath;
+        } elseif (isset($validated['clear_image']) && $validated['clear_image']) {
+            if ($article->image) {
+                Storage::disk('public')->delete($article->image);
+                $article->image = null;
+            }
         }
 
         $article->save();
 
-        return redirect()->route('articles.index')->with('success', 'Article updated successfully');
+        if (isset($validated['tags'])) {
+            $article->tags()->sync($validated['tags']);
+        } else {
+            $article->tags()->detach();
+        }
+
+        return redirect()->route('dashboard')->with('success', 'Article updated successfully!');
     }
 
     public function destroy(Article $article)
     {
         if ($article->image) {
-            Storage::delete('public/' . $article->image);
+            Storage::disk('public')->delete($article->image);
         }
         $article->delete();
-        return redirect()->back()->with('success', 'Article deleted successfully!');
+        return redirect()->route('dashboard')->with('success', 'Article deleted successfully!');
+    }
+
+    public function manageArticles()
+    {
+        $articles = Article::latest()->paginate(10);
+        return view('articles.manage', compact('articles'));
     }
 }
