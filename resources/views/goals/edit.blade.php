@@ -47,12 +47,6 @@
                                    class="w-full px-4 py-2 border rounded-lg text-2xl h-[42px] text-center focus:ring-2 focus:ring-pink-500 @error('emoji') border-red-500 @enderror">
                             @error('emoji') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">XP Reward *</label>
-                            <input type="number" name="xp" min="10" max="1000" value="{{ old('xp', $goal->xp) }}"
-                                   class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500 @error('xp') border-red-500 @enderror">
-                            @error('xp') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                        </div>
                     </div>
 
                     <!-- Duration Fields -->

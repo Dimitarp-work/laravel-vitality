@@ -58,13 +58,23 @@
 
         <!-- Tabs -->
         <div class="mb-6">
-            <div class="grid grid-cols-3 gap-2 mb-6">
-                <a href="?tab=current" class="{{ $activeTab === 'current' ? 'bg-pink-200 text-pink-800' : 'bg-pink-100 text-pink-600' }} px-4 py-2 rounded-lg text-center font-medium">Current Goals</a>
-                <a href="?tab=achieved" class="{{ $activeTab === 'achieved' ? 'bg-pink-200 text-pink-800' : 'bg-pink-100 text-pink-600' }} px-4 py-2 rounded-lg text-center font-medium">Achieved</a>
-                <a href="?tab=badges" class="{{ $activeTab === 'badges' ? 'bg-pink-200 text-pink-800' : 'bg-pink-100 text-pink-600' }} px-4 py-2 rounded-lg text-center font-medium">My Badges</a>
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <a href="?tab=current"
+                   class="w-full text-center px-6 py-3 rounded-xl font-semibold text-lg transition
+                  {{ $activeTab === 'current' ? 'bg-pink-200 text-pink-800' : 'bg-pink-100 text-pink-600' }}">
+                    Current Goals
+                </a>
+                <a href="?tab=achieved"
+                   class="w-full text-center px-6 py-3 rounded-xl font-semibold text-lg transition
+                  {{ $activeTab === 'achieved' ? 'bg-pink-200 text-pink-800' : 'bg-pink-100 text-pink-600' }}">
+                    Achieved
+                </a>
             </div>
+        </div>
 
-            <!-- Current Goals -->
+
+
+        <!-- Current Goals -->
             @if($activeTab === 'current')
                 <div class="grid grid-cols-1 gap-6">
                     @foreach($currentGoals as $goal)
