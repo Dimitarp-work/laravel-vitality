@@ -67,17 +67,8 @@
                 <li><a href="{{ route('home') }}"
                        class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
                             {{ request()->routeIs('home') ? 'bg-white/100 text-gray-900' : 'text-gray-900 hover:bg-gray-200' }}">
-                        <span class="material-icons">Activity log</span> Activity log
+                        <span class="material-icons">history</span> Activity log
                     </a></li>
-            </ul>
-            <div class="text-xs text-gray-600 font-bold uppercase tracking-wider mb-2 mt-6">Settings</div>
-            <ul class="space-y-1">
-                <li><a href="#"
-                       class="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-900 hover:bg-gray-200 hover:border-l-4 hover:border-pink-400 transition border-l-4 border-transparent"><span
-                            class="material-icons">settings</span> Site Settings</a></li>
-                <li><a href="#"
-                       class="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-900 hover:bg-gray-200 hover:border-l-4 hover:border-pink-400 transition border-l-4 border-transparent"><span
-                            class="material-icons">history</span> Activity Log</a></li>
             </ul>
         </div>
     </nav>

@@ -243,22 +243,8 @@
                             <span class="material-icons text-theme-400">add_circle</span>
                             <span class="text-sm font-medium text-theme-700">New Article</span>
                         </a>
-                        <button
-                            class="p-4 bg-theme-50 rounded-xl hover:bg-theme-100 transition flex flex-col items-center gap-2">
-                            <span class="material-icons text-theme-400">group_add</span>
-                            <span class="text-sm font-medium text-theme-700">Add User</span>
-                        </button>
-                        <button
-                            class="p-4 bg-theme-50 rounded-xl hover:bg-theme-100 transition flex flex-col items-center gap-2">
-                            <span class="material-icons text-theme-400">analytics</span>
-                            <span class="text-sm font-medium text-theme-700">Analytics</span>
-                        </button>
-                        <button
-                            class="p-4 bg-theme-50 rounded-xl hover:bg-theme-100 transition flex flex-col items-center gap-2">
-                            <span class="material-icons text-theme-400">settings</span>
-                            <span class="text-sm font-medium text-theme-700">Settings</span>
-                        </button>
                     </div>
+                    <!-- Feel free to add further actions / buttons here -->
                 </div>
 
                 <div class="bg-white rounded-2xl shadow p-6">
