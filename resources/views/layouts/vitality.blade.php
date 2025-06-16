@@ -218,32 +218,30 @@
                 </ul>
             </div>
 
-            <div>
-                <div class="text-xs text-pink-700 font-bold uppercase tracking-wider mb-2">Customization</div>
-                <ul class="space-y-1">
-                    <li>
-                        <a href="{{ route('store') }}"
-                           class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition-all duration-200
-                                {{ request()->routeIs('store') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100 hover:translate-x-1' }}">
-                            <span class="material-icons">store</span> Store
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('appearance') }}"
-                           class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition-all duration-200
-                                {{ request()->routeIs('appearance') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100 hover:translate-x-1' }}">
-                            <span class="material-icons">palette</span> Appearance
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('settings.index') }}"
-                           class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition-all duration-200
-                                {{ request()->routeIs('settings.*') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100 hover:translate-x-1' }}">
-                            <span class="material-icons">settings</span> Settings
-                        </a>
-                    </li>
-                </ul>
-            </div>
+            <div class="text-xs text-pink-700 font-bold uppercase tracking-wider mb-2 mt-6">Customization</div>
+            <ul class="space-y-1">
+                <li>
+<a href="{{ route('shop.index') }}"
+                       class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
+                            {{ request()->routeIs('shop') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
+                        <span class="material-icons">store</span> Store
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('appearance') }}"
+                       class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
+                            {{ request()->routeIs('appearance') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
+                        <span class="material-icons">palette</span> Appearance
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('settings.index') }}"
+                       class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
+                            {{ request()->routeIs('settings.*') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
+                        <span class="material-icons">settings</span> Settings
+                    </a>
+                </li>
+            </ul>
         </div>
     </nav>
     <div class="text-xs text-pink-700 p-2 md:p-4 flex justify-center text-center flex-shrink-0">

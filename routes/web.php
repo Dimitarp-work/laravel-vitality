@@ -20,6 +20,7 @@ use App\Http\Controllers\{
 use App\Http\Controllers\Admin\DashboardController;
 use App\Models\Goal;
 use App\Notifications\GoalOverdueNotification;
+use App\Http\Controllers\ShopController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,6 +41,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
+Route::post('/shop/badge/{badgeId}/toggle', [ShopController::class, 'setBadge'])->name('badges.toggle');
+Route::post('/shop/badge/remove', [ShopController::class, 'removeBadge'])->name('badges.remove');
+Route::post('/store/purchase/{item}', [ShopController::class, 'purchase'])->name('store.purchase');
+Route::post('/store/activate/{type}/{id}', [ShopController::class, 'activate'])->name('customize.activate');
 
     // Settings routes
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
@@ -105,6 +112,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/challenges/{challenge}/confirm-delete', [ChallengeController::class, 'confirmDelete'])->name('challenges.confirmDelete');
     Route::delete('/challenges/{challenge}', [ChallengeController::class, 'destroy'])->name('challenges.destroy');
 });
+Route::middleware(['auth'])->post('/badges', [BadgeController::class, 'store']);
 
 // Public CapyChat routes
 Route::get('/capychat', [CapyChatController::class, 'index'])->name('capychat');
