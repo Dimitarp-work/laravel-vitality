@@ -221,48 +221,49 @@ class ChallengeController extends Controller
 
     public function logProgress(Request $request, Challenge $challenge)
     {
-        $user = auth()->user(); // get the currently logged-in user
+        $user = auth()->user();
 
-        // try to get the pivot row between the user and this challenge
         $pivot = $user->joinedChallenges()
-            ->where('challenge_id', $challenge->id) // filter only for this challenge
-            ->first() // get the first result (should only be one anyway)
-            ?->pivot; // get the pivot data (extra fields like days_completed)
+            ->where('challenge_id', $challenge->id)
+            ->first()
+            ?->pivot;
 
         if (!$pivot) {
-            // user hasn't joined this challenge (this is just a protective measure, shouldnt happen)
             return back()->withErrors('You must join the challenge first.');
         }
 
-        // stop the user from logging more than once per calendar day
         if ($pivot->updated_at->isToday()) {
             return back()->withErrors('You already logged your progress today.');
         }
 
-        // stop the user if they've already completed the challenge
         if ($pivot->days_completed >= $challenge->duration_days) {
             return back()->withErrors('Challenge already completed.');
         }
 
-        // if all checks pass, increase the number of days completed by 1
         $pivot->days_completed++;
 
-        // if this was the final day, mark the challenge as completed for this user
         if ($pivot->days_completed >= $challenge->duration_days && !$pivot->completed) {
             $pivot->completed = true;
 
+            // Reward XP
             $this->xpService->reward(
                 $user,
                 $challenge->xp_reward,
                 $challenge->xp_reward,
                 "Completed challenge: {$challenge->title}"
             );
+
+            // Reward badge if present
+            if ($challenge->badge_id) {
+                // Attach badge only if user doesn't already have it
+                if (!$user->badges()->where('badge_id', $challenge->badge_id)->exists()) {
+                    $user->badges()->attach($challenge->badge_id);
+                }
+            }
         }
 
-        // save the updated pivot data (days_completed and possibly completed)
         $pivot->save();
 
-        // send success message back to the user
         return back()->with('success', 'Progress logged successfully!');
     }
 
