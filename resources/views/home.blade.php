@@ -77,26 +77,26 @@
                         </div>
                     </div>
 
-                    <!-- Wellness Inspiration -->
-                    <div class="bg-pink-50 rounded-2xl shadow p-6 flex flex-col">
-                        <div class="font-bold text-pink-900 mb-3 flex items-center gap-2">
-                            <span class="material-icons text-pink-400">lightbulb</span>
-                            Wellness Inspiration
-                        </div>
-                        <div class="space-y-2">
-                            <div class="bg-white rounded-lg p-3 flex flex-col shadow-sm">
-                                <span class="font-semibold text-pink-900">Gentle Stretches for Better Sleep</span>
-                                <span class="text-xs text-pink-600">5 min read</span>
-                            </div>
-                            <div class="bg-white rounded-lg p-3 flex flex-col shadow-sm">
-                                <span class="font-semibold text-pink-900">Finding Calm in Daily Moments</span>
-                                <span class="text-xs text-pink-600">3 min read</span>
-                            </div>
-                        </div>
-                        <button class="bg-pink-100 text-pink-700 rounded-lg px-4 py-1 mt-4 font-semibold w-fit hover:bg-pink-200 transition text-sm self-start">
-                            Explore Articles
-                        </button>
-                    </div>
+<!-- Wellness Inspiration -->
+<div class="bg-pink-50 rounded-2xl shadow p-6 flex flex-col">
+    <div class="font-bold text-pink-900 mb-3 flex items-center gap-2">
+        <span class="material-icons text-pink-400">lightbulb</span>
+        Wellness Inspiration
+    </div>
+    <div class="space-y-2">
+        @forelse($articles->take(2) as $article)
+            <a href="{{ route('articles.show', $article) }}" class="block bg-white rounded-lg p-3 flex flex-col shadow-sm hover:bg-gray-50 transition">
+                <span class="font-semibold text-pink-900">{{ $article->title }}</span>
+            </a>
+        @empty
+            <p class="text-pink-700 text-sm">No articles found yet. Check back soon!</p>
+        @endforelse
+    </div>
+    <a href="{{ route('articles.index') }}"
+       class="bg-pink-100 text-pink-700 rounded-lg px-4 py-1 mt-4 font-semibold w-fit hover:bg-pink-200 transition text-sm self-start"
+       aria-label="Explore articles">Explore Articles</a>
+</div>
+
 
                     <!-- Customization Store -->
                     <div class="bg-white rounded-2xl shadow p-6 flex flex-col">
