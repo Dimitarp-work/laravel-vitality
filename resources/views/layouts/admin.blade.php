@@ -66,9 +66,8 @@
                     </a></li>
                 <li><a href="{{ route('home') }}"
                        class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
-                            {{ request()->routeIs('home') ? 'bg-white/90 text-gray-900' : 'text-gray-900 hover:bg-gray-200' }}">
-
-                        <span class="material-icons">analytics</span> Analytics
+                            {{ request()->routeIs('home') ? 'bg-white/100 text-gray-900' : 'text-gray-900 hover:bg-gray-200' }}">
+                        <span class="material-icons">Activity log</span> Activity log
                     </a></li>
             </ul>
             <div class="text-xs text-gray-600 font-bold uppercase tracking-wider mb-2 mt-6">Settings</div>
