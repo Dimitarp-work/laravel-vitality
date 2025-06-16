@@ -50,6 +50,12 @@
                 </div>
             </div>
         </div>
+          <div class="flex flex-col items-end">
+            <span class="text-xs text-pink-700 font-semibold flex items-center gap-1">
+                <span class="material-icons text-pink-400 text-base">monetization_on</span>
+                <span id="user-credits">{{ $credits }} Credits</span>
+            </span>
+        </div>
     </div>
 </div>
 
