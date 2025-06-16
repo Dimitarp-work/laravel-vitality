@@ -14,7 +14,8 @@ use App\Http\Controllers\{
     RemindersController,
     SettingsController,
     DiaryController,
-    BadgeController
+    BadgeController,
+    Controller
 };
 use App\Http\Controllers\Admin\DashboardController;
 use App\Models\Goal;
