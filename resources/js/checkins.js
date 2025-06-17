@@ -55,6 +55,12 @@ async function completeCheckIn(checkInId) {
 }
 
 async function createCustomCheckIn(title) {
+    const isRecurringCheckbox = document.getElementById('isRecurring');
+    const formData = {
+        title: title.trim(),
+        isRecurring: isRecurringCheckbox?.checked || false
+    };
+
     const response = await fetch('/checkins', {
         method: 'POST',
         headers: {
@@ -62,7 +68,7 @@ async function createCustomCheckIn(title) {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ title: title.trim() })
+        body: JSON.stringify(formData)
     });
 
     const data = await response.json();
@@ -108,7 +114,8 @@ function createNewCheckInElement(checkinData) {
     const newCheckin = document.createElement('div');
     newCheckin.className = 'group grid grid-cols-[1fr,120px] gap-4 p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all relative';
     newCheckin.innerHTML = `
-        <div class="min-w-0">
+        <div class="min-w-0 flex items-center gap-2">
+            ${checkinData.isRecurring ? '<span class="material-icons text-pink-400 text-sm" title="Recurring check-in">repeat</span>' : ''}
             <span class="text-pink-900 break-all">${checkinData.title}</span>
         </div>
         <div class="flex justify-end">

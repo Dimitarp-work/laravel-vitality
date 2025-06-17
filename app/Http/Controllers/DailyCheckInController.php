@@ -17,22 +17,36 @@ class DailyCheckInController extends Controller
     {
         $userId = Auth::id();
         $today = Carbon::today();
+        $yesterday = Carbon::yesterday();
 
         // Get today's check-ins
         $checkins = DailyCheckIn::where('stampcard_id', $userId)
             ->whereDate('created_at', $today)
-            ->select('id', 'title', 'isComplete')
+            ->select('id', 'title', 'isComplete', 'isRecurring')
             ->get();
 
-        // If no check-ins exist for today, create new ones using factory
+        // If no check-ins exist for today, get recurring ones from yesterday
         if ($checkins->isEmpty()) {
-            // Create 4 check-ins using the factory
-        DailyCheckIn::factory(4)->create([
-            'stampcard_id' => $userId,
-        ]);
-        $checkins = DailyCheckIn::where('stampcard_id', $userId)
+            $recurringCheckins = DailyCheckIn::where('stampcard_id', $userId)
+                ->whereDate('created_at', $yesterday)
+                ->where('isRecurring', true)
+                ->select('id', 'title', 'isComplete', 'isRecurring')
+                ->get();
+
+            // Create new check-ins based on yesterday's recurring ones
+            foreach ($recurringCheckins as $recurringCheckin) {
+                DailyCheckIn::create([
+                    'title' => $recurringCheckin->title,
+                    'isComplete' => false,
+                    'stampcard_id' => $userId,
+                    'isRecurring' => true
+                ]);
+            }
+
+            // Get the newly created check-ins
+            $checkins = DailyCheckIn::where('stampcard_id', $userId)
                 ->whereDate('created_at', $today)
-                ->select('id', 'title', 'isComplete')
+                ->select('id', 'title', 'isComplete', 'isRecurring')
                 ->get();
         }
 
@@ -64,14 +78,15 @@ class DailyCheckInController extends Controller
     {
         try {
             $validated = $request->validate([
-                'title' => 'required|string|max:30'
+                'title' => 'required|string|max:30',
+                'isRecurring' => 'boolean'
             ]);
 
             $checkin = DailyCheckIn::create([
                 'title' => $validated['title'],
-                'description' => 'Custom check-in',
                 'isComplete' => false,
-                'stampcard_id' => Auth::id()
+                'stampcard_id' => Auth::id(),
+                'isRecurring' => $request->boolean('isRecurring', false)
             ]);
 
             if ($request->wantsJson()) {
@@ -141,7 +156,16 @@ class DailyCheckInController extends Controller
                 'message' => 'Unauthorized'
             ], 403);
         }
+
+        // Delete the current check-in
         $dailyCheckIn->delete();
+
+        // Set isRecurring to false for the same check-in from yesterday
+        DailyCheckIn::where('stampcard_id', $userId)
+            ->where('title', $dailyCheckIn->title)
+            ->whereDate('created_at', Carbon::yesterday())
+            ->update(['isRecurring' => false]);
+
         return redirect()->route('checkins.index')->with('success', 'Check-in deleted successfully');
     }
 

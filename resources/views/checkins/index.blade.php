@@ -97,7 +97,10 @@ use App\Constants\CheckInConstants;
                 <div class="space-y-4">
                     @foreach($checkins as $checkin)
                         <div class="group grid grid-cols-[1fr,120px] gap-4 p-4 bg-pink-50 rounded-xl hover:bg-pink-100/50 transition-all relative">
-                            <div class="min-w-0">
+                            <div class="min-w-0 flex items-center gap-2">
+                                @if($checkin->isRecurring)
+                                    <span class="material-icons text-pink-400 text-sm" title="Recurring check-in">repeat</span>
+                                @endif
                                 <span class="text-pink-900 break-all">{{$checkin->title}}</span>
                             </div>
                             <div class="flex justify-end">
@@ -156,6 +159,15 @@ use App\Constants\CheckInConstants;
                         <button type="submit" class="bg-pink-400 hover:bg-pink-500 text-white rounded-lg px-5 py-1.5 font-semibold w-24 transition text-sm self-start">
                             Add
                         </button>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox"
+                            id="isRecurring"
+                            name="isRecurring"
+                            class="rounded border-pink-200 text-pink-500 focus:ring-pink-300"
+                            {{ old('isRecurring') ? 'checked' : '' }}
+                        >
+                        <label for="isRecurring" class="text-sm text-gray-600">Make this check-in recurring</label>
                     </div>
                     <label for="custom-checkin-title" class="text-xs text-gray-500">Max {{ CheckInConstants::TITLE_MAX_LENGTH }} characters</label>
                 </form>
