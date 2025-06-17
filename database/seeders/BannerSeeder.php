@@ -12,7 +12,7 @@ class BannerSeeder extends Seeder
     {
         $banners = [
             [
-                'name' => 'Forest',
+                'name' => 'Sunset',
                 'image_url' => 'https://images.unsplash.com/photo-1506765515384-028b60a970df',
                 'price' => 400,
             ],
@@ -27,7 +27,7 @@ class BannerSeeder extends Seeder
                 'price' => 400,
             ],
             [
-                'name' => 'Sunset',
+                'name' => 'Forest',
                 'image_url' => 'https://images.unsplash.com/photo-1470770841072-f978cf4d019e',
                 'price' => 400,
             ],
