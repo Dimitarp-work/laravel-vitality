@@ -136,7 +136,17 @@
                                 <span class="material-icons text-pink-400">edit</span>
                                 A thought to capture?
                             </div>
-                            <textarea name="thought" required class="border border-pink-200 rounded-lg p-2 mb-3 resize-none focus:ring-2 focus:ring-pink-300 text-sm" rows="2" placeholder="Write anything that comes to mind..."></textarea>
+                            <textarea name="thought" required maxlength="60" class="border border-pink-200 rounded-lg p-2 mb-3 resize-none focus:ring-2 focus:ring-pink-300 text-sm" rows="2" placeholder="Write anything that comes to mind..." id="thought-textarea"></textarea>
+                            <div class="text-xs text-pink-500 mb-2" id="thought-char-count">0 / 60</div>
+                            @php
+                                $lastThought = Auth::user()->diaryEntries()->where('thoughts', '!=', '')->latest()->first();
+                            @endphp
+                            @if(session('last_thought') || $lastThought)
+                                <div class="mb-3 p-3 bg-pink-50 rounded-lg text-sm text-pink-700 border border-pink-200">
+                                    <div class="font-medium text-pink-900 mb-1">Last thought captured:</div>
+                                    {{ session('last_thought') ?? $lastThought->thoughts }}
+                                </div>
+                            @endif
                             <button type="submit" class="bg-pink-400 hover:bg-pink-500 text-white rounded-lg px-5 py-1.5 font-semibold w-24 ml-auto transition text-sm">
                                 Save
                             </button>
@@ -306,4 +316,19 @@
 </div>
 
 @vite('resources/js/app.js')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const textarea = document.getElementById('thought-textarea');
+        const charCount = document.getElementById('thought-char-count');
+        if (textarea && charCount) {
+            textarea.addEventListener('input', function() {
+                let val = textarea.value;
+                if (val.length > 60) {
+                    textarea.value = val.slice(0, 60);
+                }
+                charCount.textContent = textarea.value.length + ' / 60';
+            });
+        }
+    });
+</script>
 @endsection

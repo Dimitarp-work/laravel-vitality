@@ -24,8 +24,17 @@ class ThoughtController extends Controller
         $user = Auth::user();
         if ($user) {
             $this->xpService->reward($user, 50, 50, 'Posted a Thought');
+
+            // Store the thought in diary_entries
+            $diaryEntry = new \App\Models\DiaryEntry();
+            $diaryEntry->user_id = $user->id;
+            $diaryEntry->thoughts = $request->thought;
+            $diaryEntry->status = 'submitted';
+            $diaryEntry->save();
         }
 
-        return back()->with('success', 'Thought saved! +50 XP and +50 Credits!');
+        return back()
+            ->with('success', 'Thought saved! +50 XP and +50 Credits!')
+            ->with('last_thought', $request->thought);
     }
 }
