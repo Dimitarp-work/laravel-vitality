@@ -202,20 +202,53 @@
                             aria-label="View more reminders">View More</a>
                     </div>
 
-                    <!-- Wellness Journey -->
+                    <!-- Leaderboard -->
                     <div class="bg-pink-50 rounded-2xl shadow p-6 flex flex-col">
-                        <div class="font-bold text-pink-900 mb-2 flex items-center gap-2">
-                            <span class="material-icons text-pink-400">directions_walk</span>
-                            Your Wellness Journey
+                        <div class="font-bold text-pink-900 mb-4 flex items-center gap-2">
+                            <span class="material-icons text-pink-400">emoji_events</span>
+                            Top Performers
                         </div>
-                        <ul class="space-y-2">
-                            <li class="bg-white rounded-lg px-3 py-2 flex items-center gap-2 text-pink-700 font-medium shadow-sm"><span class="material-icons text-pink-400">water_drop</span> Stay hydrated throughout the day</li>
-                            <li class="bg-white rounded-lg px-3 py-2 flex items-center gap-2 text-pink-700 font-medium shadow-sm"><span class="material-icons text-pink-400">directions_run</span> Move your body when you can</li>
-                            <li class="bg-white rounded-lg px-3 py-2 flex items-center gap-2 text-pink-700 font-medium shadow-sm"><span class="material-icons text-pink-400">air</span> Take moments to breathe</li>
-                        </ul>
-                        <button class="text-pink-500 text-xs font-semibold ml-auto mt-2 hover:underline">
-                            View Journey
-                        </button>
+                        @php
+                            $topUsers = \App\Models\User::orderByDesc('xp')
+                                ->take(3)
+                                ->get()
+                                ->map(function ($user, $index) {
+                                    $rank = $index + 1;
+                                    $colors = [
+                                        1 => ['bg' => 'bg-yellow-100', 'text' => 'text-yellow-700', 'border' => 'border-yellow-400', 'emoji' => '🏆'],
+                                        2 => ['bg' => 'bg-gray-200', 'text' => 'text-gray-700', 'border' => 'border-gray-300', 'emoji' => ''],
+                                        3 => ['bg' => 'bg-orange-100', 'text' => 'text-orange-700', 'border' => 'border-orange-400', 'emoji' => ''],
+                                    ];
+                                    return [
+                                        'user' => $user,
+                                        'rank' => $rank,
+                                        'colors' => $colors[$rank]
+                                    ];
+                                });
+                        @endphp
+                        
+                        <div class="space-y-2">
+                            @foreach($topUsers as $data)
+                                <div class="bg-white rounded-lg p-3 flex items-center justify-between shadow-sm">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-full {{ $data['colors']['bg'] }} flex items-center justify-center font-bold {{ $data['colors']['text'] }} border-2 {{ $data['colors']['border'] }}">
+                                            {{ $data['rank'] }}
+                                        </div>
+                                        <div>
+                                            <div class="font-medium text-gray-800">{{ $data['user']->name }}</div>
+                                            <div class="text-xs text-pink-500">{{ number_format($data['user']->xp) }} XP</div>
+                                        </div>
+                                    </div>
+                                    @if($data['colors']['emoji'])
+                                        <span class="text-xl">{{ $data['colors']['emoji'] }}</span>
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
+                        
+                        <a href="{{ route('leaderboard.xp') }}" class="text-pink-500 text-xs font-semibold ml-auto mt-3 hover:underline">
+                            View Full Leaderboard
+                        </a>
                     </div>
 
                     <!-- Recent Badges -->
@@ -225,14 +258,38 @@
                             Recent Badges
                         </div>
                         <div class="flex gap-2 mb-2 flex-wrap">
-                            <!-- Replace these with dynamic badges -->
-                            <span class="bg-pink-200 text-pink-800 rounded-full px-4 py-1 text-xs font-semibold flex items-center gap-1"><span class="material-icons text-pink-400 text-base">water_drop</span>Hydration Champion</span>
-                            <span class="bg-pink-200 text-pink-800 rounded-full px-4 py-1 text-xs font-semibold flex items-center gap-1"><span class="material-icons text-pink-400 text-base">devices</span>Digital Balance</span>
-                            <span class="bg-pink-200 text-pink-800 rounded-full px-4 py-1 text-xs font-semibold flex items-center gap-1"><span class="material-icons text-pink-400 text-base">favorite</span>Gratitude Guide</span>
+                            @forelse($user->badges()->latest()->take(3)->get() as $badge)
+                                @php
+                                    $style = $badge->style ?? [];
+                                    $icon = $style['icon'] ?? 'emoji_events';
+                                    // Convert Font Awesome icon to Material icon if present
+                                    if (str_contains($icon, 'fa-')) {
+                                        $icon = match(true) {
+                                            str_contains($icon, 'id-badge') => 'badge',
+                                            str_contains($icon, 'trophy') => 'emoji_events',
+                                            str_contains($icon, 'medal') => 'military_tech',
+                                            default => 'emoji_events'
+                                        };
+                                    }
+                                @endphp
+                                <span class="bg-pink-200 text-pink-800 rounded-full px-4 py-1 text-xs font-semibold flex items-center gap-1">
+                                    @if($badge->image_url)
+                                        <img src="{{ asset($badge->image_url) }}" 
+                                             alt="{{ $badge->name }}" 
+                                             class="w-5 h-5 rounded-full object-contain"
+                                        />
+                                    @else
+                                        <span class="material-icons text-pink-400 text-base">{{ $icon }}</span>
+                                    @endif
+                                    {{ $badge->name }}
+                                </span>
+                            @empty
+                                <p class="text-pink-700 text-sm">No badges earned yet. Complete challenges to earn badges!</p>
+                            @endforelse
                         </div>
-                        <button class="text-pink-500 text-xs font-semibold ml-auto hover:underline">
+                        <a href="{{ route('leaderboard.badges') }}" class="text-pink-500 text-xs font-semibold ml-auto hover:underline">
                             View All Badges
-                        </button>
+                        </a>
                     </div>
                 </div>
             </div>
