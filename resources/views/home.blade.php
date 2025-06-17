@@ -91,13 +91,21 @@
         Wellness Inspiration
     </div>
     <div class="space-y-2">
-        @forelse($articles->take(2) as $article)
-            <a href="{{ route('articles.show', $article) }}" class="block bg-white rounded-lg p-3 flex flex-col shadow-sm hover:bg-gray-50 transition">
-                <span class="font-semibold text-pink-900">{{ $article->title }}</span>
+        @if(isset($newestArticle) && $newestArticle)
+            <a href="{{ route('articles.show', $newestArticle) }}" class="block bg-white rounded-lg p-3 flex flex-col shadow-sm hover:bg-gray-50 transition">
+                <span class="font-semibold text-pink-900">{{ $newestArticle->title }}</span>
+                <span class="text-xs text-pink-600">Newest & Most Popular</span>
             </a>
-        @empty
+        @endif
+        @if(isset($mostPopularArticle) && $mostPopularArticle)
+            <a href="{{ route('articles.show', $mostPopularArticle) }}" class="block bg-white rounded-lg p-3 flex flex-col shadow-sm hover:bg-gray-50 transition">
+                <span class="font-semibold text-pink-900">{{ $mostPopularArticle->title }}</span>
+                <span class="text-xs text-pink-600">All-Time Most Popular</span>
+            </a>
+        @endif
+        @if((!isset($newestArticle) || !$newestArticle) && (!isset($mostPopularArticle) || !$mostPopularArticle))
             <p class="text-pink-700 text-sm">No articles found yet. Check back soon!</p>
-        @endforelse
+        @endif
     </div>
     <a href="{{ route('articles.index') }}"
        class="bg-pink-100 text-pink-700 rounded-lg px-4 py-1 mt-4 font-semibold w-fit hover:bg-pink-200 transition text-sm self-start"
@@ -117,6 +125,37 @@
                             Visit Store
                         </a>
                     </div>
+
+                    <!-- Challenges Widget -->
+                    @php
+                        $joinedChallenges = Auth::user()->joinedChallenges()->with('participants')->orderBy('start_date')->take(3)->get();
+                    @endphp
+                    <div class="bg-pink-50 rounded-2xl shadow p-6 flex flex-col mb-2">
+                        <div class="font-bold text-pink-900 mb-2 flex items-center gap-2">
+                            <span class="material-icons text-pink-400">emoji_events</span>
+                            Your Challenges
+                        </div>
+                        <div class="flex flex-col gap-2 mb-2">
+                            @forelse($joinedChallenges as $challenge)
+                                <div class="bg-white rounded-lg p-3 flex flex-col shadow-sm">
+                                    <div class="flex items-center justify-between">
+                                        <div class="font-semibold text-pink-900">{{ $challenge->title }}</div>
+                                        <span class="text-xs px-2 py-0.5 rounded-full bg-pink-100 text-pink-700 font-semibold ml-2">{{ $challenge->difficulty }}</span>
+                                    </div>
+                                    <div class="text-xs text-pink-600 mt-1">{{ \Illuminate\Support\Str::limit($challenge->description, 50) }}</div>
+                                    <div class="flex items-center gap-2 mt-2">
+                                        <span class="material-icons text-pink-400 text-base">schedule</span>
+                                        <span class="text-xs text-pink-700">{{ $challenge->duration_days }} days</span>
+                                        <span class="material-icons text-pink-400 text-base ml-3">group</span>
+                                        <span class="text-xs text-pink-700">{{ $challenge->participants->count() }} joined</span>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="text-pink-700 text-sm">You haven't joined any challenges yet.</div>
+                            @endforelse
+                        </div>
+                        <a href="{{ route('challenges.index') }}" class="text-pink-500 text-xs font-semibold ml-auto hover:underline">View All Challenges</a>
+                    </div>
                 </div>
 
                 <div class="flex flex-col gap-8">
@@ -128,7 +167,17 @@
                                 <span class="material-icons text-pink-400">edit</span>
                                 A thought to capture?
                             </div>
-                            <textarea name="thought" required class="border border-pink-200 rounded-lg p-2 mb-3 resize-none focus:ring-2 focus:ring-pink-300 text-sm" rows="2" placeholder="Write anything that comes to mind..."></textarea>
+                            <textarea name="thought" required maxlength="60" class="border border-pink-200 rounded-lg p-2 mb-3 resize-none focus:ring-2 focus:ring-pink-300 text-sm" rows="2" placeholder="A quick note that comes to mind..." id="thought-textarea"></textarea>
+                            <div class="text-xs text-pink-500 mb-2" id="thought-char-count">0 / 60</div>
+                            @php
+                                $lastThought = Auth::user()->diaryEntries()->where('thoughts', '!=', '')->latest()->first();
+                            @endphp
+                            @if(session('last_thought') || $lastThought)
+                                <div class="mb-3 p-3 bg-pink-50 rounded-lg text-sm text-pink-700 border border-pink-200">
+                                    <div class="font-medium text-pink-900 mb-1">Last thought captured:</div>
+                                    {{ session('last_thought') ?? $lastThought->thoughts }}
+                                </div>
+                            @endif
                             <button type="submit" class="bg-pink-400 hover:bg-pink-500 text-white rounded-lg px-5 py-1.5 font-semibold w-24 ml-auto transition text-sm">
                                 Save
                             </button>
@@ -137,35 +186,110 @@
 
                     <!-- Gentle Reminders -->
                     <div class="bg-white rounded-2xl shadow p-6 flex flex-col">
-                        <div class="font-bold text-pink-900 mb-2 text-lg flex items-center gap-2">
-                            <span class="material-icons text-pink-400">notifications_active</span>
-                            Gentle Reminders
-                        </div>
+                        <div class="font-bold text-pink-900 mb-2 text-lg flex items-center gap-2"><span
+                                class="material-icons text-pink-400">notifications_active</span>Gentle Reminders</div>
                         <ul class="text-pink-700 text-base space-y-1 mb-2">
-                            <li class="flex items-center gap-2"><span class="material-icons text-pink-300 text-base">check</span>Did you take a moment for yourself today?</li>
-                            <li class="flex items-center gap-2"><span class="material-icons text-pink-300 text-base">water_drop</span>Have you had enough water today?</li>
-                            <li class="flex items-center gap-2"><span class="material-icons text-pink-300 text-base">directions_run</span>Have you moved your body a little?</li>
-                            <li class="flex items-center gap-2"><span class="material-icons text-pink-300 text-base">park</span>Connected with nature today?</li>
+                            @forelse($topReminders as $reminder)
+                                @php
+                                    $icon = 'notifications';
+                                    $title = 'Unknown Reminder';
+                                    $description = '';
+                                    if ($reminder->relatedEntity) {
+                                        switch ($reminder->type) {
+                                            case 'goal':
+                                                $icon = 'flag';
+                                                $title = $reminder->relatedEntity->title;
+                                                $description = $reminder->relatedEntity->description;
+                                                break;
+                                            case 'challenge':
+                                                $icon = 'emoji_events';
+                                                $title = $reminder->relatedEntity->title;
+                                                $description = $reminder->relatedEntity->description;
+                                                break;
+                                            case 'daily_checkin':
+                                                $icon = 'check_circle';
+                                                $title = $reminder->relatedEntity->title;
+                                                $description = 'Daily Check-in';
+                                                break;
+                                        }
+                                    }
+                                @endphp
+                                <li class="flex items-center gap-2">
+                                    <span class="material-icons text-pink-300 text-base">{{ $icon }}</span>
+                                    <span class="font-semibold">{{ $title }}</span>
+                                    @php
+                                        $typeLabel = '';
+                                        switch ($reminder->type) {
+                                            case 'goal':
+                                                $typeLabel = 'Goal';
+                                                break;
+                                            case 'challenge':
+                                                $typeLabel = 'Challenge';
+                                                break;
+                                            case 'daily_checkin':
+                                                $typeLabel = 'Daily Check-in';
+                                                break;
+                                        }
+                                    @endphp
+                                    @if($typeLabel)
+                                        <span class="ml-2 px-2 py-0.5 rounded bg-pink-100 text-pink-700 text-xs font-semibold">{{ $typeLabel }}</span>
+                                    @endif
+                                </li>
+                            @empty
+                                <li class="text-pink-500 text-sm">No active reminders. Enjoy your day!</li>
+                            @endforelse
                         </ul>
-                        <button class="text-pink-500 text-xs font-semibold ml-auto hover:underline">
-                            View More
-                        </button>
+                        <a href="{{ route('reminders.index') }}" class="text-pink-500 text-xs font-semibold ml-auto hover:underline"
+                            aria-label="View more reminders">View More</a>
                     </div>
 
-                    <!-- Wellness Journey -->
+                    <!-- Leaderboard -->
                     <div class="bg-pink-50 rounded-2xl shadow p-6 flex flex-col">
-                        <div class="font-bold text-pink-900 mb-2 flex items-center gap-2">
-                            <span class="material-icons text-pink-400">directions_walk</span>
-                            Your Wellness Journey
+                        <div class="font-bold text-pink-900 mb-4 flex items-center gap-2">
+                            <span class="material-icons text-pink-400">emoji_events</span>
+                            Top Performers
                         </div>
-                        <ul class="space-y-2">
-                            <li class="bg-white rounded-lg px-3 py-2 flex items-center gap-2 text-pink-700 font-medium shadow-sm"><span class="material-icons text-pink-400">water_drop</span> Stay hydrated throughout the day</li>
-                            <li class="bg-white rounded-lg px-3 py-2 flex items-center gap-2 text-pink-700 font-medium shadow-sm"><span class="material-icons text-pink-400">directions_run</span> Move your body when you can</li>
-                            <li class="bg-white rounded-lg px-3 py-2 flex items-center gap-2 text-pink-700 font-medium shadow-sm"><span class="material-icons text-pink-400">air</span> Take moments to breathe</li>
-                        </ul>
-                        <button class="text-pink-500 text-xs font-semibold ml-auto mt-2 hover:underline">
-                            View Journey
-                        </button>
+                        @php
+                            $topUsers = \App\Models\User::orderByDesc('xp')
+                                ->take(3)
+                                ->get()
+                                ->map(function ($user, $index) {
+                                    $rank = $index + 1;
+                                    $colors = [
+                                        1 => ['bg' => 'bg-yellow-100', 'text' => 'text-yellow-700', 'border' => 'border-yellow-400', 'emoji' => '🏆'],
+                                        2 => ['bg' => 'bg-gray-200', 'text' => 'text-gray-700', 'border' => 'border-gray-300', 'emoji' => ''],
+                                        3 => ['bg' => 'bg-orange-100', 'text' => 'text-orange-700', 'border' => 'border-orange-400', 'emoji' => ''],
+                                    ];
+                                    return [
+                                        'user' => $user,
+                                        'rank' => $rank,
+                                        'colors' => $colors[$rank]
+                                    ];
+                                });
+                        @endphp
+
+                        <div class="space-y-2">
+                            @foreach($topUsers as $data)
+                                <div class="bg-white rounded-lg p-3 flex items-center justify-between shadow-sm">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-full {{ $data['colors']['bg'] }} flex items-center justify-center font-bold {{ $data['colors']['text'] }} border-2 {{ $data['colors']['border'] }}">
+                                            {{ $data['rank'] }}
+                                        </div>
+                                        <div>
+                                            <div class="font-medium text-gray-800">{{ $data['user']->name }}</div>
+                                            <div class="text-xs text-pink-500">{{ number_format($data['user']->xp) }} XP</div>
+                                        </div>
+                                    </div>
+                                    @if($data['colors']['emoji'])
+                                        <span class="text-xl">{{ $data['colors']['emoji'] }}</span>
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <a href="{{ route('leaderboard.xp') }}" class="text-pink-500 text-xs font-semibold ml-auto mt-3 hover:underline">
+                            View Full Leaderboard
+                        </a>
                     </div>
 
                     <!-- Recent Badges -->
@@ -175,14 +299,38 @@
                             Recent Badges
                         </div>
                         <div class="flex gap-2 mb-2 flex-wrap">
-                            <!-- Replace these with dynamic badges -->
-                            <span class="bg-pink-200 text-pink-800 rounded-full px-4 py-1 text-xs font-semibold flex items-center gap-1"><span class="material-icons text-pink-400 text-base">water_drop</span>Hydration Champion</span>
-                            <span class="bg-pink-200 text-pink-800 rounded-full px-4 py-1 text-xs font-semibold flex items-center gap-1"><span class="material-icons text-pink-400 text-base">devices</span>Digital Balance</span>
-                            <span class="bg-pink-200 text-pink-800 rounded-full px-4 py-1 text-xs font-semibold flex items-center gap-1"><span class="material-icons text-pink-400 text-base">favorite</span>Gratitude Guide</span>
+                            @forelse($user->badges()->latest()->take(3)->get() as $badge)
+                                @php
+                                    $style = $badge->style ?? [];
+                                    $icon = $style['icon'] ?? 'emoji_events';
+                                    // Convert Font Awesome icon to Material icon if present
+                                    if (str_contains($icon, 'fa-')) {
+                                        $icon = match(true) {
+                                            str_contains($icon, 'id-badge') => 'badge',
+                                            str_contains($icon, 'trophy') => 'emoji_events',
+                                            str_contains($icon, 'medal') => 'military_tech',
+                                            default => 'emoji_events'
+                                        };
+                                    }
+                                @endphp
+                                <span class="bg-pink-200 text-pink-800 rounded-full px-4 py-1 text-xs font-semibold flex items-center gap-1">
+                                    @if($badge->image_url)
+                                        <img src="{{ asset($badge->image_url) }}"
+                                             alt="{{ $badge->name }}"
+                                             class="w-5 h-5 rounded-full object-contain"
+                                        />
+                                    @else
+                                        <span class="material-icons text-pink-400 text-base">{{ $icon }}</span>
+                                    @endif
+                                    {{ $badge->name }}
+                                </span>
+                            @empty
+                                <p class="text-pink-700 text-sm">No badges earned yet. Complete challenges to earn badges!</p>
+                            @endforelse
                         </div>
-                        <button class="text-pink-500 text-xs font-semibold ml-auto hover:underline">
+                        <a href="{{ route('leaderboard.badges') }}" class="text-pink-500 text-xs font-semibold ml-auto hover:underline">
                             View All Badges
-                        </button>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -199,4 +347,19 @@
 </div>
 
 @vite('resources/js/app.js')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const textarea = document.getElementById('thought-textarea');
+        const charCount = document.getElementById('thought-char-count');
+        if (textarea && charCount) {
+            textarea.addEventListener('input', function() {
+                let val = textarea.value;
+                if (val.length > 60) {
+                    textarea.value = val.slice(0, 60);
+                }
+                charCount.textContent = textarea.value.length + ' / 60';
+            });
+        }
+    });
+</script>
 @endsection
