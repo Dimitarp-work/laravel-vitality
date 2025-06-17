@@ -2,12 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
+use App\Models\Badge;
 use App\Models\Challenge;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Services\XPService;
+use Illuminate\View\View;
+use Illuminate\Support\Facades\Gate;
 
 class ChallengeController extends Controller
 {
+    protected $xpService;
+
+    public function __construct(XPService $xpService)
+    {
+        $this->xpService = $xpService;
+    }
+
+
     /**
      * Display a listing of the resource.
      */
@@ -89,7 +102,8 @@ class ChallengeController extends Controller
      */
     public function create()
     {
-        return view('challenges.create');
+        $badges = Badge::all();
+        return view('challenges.create', ['badges' => $badges]);
     }
 
     /**
@@ -100,11 +114,11 @@ class ChallengeController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string|max:1000',
-            'category' => 'nullable|string|max:255',
+            'category' => 'required|in:Mindfulness,Movement,Nutrition,Sleep,Teamwork,Self-Care',
             'difficulty' => 'required|in:Beginner,Intermediate,Advanced',
             'duration_days' => 'required|integer|min:1',
             'xp_reward' => 'required|integer|min:0',
-            'badge_id' => 'nullable|string|max:255',
+            'badge_id' => 'nullable|exists:badges,id',
             'start_date' => 'required|date|after_or_equal:today',
         ]);
 
@@ -119,6 +133,16 @@ class ChallengeController extends Controller
             'days_completed' => 0,
             'completed' => false,
         ]);
+
+        if (Auth::user()->is_admin) {
+            ActivityLog::create([
+                'user_id' => Auth::id(),
+                'action' => 'created', // or 'deleted'
+                'description' => "Created $challenge->title",
+                'loggable_type' => Challenge::class,
+                'loggable_id' => $challenge->id,
+            ]);
+        }
 
         return redirect()->route('challenges.index')->with('success', 'Challenge created successfully!');
     }
@@ -138,8 +162,8 @@ class ChallengeController extends Controller
     public function edit(Challenge $challenge)
     {
         $this->authorize('update', $challenge);
-
-        return view('challenges.edit', compact('challenge'));
+        $badges = Badge::all();
+        return view('challenges.edit', compact('challenge', 'badges'));
     }
 
 
@@ -154,16 +178,26 @@ class ChallengeController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string|max:1000',
-            'category' => 'nullable|string|max:255',
+            'category' => 'required|in:Mindfulness,Movement,Nutrition,Sleep,Teamwork,Self-Care',
             'difficulty' => 'required|in:Beginner,Intermediate,Advanced',
             'duration_days' => 'required|integer|min:1',
             'xp_reward' => 'required|integer|min:0',
-            'badge_id' => 'nullable|string|max:255',
+            'badge_id' => 'nullable|exists:badges,id',
             'start_date' => 'required|date|after_or_equal:today',
         ]);
 
 
         $challenge->update($validated); //updates the $challenge model with the validated form data
+
+        if (Auth::user()->is_admin) {
+            ActivityLog::create([
+                'user_id' => Auth::id(),
+                'action' => 'updated', // or 'deleted'
+                'description' => "Updated $challenge->title",
+                'loggable_type' => Challenge::class,
+                'loggable_id' => $challenge->id,
+            ]);
+        }
 
         return redirect()->route('challenges.index')->with('success', 'Challenge updated successfully.');
     }
@@ -179,6 +213,25 @@ class ChallengeController extends Controller
         $challenge->delete();
 
         return redirect()->route('challenges.index')->with('success', 'Challenge deleted.');
+    }
+
+    public function destroyAdmin(Challenge $challenge)
+    {
+        $this->authorize('delete', $challenge);
+
+        $challenge->delete();
+
+        if (Auth::user()->is_admin) {
+            ActivityLog::create([
+                'user_id' => Auth::id(),
+                'action' => 'deleted', // or 'deleted'
+                'description' => "Deleted $challenge->title",
+                'loggable_type' => Challenge::class,
+                'loggable_id' => $challenge->id,
+            ]);
+        }
+
+        return redirect()->route('admin.challenges.index')->with('success', 'Challenge deleted.');
     }
 
     public function confirmDelete(Challenge $challenge)
@@ -209,42 +262,55 @@ class ChallengeController extends Controller
 
     public function logProgress(Request $request, Challenge $challenge)
     {
-        $user = auth()->user(); // get the currently logged-in user
+        $user = auth()->user();
 
-        // try to get the pivot row between the user and this challenge
         $pivot = $user->joinedChallenges()
-            ->where('challenge_id', $challenge->id) // filter only for this challenge
-            ->first() // get the first result (should only be one anyway)
-            ?->pivot; // get the pivot data (extra fields like days_completed)
+            ->where('challenge_id', $challenge->id)
+            ->first()
+            ?->pivot;
 
         if (!$pivot) {
-            // user hasn't joined this challenge (this is just a protective measure, shouldnt happen)
             return back()->withErrors('You must join the challenge first.');
         }
 
-        // stop the user from logging more than once per calendar day
         if ($pivot->updated_at->isToday()) {
             return back()->withErrors('You already logged your progress today.');
         }
 
-        // stop the user if they've already completed the challenge
         if ($pivot->days_completed >= $challenge->duration_days) {
             return back()->withErrors('Challenge already completed.');
         }
 
-        // if all checks pass, increase the number of days completed by 1
         $pivot->days_completed++;
 
-        // if this was the final day, mark the challenge as completed for this user
-        if ($pivot->days_completed >= $challenge->duration_days) {
+        if ($pivot->days_completed >= $challenge->duration_days && !$pivot->completed) {
             $pivot->completed = true;
+
+            // Reward XP
+            $this->xpService->reward(
+                $user,
+                $challenge->xp_reward,
+                $challenge->xp_reward,
+                "Completed challenge: {$challenge->title}"
+            );
+
+            // Reward badge if present
+            if ($challenge->badge_id) {
+                // Attach badge only if user doesn't already have it
+                if (!$user->badges()->where('badge_id', $challenge->badge_id)->exists()) {
+                    $user->badges()->attach($challenge->badge_id);
+                }
+            }
         }
 
-        // save the updated pivot data (days_completed and possibly completed)
         $pivot->save();
 
-        // send success message back to the user
         return back()->with('success', 'Progress logged successfully!');
     }
 
+    public function manageChallenges(): View
+    {
+        $challenges = Challenge::latest()->paginate(10);
+        return view('challenges.manage', compact('challenges'));
+    }
 }

@@ -39,12 +39,12 @@ class ChallengePolicy
      */
     public function update(User $user, Challenge $challenge): bool
     {
-        return $challenge->creator_id === $user->id;
+        return $user->is_admin || $challenge->creator_id === $user->id;
     }
 
     public function delete(User $user, Challenge $challenge): bool
     {
-        return $challenge->creator_id === $user->id;
+        return $user->is_admin || $challenge->creator_id === $user->id;
     }
 
 

@@ -114,6 +114,7 @@ Route::post('/store/activate/{type}/{id}', [ShopController::class, 'activate'])-
     Route::put('/challenges/{challenge}', [ChallengeController::class, 'update'])->name('challenges.update');
     Route::get('/challenges/{challenge}/confirm-delete', [ChallengeController::class, 'confirmDelete'])->name('challenges.confirmDelete');
     Route::delete('/challenges/{challenge}', [ChallengeController::class, 'destroy'])->name('challenges.destroy');
+    Route::delete('/challengesAdmin/{challenge}', [ChallengeController::class, 'destroyAdmin'])->name('challenges.destroyAdmin');
 });
 Route::middleware(['auth'])->post('/badges', [BadgeController::class, 'store']);
 
@@ -127,6 +128,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/articles/manage', [ArticleController::class, 'manageArticles'])->name('admin.articles.index');
     Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('admin.activity_logs.index');
     Route::resource('articles', ArticleController::class)->except(['index', 'show']);
+    Route::get('/challenges/manage', [ChallengeController::class, 'manageChallenges'])->name('admin.challenges.index');
 });
 
 Route::middleware(['auth'])->group(function () {
