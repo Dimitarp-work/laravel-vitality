@@ -125,6 +125,37 @@
                             Visit Store
                         </a>
                     </div>
+
+                    <!-- Challenges Widget -->
+                    @php
+                        $joinedChallenges = Auth::user()->joinedChallenges()->with('participants')->orderBy('start_date')->take(3)->get();
+                    @endphp
+                    <div class="bg-pink-50 rounded-2xl shadow p-6 flex flex-col mb-2">
+                        <div class="font-bold text-pink-900 mb-2 flex items-center gap-2">
+                            <span class="material-icons text-pink-400">emoji_events</span>
+                            Your Challenges
+                        </div>
+                        <div class="flex flex-col gap-2 mb-2">
+                            @forelse($joinedChallenges as $challenge)
+                                <div class="bg-white rounded-lg p-3 flex flex-col shadow-sm">
+                                    <div class="flex items-center justify-between">
+                                        <div class="font-semibold text-pink-900">{{ $challenge->title }}</div>
+                                        <span class="text-xs px-2 py-0.5 rounded-full bg-pink-100 text-pink-700 font-semibold ml-2">{{ $challenge->difficulty }}</span>
+                                    </div>
+                                    <div class="text-xs text-pink-600 mt-1">{{ \Illuminate\Support\Str::limit($challenge->description, 50) }}</div>
+                                    <div class="flex items-center gap-2 mt-2">
+                                        <span class="material-icons text-pink-400 text-base">schedule</span>
+                                        <span class="text-xs text-pink-700">{{ $challenge->duration_days }} days</span>
+                                        <span class="material-icons text-pink-400 text-base ml-3">group</span>
+                                        <span class="text-xs text-pink-700">{{ $challenge->participants->count() }} joined</span>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="text-pink-700 text-sm">You haven't joined any challenges yet.</div>
+                            @endforelse
+                        </div>
+                        <a href="{{ route('challenges.index') }}" class="text-pink-500 text-xs font-semibold ml-auto hover:underline">View All Challenges</a>
+                    </div>
                 </div>
 
                 <div class="flex flex-col gap-8">
@@ -136,7 +167,7 @@
                                 <span class="material-icons text-pink-400">edit</span>
                                 A thought to capture?
                             </div>
-                            <textarea name="thought" required maxlength="60" class="border border-pink-200 rounded-lg p-2 mb-3 resize-none focus:ring-2 focus:ring-pink-300 text-sm" rows="2" placeholder="Write anything that comes to mind..." id="thought-textarea"></textarea>
+                            <textarea name="thought" required maxlength="60" class="border border-pink-200 rounded-lg p-2 mb-3 resize-none focus:ring-2 focus:ring-pink-300 text-sm" rows="2" placeholder="A quick note that comes to mind..." id="thought-textarea"></textarea>
                             <div class="text-xs text-pink-500 mb-2" id="thought-char-count">0 / 60</div>
                             @php
                                 $lastThought = Auth::user()->diaryEntries()->where('thoughts', '!=', '')->latest()->first();
@@ -236,7 +267,7 @@
                                     ];
                                 });
                         @endphp
-                        
+
                         <div class="space-y-2">
                             @foreach($topUsers as $data)
                                 <div class="bg-white rounded-lg p-3 flex items-center justify-between shadow-sm">
@@ -255,7 +286,7 @@
                                 </div>
                             @endforeach
                         </div>
-                        
+
                         <a href="{{ route('leaderboard.xp') }}" class="text-pink-500 text-xs font-semibold ml-auto mt-3 hover:underline">
                             View Full Leaderboard
                         </a>
@@ -284,8 +315,8 @@
                                 @endphp
                                 <span class="bg-pink-200 text-pink-800 rounded-full px-4 py-1 text-xs font-semibold flex items-center gap-1">
                                     @if($badge->image_url)
-                                        <img src="{{ asset($badge->image_url) }}" 
-                                             alt="{{ $badge->name }}" 
+                                        <img src="{{ asset($badge->image_url) }}"
+                                             alt="{{ $badge->name }}"
                                              class="w-5 h-5 rounded-full object-contain"
                                         />
                                     @else
