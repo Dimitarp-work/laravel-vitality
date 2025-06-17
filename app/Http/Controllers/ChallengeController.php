@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use App\Models\Badge;
 use App\Models\Challenge;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Services\XPService;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Gate;
 
 class ChallengeController extends Controller
 {
@@ -132,6 +134,16 @@ class ChallengeController extends Controller
             'completed' => false,
         ]);
 
+        if (Auth::user()->is_admin) {
+            ActivityLog::create([
+                'user_id' => Auth::id(),
+                'action' => 'created', // or 'deleted'
+                'description' => "Created $challenge->title",
+                'loggable_type' => Challenge::class,
+                'loggable_id' => $challenge->id,
+            ]);
+        }
+
         return redirect()->route('challenges.index')->with('success', 'Challenge created successfully!');
     }
 
@@ -177,6 +189,16 @@ class ChallengeController extends Controller
 
         $challenge->update($validated); //updates the $challenge model with the validated form data
 
+        if (Auth::user()->is_admin) {
+            ActivityLog::create([
+                'user_id' => Auth::id(),
+                'action' => 'updated', // or 'deleted'
+                'description' => "Updated $challenge->title",
+                'loggable_type' => Challenge::class,
+                'loggable_id' => $challenge->id,
+            ]);
+        }
+
         return redirect()->route('challenges.index')->with('success', 'Challenge updated successfully.');
     }
 
@@ -191,6 +213,25 @@ class ChallengeController extends Controller
         $challenge->delete();
 
         return redirect()->route('challenges.index')->with('success', 'Challenge deleted.');
+    }
+
+    public function destroyAdmin(Challenge $challenge)
+    {
+        $this->authorize('delete', $challenge);
+
+        $challenge->delete();
+
+        if (Auth::user()->is_admin) {
+            ActivityLog::create([
+                'user_id' => Auth::id(),
+                'action' => 'deleted', // or 'deleted'
+                'description' => "Deleted $challenge->title",
+                'loggable_type' => Challenge::class,
+                'loggable_id' => $challenge->id,
+            ]);
+        }
+
+        return redirect()->route('admin.challenges.index')->with('success', 'Challenge deleted.');
     }
 
     public function confirmDelete(Challenge $challenge)

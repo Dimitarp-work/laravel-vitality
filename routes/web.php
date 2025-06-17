@@ -111,6 +111,7 @@ Route::post('/store/activate/{type}/{id}', [ShopController::class, 'activate'])-
     Route::put('/challenges/{challenge}', [ChallengeController::class, 'update'])->name('challenges.update');
     Route::get('/challenges/{challenge}/confirm-delete', [ChallengeController::class, 'confirmDelete'])->name('challenges.confirmDelete');
     Route::delete('/challenges/{challenge}', [ChallengeController::class, 'destroy'])->name('challenges.destroy');
+    Route::delete('/challengesAdmin/{challenge}', [ChallengeController::class, 'destroyAdmin'])->name('challenges.destroyAdmin');
 });
 Route::middleware(['auth'])->post('/badges', [BadgeController::class, 'store']);
 
