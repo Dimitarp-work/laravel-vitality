@@ -91,13 +91,21 @@
         Wellness Inspiration
     </div>
     <div class="space-y-2">
-        @forelse($articles->take(2) as $article)
-            <a href="{{ route('articles.show', $article) }}" class="block bg-white rounded-lg p-3 flex flex-col shadow-sm hover:bg-gray-50 transition">
-                <span class="font-semibold text-pink-900">{{ $article->title }}</span>
+        @if(isset($newestArticle) && $newestArticle)
+            <a href="{{ route('articles.show', $newestArticle) }}" class="block bg-white rounded-lg p-3 flex flex-col shadow-sm hover:bg-gray-50 transition">
+                <span class="font-semibold text-pink-900">{{ $newestArticle->title }}</span>
+                <span class="text-xs text-pink-600">Newest & Most Popular</span>
             </a>
-        @empty
+        @endif
+        @if(isset($mostPopularArticle) && $mostPopularArticle)
+            <a href="{{ route('articles.show', $mostPopularArticle) }}" class="block bg-white rounded-lg p-3 flex flex-col shadow-sm hover:bg-gray-50 transition">
+                <span class="font-semibold text-pink-900">{{ $mostPopularArticle->title }}</span>
+                <span class="text-xs text-pink-600">All-Time Most Popular</span>
+            </a>
+        @endif
+        @if((!isset($newestArticle) || !$newestArticle) && (!isset($mostPopularArticle) || !$mostPopularArticle))
             <p class="text-pink-700 text-sm">No articles found yet. Check back soon!</p>
-        @endforelse
+        @endif
     </div>
     <a href="{{ route('articles.index') }}"
        class="bg-pink-100 text-pink-700 rounded-lg px-4 py-1 mt-4 font-semibold w-fit hover:bg-pink-200 transition text-sm self-start"
@@ -137,19 +145,61 @@
 
                     <!-- Gentle Reminders -->
                     <div class="bg-white rounded-2xl shadow p-6 flex flex-col">
-                        <div class="font-bold text-pink-900 mb-2 text-lg flex items-center gap-2">
-                            <span class="material-icons text-pink-400">notifications_active</span>
-                            Gentle Reminders
-                        </div>
+                        <div class="font-bold text-pink-900 mb-2 text-lg flex items-center gap-2"><span
+                                class="material-icons text-pink-400">notifications_active</span>Gentle Reminders</div>
                         <ul class="text-pink-700 text-base space-y-1 mb-2">
-                            <li class="flex items-center gap-2"><span class="material-icons text-pink-300 text-base">check</span>Did you take a moment for yourself today?</li>
-                            <li class="flex items-center gap-2"><span class="material-icons text-pink-300 text-base">water_drop</span>Have you had enough water today?</li>
-                            <li class="flex items-center gap-2"><span class="material-icons text-pink-300 text-base">directions_run</span>Have you moved your body a little?</li>
-                            <li class="flex items-center gap-2"><span class="material-icons text-pink-300 text-base">park</span>Connected with nature today?</li>
+                            @forelse($topReminders as $reminder)
+                                @php
+                                    $icon = 'notifications';
+                                    $title = 'Unknown Reminder';
+                                    $description = '';
+                                    if ($reminder->relatedEntity) {
+                                        switch ($reminder->type) {
+                                            case 'goal':
+                                                $icon = 'flag';
+                                                $title = $reminder->relatedEntity->title;
+                                                $description = $reminder->relatedEntity->description;
+                                                break;
+                                            case 'challenge':
+                                                $icon = 'emoji_events';
+                                                $title = $reminder->relatedEntity->title;
+                                                $description = $reminder->relatedEntity->description;
+                                                break;
+                                            case 'daily_checkin':
+                                                $icon = 'check_circle';
+                                                $title = $reminder->relatedEntity->title;
+                                                $description = 'Daily Check-in';
+                                                break;
+                                        }
+                                    }
+                                @endphp
+                                <li class="flex items-center gap-2">
+                                    <span class="material-icons text-pink-300 text-base">{{ $icon }}</span>
+                                    <span class="font-semibold">{{ $title }}</span>
+                                    @php
+                                        $typeLabel = '';
+                                        switch ($reminder->type) {
+                                            case 'goal':
+                                                $typeLabel = 'Goal';
+                                                break;
+                                            case 'challenge':
+                                                $typeLabel = 'Challenge';
+                                                break;
+                                            case 'daily_checkin':
+                                                $typeLabel = 'Daily Check-in';
+                                                break;
+                                        }
+                                    @endphp
+                                    @if($typeLabel)
+                                        <span class="ml-2 px-2 py-0.5 rounded bg-pink-100 text-pink-700 text-xs font-semibold">{{ $typeLabel }}</span>
+                                    @endif
+                                </li>
+                            @empty
+                                <li class="text-pink-500 text-sm">No active reminders. Enjoy your day!</li>
+                            @endforelse
                         </ul>
-                        <button class="text-pink-500 text-xs font-semibold ml-auto hover:underline">
-                            View More
-                        </button>
+                        <a href="{{ route('reminders.index') }}" class="text-pink-500 text-xs font-semibold ml-auto hover:underline"
+                            aria-label="View more reminders">View More</a>
                     </div>
 
                     <!-- Wellness Journey -->
