@@ -196,7 +196,7 @@
                     <li>
                         <a href="{{ route('goals') }}"
                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition-all duration-200
-                                {{ request()->routeIs('my-goals') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100 hover:translate-x-1' }}">
+                                {{ request()->routeIs('goals') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100 hover:translate-x-1' }}">
                             <span class="material-icons">flag</span> My Goals
                         </a>
                     </li>
@@ -228,7 +228,7 @@
                 <li>
 <a href="{{ route('shop.index') }}"
                        class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
-                            {{ request()->routeIs('shop') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
+                            {{ request()->routeIs('shop.index') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
                         <span class="material-icons">store</span> Store
                     </a>
                 </li>
