@@ -27,14 +27,16 @@ class Controller extends BaseController
         });
     }
 
-    function home(): View
-    {
-        $articles = Article::latest()->get();
+    public function home(): View
+{
+    $user = Auth::user()->load('banner'); 
+    $articles = Article::latest()->get();
 
-        return view('home', [
-            'articles' => $articles
-        ]);
-    }
+    return view('home', [
+        'user' => $user,
+        'articles' => $articles
+    ]);
+}
 
     function settings(): View{
         return view('settings');

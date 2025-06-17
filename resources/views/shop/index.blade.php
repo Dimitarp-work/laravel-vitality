@@ -15,6 +15,9 @@
         @endphp
 
         @foreach($grouped as $category => $items)
+         @if($category === 'banner')
+        @continue
+    @endif
             <h2 class="text-lg font-bold text-pink-700 mt-8 mb-3">Profile {{ ucfirst($category) }}</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                 @foreach($items as $item)
@@ -61,6 +64,56 @@
                 @endforeach
             </div>
         @endforeach
+     @if($banners->count())
+    <div class="mb-8">
+        <h2 class="text-lg font-semibold text-pink-900 mb-4">Banners</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            @foreach ($banners as $storeItem)
+                @php
+                    $banner = $storeItem->item;
+                    $owned = auth()->user()->banners->contains($banner->id);
+                    $active = auth()->user()->banner_id === $banner->id;
+                        $isActive = auth()->user()->banner_id === $banner->id;
+
+                @endphp
+
+               <div class="bg-white rounded-lg shadow p-4 flex flex-col gap-2 transition
+    {{ $isActive ? 'border-2 border-pink-400 ring ring-pink-300' : 'border hover:border-pink-200' }}">
+
+                    <div class="h-32 rounded-lg overflow-hidden">
+                        <img src="{{ $banner->image_url }}" alt="{{ $banner->name }}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="text-pink-900 font-bold">{{ $banner->name }}</div>
+@if($owned)
+    @if($active)
+        <form method="POST" action="{{ route('appearance.reset') }}">
+            @csrf
+            <button class="bg-pink-100 text-pink-700 rounded px-3 py-1 text-sm font-semibold hover:bg-pink-200 transition">
+                Reset to Default
+            </button>
+        </form>
+    @else
+        <form method="POST" action="{{ route('appearance.update') }}">
+            @csrf
+            <input type="hidden" name="banner_id" value="{{ $banner->id }}">
+            <button class="bg-pink-200 text-pink-800 rounded px-3 py-1 text-sm font-semibold hover:bg-pink-300 transition">
+                Apply
+            </button>
+        </form>
+    @endif
+@else
+    <form method="POST" action="{{ route('store.purchase', $storeItem->id) }}">
+        @csrf
+        <button class="bg-pink-400 text-white rounded px-3 py-1 text-sm font-semibold hover:bg-pink-500 transition">
+            Buy ({{ $storeItem->price }} Credits)
+        </button>
+    </form>
+@endif
+
+
+                </div>
+            @endforeach
+        </div>
     </div>
-</div>
+@endif
 @endsection

@@ -72,7 +72,10 @@
 <aside id="sidebar"
        class="w-72 bg-gradient-to-b from-pink-200 to-pink-100 p-0 flex flex-col min-h-screen shadow-xl border-r border-pink-100 fixed md:fixed z-30 transition-all duration-300 ease-in-out transform -translate-x-full md:translate-x-0 hidden md:flex h-screen top-0 left-0">
     <!-- User Card -->
-    <div class="p-4 md:p-6 pb-2 md:pb-4 border-b border-pink-100 flex-shrink-0">
+   <div
+    class="p-4 md:p-6 pb-2 md:pb-4 border-b border-pink-100 flex-shrink-0 bg-cover bg-center rounded-b-xl"
+    style="background-image: url('{{ Auth::user()->active_banner_url ?? '/images/default-banner.jpg' }}')"
+>
         <div class="flex items-center gap-4 mb-3">
             <div class="relative inline-block text-left">
                 <button onclick="toggleLogOut()"
@@ -227,14 +230,13 @@
                         <span class="material-icons">store</span> Store
                     </a>
                 </li>
-                <li>
-                    <a href="{{ route('appearance') }}"
-                       class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
-                            {{ request()->routeIs('appearance') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
-                        <span class="material-icons">palette</span> Appearance
-                    </a>
-                </li>
-                <li>
+              <li>
+  <a href="{{ route('appearance.index') }}"
+     class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
+            {{ request()->routeIs('appearance.index') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
+      <span class="material-icons">palette</span> Appearance
+  </a>
+</li>
                     <a href="{{ route('settings.index') }}"
                        class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
                             {{ request()->routeIs('settings.*') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">

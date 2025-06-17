@@ -22,6 +22,7 @@ use App\Models\Goal;
 use App\Notifications\GoalOverdueNotification;
 use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\ShopController;
+use App\Http\Controllers\AppearanceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -128,12 +129,21 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::resource('articles', ArticleController::class)->except(['index', 'show']);
 });
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/appearance', [AppearanceController::class, 'index'])->name('appearance.index');
+    Route::post('/appearance', [AppearanceController::class, 'update'])->name('appearance.update');
+    Route::post('/appearance/reset', [\App\Http\Controllers\AppearanceController::class, 'reset'])->name('appearance.reset');
+
+});
+Route::post('/store/purchase/{id}', [ShopController::class, 'purchase'])->name('store.purchase');
+Route::post('/customize/activate/{type}/{id}', [ShopController::class, 'activate'])->name('customize.activate');
+
+
 // Public article routes
 Route::resource('articles', ArticleController::class)->only(['index', 'show']);
 
 // Under construction pages
-Route::get('/store', fn () => view('under-construction'))->name('store');
-Route::get('/appearance', fn () => view('under-construction'))->name('appearance');
+
 
 // Manual test route
 Route::get('/test-notify-overdue', function () {
