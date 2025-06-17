@@ -61,36 +61,46 @@ The **Vitality Project** encourages healthier lifestyles through personalized we
 ```bash
 git clone <repository-url>
 cd playful-penguins-vitality-project
-```
-
-### Setup with Laravel Sail
-
-```bash
 cp .env.example .env
-./vendor/bin/sail up -d
 ```
 
-### Install Dependencies
-
+## Mac/Linux:
 ```bash
-./vendor/bin/sail composer install
-./vendor/bin/sail npm install
+docker run --rm \
+    -u "$(id -u):$(id -g)" \
+    -v "$(pwd):/var/www/html" \
+    -w /var/www/html \
+    laravelsail/php84-composer:latest \
+    composer install --ignore-platform-reqs
 ```
 
-### Generate App Key & Migrate Database
-
+## Windows (Powershell): 
 ```bash
-./vendor/bin/sail artisan key:generate
-./vendor/bin/sail artisan migrate --seed
+docker run --rm `
+    -u 0:0 `
+    -v ${PWD}:/var/www/html `
+    -w /var/www/html `
+    laravelsail/php84-composer:latest `
+    composer install --ignore-platform-reqs
+
 ```
-
-### Compile Frontend Assets
-
+## Set up sail and build: 
 ```bash
-./vendor/bin/sail npm run build
+./vendor/bin/sail up
+
+alias sail='sh $([ -f sail ] && echo sail || echo vendor/bin/sail)'
+
+sail artisan migrate:fresh
+
+php artisan key:generate
+
+sail npm install tailwindcss @tailwindcss/vite
+
+sail npm run build
+
 ```
 
----
+
 
 ##  Usage
 
