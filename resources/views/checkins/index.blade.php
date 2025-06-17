@@ -13,7 +13,7 @@ use App\Constants\CheckInConstants;
             TITLE_MAX_LENGTH: {{ CheckInConstants::TITLE_MAX_LENGTH }}
         };
     </script>
-    @vite(['resources/js/checkins.js', 'resources/js/confetti.js'])
+    @vite(['resources/js/checkins.js', 'resources/js/confetti.js', 'resources/js/checkins_modals.js', 'resources/js/modal-utils.js'])
 @endpush
 
 @section('content')

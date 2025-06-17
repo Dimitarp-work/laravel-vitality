@@ -128,6 +128,12 @@ class DailyCheckInController extends Controller
      */
     public function destroy(DailyCheckIn $dailyCheckIn)
     {
+        if (!$dailyCheckIn) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Check-in not found'
+            ], 404);
+        }
         $userId = Auth::id();
         if ($dailyCheckIn->stampcard_id !== $userId) {
             return response()->json([

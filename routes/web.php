@@ -62,7 +62,9 @@ Route::post('/store/activate/{type}/{id}', [ShopController::class, 'activate'])-
     Route::get('/diary/past', [DiaryController::class, 'past'])->name('diary.past');
 
     // Check-ins routes
-    Route::resource('/checkins', DailyCheckInController::class);
+    Route::resource('/checkins', DailyCheckInController::class)->parameters([
+        'checkins' => 'dailyCheckIn'
+    ]);
     Route::post('/checkins/{dailyCheckIn}/complete', [DailyCheckInController::class, 'complete'])->name('checkins.complete');
     Route::get('/checkins/week', [DailyCheckInController::class, 'week'])->name('checkins.week');
 
