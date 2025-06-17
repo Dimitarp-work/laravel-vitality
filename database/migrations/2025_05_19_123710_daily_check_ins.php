@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('daily_check_ins', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('description');
             $table->boolean('isComplete');
+            $table->boolean('isRecurring')->default(true);
             $table->unsignedBigInteger('stampcard_id');
             $table->foreign('stampcard_id')->references('user_id')->on('stampcards')->onDelete('cascade');
             $table->timestamps();

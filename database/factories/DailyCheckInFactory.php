@@ -15,19 +15,15 @@ class DailyCheckInFactory extends Factory
     private $dailyCheckIns = [
         [
             'title' => 'Drink 8 glasses of water',
-            'description' => 'Stay hydrated throughout the day for better health',
         ],
         [
             'title' => 'Take a 10-minute walk',
-            'description' => 'Get some fresh air and light exercise',
         ],
         [
             'title' => 'Practice mindful breathing',
-            'description' => 'Take a moment to center yourself and reduce stress',
         ],
         [
             'title' => 'Get 7-8 hours of sleep',
-            'description' => 'Maintain a healthy sleep schedule',
         ]
     ];
 
@@ -46,9 +42,11 @@ class DailyCheckInFactory extends Factory
 
         return [
             'title' => $checkIn['title'],
-            'description' => $checkIn['description'],
             'isComplete' => false,
-            'stampcard_id' => 1
+            'stampcard_id' => 1,
+            'isRecurring' => true,
+            'created_at' => now()->subDay(),
+            'updated_at' => now()->subDay()
         ];
     }
 }
