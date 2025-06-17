@@ -8,6 +8,7 @@ use App\Models\Goal;
 use App\Models\Challenge;
 use App\Models\DailyCheckIn;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class RemindersController extends Controller
 {
@@ -85,6 +86,7 @@ class RemindersController extends Controller
         $dailyCheckIns = DailyCheckIn::where('stampcard_id', $userId)
                                 ->whereNotIn('id', $existingDailyCheckInIds)
                                 ->where('isComplete', false)
+                                ->whereDate('created_at', Carbon::today())
                                 ->get();
 
         return view('reminders.create', compact('goals', 'challenges', 'dailyCheckIns'));
