@@ -8,6 +8,7 @@ use App\Models\ActivityLog;
 use App\Models\Article;
 use App\Models\User;
 use App\Models\ViewLog;
+use App\Models\XPLog;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -85,6 +86,8 @@ class DashboardController extends Controller
 
         $logs = ActivityLog::with('user')->latest()->limit(10)->get();
 
+        $xpCreditLogs = XPLog::with('user')->latest()->limit(10)->get();
+
         return view('admin.dashboard', compact(
             'totalArticles',
             'totalUsers',
@@ -101,6 +104,7 @@ class DashboardController extends Controller
             'recentArticles',
             'logs',
             'recentAdminActivities',
+            'xpCreditLogs',
             'search'
         ));
     }
