@@ -237,6 +237,11 @@
                             <span class="material-icons text-theme-400">add_circle</span>
                             <span class="text-sm font-medium text-theme-700">New Article</span>
                         </a>
+                        <a href="{{ route('challenges.create') }}"
+                           class="p-4 bg-theme-50 rounded-xl hover:bg-gray-200 transition flex flex-col items-center gap-2 no-underline">
+                            <span class="material-icons text-theme-400">add_circle</span>
+                            <span class="text-sm font-medium text-theme-700">New Challenge</span>
+                        </a>
                     </div>
                 </div>
 
