@@ -12,7 +12,7 @@ class BadgeSeeder extends Seeder
     public function run(): void
     {
         $badge = Badge::firstOrCreate(
-            ['name' => 'Syntess Employee'],
+            ['name' => 'Wellness Seeker'],
             [
                 'description' => 'Official employee badge of Syntess',
                'image_url' => '/images/syntess-badge.png',
