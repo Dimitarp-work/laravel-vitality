@@ -1,66 +1,175 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+#  Playful Penguins Vitality Project
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Overview
 
-## About Laravel
+The **Playful Penguins Vitality Project** is a comprehensive Laravel-based web application aimed at enhancing employee wellness and motivation within **Syntess Software**. The application encourages health tracking, goal-setting, gamification, and personalized content.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+##  Table of Contents
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- [Introduction](#-introduction)
+- [Key Features](#-key-features)
+- [Technologies](#-technologies)
+- [Installation & Setup](#-installation--setup)
+- [Usage](#-usage)
+- [Stakeholders](#-stakeholders)
+- [Validation Methods](#-validation-methods)
+- [Implemented User Stories](#-implemented-user-stories)
+- [Contributing](#-contributing)
+- [License](#-license)
+- [Contact](#-contact)
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+##  Introduction
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Founded in 1987, **Syntess Software** specializes in ERP and mobile software solutions.  
+The **Vitality Project** encourages healthier lifestyles through personalized wellness tracking and engagement.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+##  Key Features
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+-  **User Authentication**: Secure Laravel-based login system.
+-  **Employee Dashboard**: Wellness tracking, journaling, goal-setting, and challenges.
+-  **HR Content Management**: Publish wellness content and review anonymized engagement.
+-  **Gamification**: XP points, badges, leaderboards, with optional engagement.
+-  **Personalization**: Custom themes, banners, avatars.
+-  **Notifications**: Tailored email and in-app reminders.
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+##  Technologies
 
-## Contributing
+- Laravel 10
+- Laravel Sail (Docker)
+- Tailwind CSS
+- Vue.js (optional)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+##  Installation & Setup
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Prerequisites
 
-## Security Vulnerabilities
+- [Docker](https://www.docker.com/)
+- [Git](https://git-scm.com/)
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Clone Repository
 
-## License
+```bash
+git clone <repository-url>
+cd playful-penguins-vitality-project
+cp .env.example .env
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Mac/Linux:
+```bash
+docker run --rm \
+    -u "$(id -u):$(id -g)" \
+    -v "$(pwd):/var/www/html" \
+    -w /var/www/html \
+    laravelsail/php84-composer:latest \
+    composer install --ignore-platform-reqs
+```
+
+## Windows (Powershell): 
+```bash
+docker run --rm `
+    -u 0:0 `
+    -v ${PWD}:/var/www/html `
+    -w /var/www/html `
+    laravelsail/php84-composer:latest `
+    composer install --ignore-platform-reqs
+
+```
+## Set up sail and build: 
+```bash
+./vendor/bin/sail up
+
+alias sail='sh $([ -f sail ] && echo sail || echo vendor/bin/sail)'
+
+sail artisan migrate:fresh
+
+php artisan key:generate
+
+sail npm install tailwindcss @tailwindcss/vite
+
+sail npm run build
+
+```
+
+
+
+##  Usage
+
+**Employees:** Daily check-ins, challenges, gamification, profile customization.  
+**HR:** Content management, analytics of employee engagement.
+
+---
+
+##  Stakeholders
+
+- **Primary:** Employees, HR
+- **Secondary:** Project Manager, Management, IT Team
+
+---
+
+##  Validation Methods
+
+- **Interviews:** Detailed user insights
+- **Focus Groups:** Design feedback and improvements
+- **Surveys:** Post-testing quantitative and qualitative feedback
+
+---
+
+##  Implemented User Stories
+
+-  Emoji Mood Tracking  
+-  Wellness Articles  
+-  Interactive Challenges  
+-  XP & Leaderboards  
+-  Profile Customization  
+-  Journaling and Reflections  
+-  Custom Notifications  
+
+---
+
+##  Contributing
+
+1. Fork the repo
+2. Create your feature branch  
+   ```bash
+   git checkout -b feature/NewFeature
+   ```
+3. Commit your changes  
+   ```bash
+   git commit -m 'Add some NewFeature'
+   ```
+4. Push to the branch  
+   ```bash
+   git push origin feature/NewFeature
+   ```
+5. Open a Pull Request
+
+---
+
+##  License
+
+Licensed under the **MIT License** – see [LICENSE.md](LICENSE.md) for details.
+
+---
+
+##  Contact
+
+- **Dimitar Parvanov** (Developer)  
+- **Gabriel Chitarliev** (Developer)  
+- **Ivayla Ilieva** (Developer)  
+- **Serghei Barhatov** (Onsite Customer)  
+- **Marcell Nemes** (Developer)  
+- **Jakub Holík** (Team Coach)
+
+---
+
+> 🌟 Supporting wellness, boosting motivation – **Playful Penguins Vitality Project** 🌟

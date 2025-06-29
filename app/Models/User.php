@@ -102,5 +102,25 @@ public function activeBadge()
     {
         return $this->belongsToMany(Badge::class)->withTimestamps();
     }
+
+    public function activeBanner()
+{
+    return $this->belongsTo(StoreItem::class, 'active_banner_id');
+}
+
+public function activeTitle()
+{
+    return $this->belongsTo(StoreItem::class, 'active_title_id');
+}
+
+public function banner()
+{
+    return $this->belongsTo(Banner::class);
+}
+
+public function banners()
+{
+    return $this->belongsToMany(Banner::class)->withTimestamps();
+}
 }
 

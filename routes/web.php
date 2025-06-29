@@ -22,6 +22,7 @@ use App\Models\Goal;
 use App\Notifications\GoalOverdueNotification;
 use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\ShopController;
+use App\Http\Controllers\AppearanceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -62,7 +63,9 @@ Route::post('/store/activate/{type}/{id}', [ShopController::class, 'activate'])-
     Route::get('/diary/past', [DiaryController::class, 'past'])->name('diary.past');
 
     // Check-ins routes
-    Route::resource('/checkins', DailyCheckInController::class);
+    Route::resource('/checkins', DailyCheckInController::class)->parameters([
+        'checkins' => 'dailyCheckIn'
+    ]);
     Route::post('/checkins/{dailyCheckIn}/complete', [DailyCheckInController::class, 'complete'])->name('checkins.complete');
     Route::get('/checkins/week', [DailyCheckInController::class, 'week'])->name('checkins.week');
 
@@ -111,6 +114,7 @@ Route::post('/store/activate/{type}/{id}', [ShopController::class, 'activate'])-
     Route::put('/challenges/{challenge}', [ChallengeController::class, 'update'])->name('challenges.update');
     Route::get('/challenges/{challenge}/confirm-delete', [ChallengeController::class, 'confirmDelete'])->name('challenges.confirmDelete');
     Route::delete('/challenges/{challenge}', [ChallengeController::class, 'destroy'])->name('challenges.destroy');
+    Route::delete('/challengesAdmin/{challenge}', [ChallengeController::class, 'destroyAdmin'])->name('challenges.destroyAdmin');
 });
 Route::middleware(['auth'])->post('/badges', [BadgeController::class, 'store']);
 
@@ -124,14 +128,24 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/articles/manage', [ArticleController::class, 'manageArticles'])->name('admin.articles.index');
     Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('admin.activity_logs.index');
     Route::resource('articles', ArticleController::class)->except(['index', 'show']);
+    Route::get('/challenges/manage', [ChallengeController::class, 'manageChallenges'])->name('admin.challenges.index');
 });
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/appearance', [AppearanceController::class, 'index'])->name('appearance.index');
+    Route::post('/appearance', [AppearanceController::class, 'update'])->name('appearance.update');
+    Route::post('/appearance/reset', [\App\Http\Controllers\AppearanceController::class, 'reset'])->name('appearance.reset');
+
+});
+Route::post('/store/purchase/{id}', [ShopController::class, 'purchase'])->name('store.purchase');
+Route::post('/customize/activate/{type}/{id}', [ShopController::class, 'activate'])->name('customize.activate');
+
 
 // Public article routes
 Route::resource('articles', ArticleController::class)->only(['index', 'show']);
 
 // Under construction pages
-Route::get('/store', fn () => view('under-construction'))->name('store');
-Route::get('/appearance', fn () => view('under-construction'))->name('appearance');
+
 
 // Manual test route
 Route::get('/test-notify-overdue', function () {

@@ -25,6 +25,8 @@ class DatabaseSeeder extends Seeder
             ChallengeSeeder::class,
             DailyCheckInSeeder::class,
             BadgeSeeder:: class,
+            BannerSeeder::class,
+             StoreItemSeeder::class,
         ]);
 
         \App\Models\User::factory()->create([

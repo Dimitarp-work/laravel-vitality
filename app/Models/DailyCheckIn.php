@@ -12,13 +12,14 @@ class DailyCheckIn extends Model
 
     protected $fillable = [
         'title',
-        'description',
         'isComplete',
-        'stampcard_id'
+        'stampcard_id',
+        'isRecurring'
     ];
 
     protected $casts = [
-        'isComplete' => 'boolean'
+        'isComplete' => 'boolean',
+        'isRecurring' => 'boolean'
     ];
 
     public function stampcard(): BelongsTo{

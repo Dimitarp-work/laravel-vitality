@@ -17,7 +17,7 @@ return new class extends Migration
             // basic info
             $table->string('title');
             $table->text('description')->nullable();
-            $table->string('category')->nullable();
+            $table->enum('category', ['Mindfulness', 'Movement', 'Nutrition', 'Sleep', 'Teamwork', 'Self-Care']);
 
             // difficulty + duration
             $table->enum('difficulty', ['Beginner', 'Intermediate', 'Advanced']);

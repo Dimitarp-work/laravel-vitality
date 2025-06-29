@@ -16,6 +16,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Vitality Platform')</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('syntess-vitality-favicon.svg') }}">
+    <link rel="alternate icon" type="image/png" href="{{ asset('syntess-vitality-favicon.png') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script>
@@ -72,7 +74,10 @@
 <aside id="sidebar"
        class="w-72 bg-gradient-to-b from-pink-200 to-pink-100 p-0 flex flex-col min-h-screen shadow-xl border-r border-pink-100 fixed md:fixed z-30 transition-all duration-300 ease-in-out transform -translate-x-full md:translate-x-0 hidden md:flex h-screen top-0 left-0">
     <!-- User Card -->
-    <div class="p-4 md:p-6 pb-2 md:pb-4 border-b border-pink-100 flex-shrink-0">
+   <div
+    class="p-4 md:p-6 pb-2 md:pb-4 border-b border-pink-100 flex-shrink-0 bg-cover bg-center rounded-b-xl"
+    style="background-image: url('{{ Auth::user()->active_banner_url ?? '/images/default-banner.jpg' }}')"
+>
         <div class="flex items-center gap-4 mb-3">
             <div class="relative inline-block text-left">
                 <button onclick="toggleLogOut()"
@@ -182,7 +187,7 @@
                     </li>
                     <li>
                         <a href="{{ route('capychat') }}"
-                           class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition-all duration-200
+                           class="relative flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition-all duration-200
                                 {{ request()->routeIs('capychat') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100 hover:translate-x-1' }}">
                             <img src="/images/capybara-icon.svg" alt="Capy Chat" class="w-6 h-6 inline-block align-middle" /> Capy Chat
                             <span id="capy-unread-bubble" class="absolute right-2 top-2 bg-pink-400 text-white text-xs font-bold rounded-full px-2 py-0.5 hidden"></span>
@@ -191,7 +196,7 @@
                     <li>
                         <a href="{{ route('goals') }}"
                            class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition-all duration-200
-                                {{ request()->routeIs('my-goals') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100 hover:translate-x-1' }}">
+                                {{ request()->routeIs('goals') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100 hover:translate-x-1' }}">
                             <span class="material-icons">flag</span> My Goals
                         </a>
                     </li>
@@ -223,18 +228,17 @@
                 <li>
 <a href="{{ route('shop.index') }}"
                        class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
-                            {{ request()->routeIs('shop') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
+                            {{ request()->routeIs('shop.index') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
                         <span class="material-icons">store</span> Store
                     </a>
                 </li>
-                <li>
-                    <a href="{{ route('appearance') }}"
-                       class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
-                            {{ request()->routeIs('appearance') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
-                        <span class="material-icons">palette</span> Appearance
-                    </a>
-                </li>
-                <li>
+              <li>
+  <a href="{{ route('appearance.index') }}"
+     class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
+            {{ request()->routeIs('appearance.index') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">
+      <span class="material-icons">palette</span> Appearance
+  </a>
+</li>
                     <a href="{{ route('settings.index') }}"
                        class="flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition
                             {{ request()->routeIs('settings.*') ? 'bg-white/90 text-pink-900' : 'text-pink-900 hover:bg-pink-100' }}">

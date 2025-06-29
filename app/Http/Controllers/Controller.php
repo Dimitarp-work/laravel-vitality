@@ -27,13 +27,39 @@ class Controller extends BaseController
         });
     }
 
-    function home(): View
+    public function home(): View
     {
-        $articles = Article::latest()->get();
+        $user = Auth::user();
+        $topReminders = collect();
+        if ($user) {
+            $topReminders = $user->reminders()
+                ->where('is_completed', false)
+                ->orderBy('created_at', 'desc')
+                ->limit(3)
+                ->get();
 
-        return view('home', [
-            'articles' => $articles
-        ]);
+            // Eager load related entities manually
+            foreach ($topReminders as $reminder) {
+                switch ($reminder->type) {
+                    case 'goal':
+                        $reminder->relatedEntity = \App\Models\Goal::find($reminder->entity_id);
+                        break;
+                    case 'challenge':
+                        $reminder->relatedEntity = \App\Models\Challenge::find($reminder->entity_id);
+                        break;
+                    case 'daily_checkin':
+                        $reminder->relatedEntity = \App\Models\DailyCheckIn::find($reminder->entity_id);
+                        break;
+                }
+            }
+        }
+        $newestArticle = \App\Models\Article::orderBy('created_at', 'desc')->first();
+        $mostPopularArticle = \App\Models\Article::orderBy('views', 'desc')->first();
+        // Avoid duplicate if both are the same
+        if ($newestArticle && $mostPopularArticle && $newestArticle->id === $mostPopularArticle->id) {
+            $mostPopularArticle = null;
+        }
+        return view('home', compact('topReminders', 'newestArticle', 'mostPopularArticle'));
     }
 
     function settings(): View{
